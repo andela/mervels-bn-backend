@@ -4,7 +4,9 @@
   "description": "A Social platform for the creative at heart",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "./node_modules/.bin/eslint .",
+    "lint:fix": "npm run lint --fix"
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
@@ -26,5 +28,10 @@
     "passport-local": "^1.0.0",
     "request": "^2.87.0",
     "underscore": "^1.9.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.3.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2"
   }
 }
