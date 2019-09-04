@@ -9,7 +9,7 @@
     "lint:fix": "npm run lint --fix",
     "start": "npm run build && node ./src/build/index.js",
     "start:dev": "nodemon --exec babel-node src/index.js",
-    "test": "echo \"Messages: no test specified\" && exit 0"
+    "test": "mocha --require @babel/register ./src/test/*.js --timeout 60000 --exit"
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
@@ -42,9 +42,12 @@
     "@babel/node": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "@babel/register": "^7.5.5",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
     "eslint": "^6.3.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
+    "mocha": "^6.2.0",
     "nodemon": "^1.19.2"
   }
 }
