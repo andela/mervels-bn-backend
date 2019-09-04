@@ -9,7 +9,7 @@
     "lint:fix": "npm run lint --fix",
     "start": "npm run build && node ./src/build/index.js",
     "start:dev": "nodemon --exec babel-node src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Messages: no test specified\" && exit 0"
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
