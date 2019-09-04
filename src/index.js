@@ -7,7 +7,7 @@ const fs = require('fs'),
   session = require('express-session'),
   cors = require('cors'),
   passport = require('passport'),
-  errorhandler = require('errorhandler'),
+  errorhandler = require('errorhandler');
 
 
 const isProduction = process.env.NODE_ENV === 'production';

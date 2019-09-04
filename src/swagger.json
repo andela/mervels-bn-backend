@@ -1,0 +1,16 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "version": "1.0.0",
+        "description": "Make company global travel and accommodation easy and convenient for the strong workforce of savvy members of staff, by leveraging the modern web.\n",
+        "title": "Barefoot Nomad",
+        "contact": {
+            "name": "Marvel Universe",
+            "email": "marveluniverse@marvel.com"
+        }
+    },
+    "tags": [{
+        "name": "users",
+        "description": "Operations available to users"
+    }]
+}
