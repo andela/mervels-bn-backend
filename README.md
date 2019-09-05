@@ -22,3 +22,9 @@ Make company global travel and accommodation easy and convenient for the strong 
 - Install `sequelize` and `sequelize-cli` globally
 - For development we are using a `DEV_DATABASE_URL` variable to keep our DB url in `.env` (Add `export` in front of it)
 - Then run `npm run db-migrate:dev` to run migrations
+
+### Running Application on Docker
+- Install Docker from [Docker For Mac](https://docs.docker.com/docker-for-mac/install/) or [Docker For Windows](https://docs.docker.com/docker-for-windows/install/)for windows you will also need to install [docker-compose](https://docs.docker.com/compose/install/)
+- After cloning the application from Github. Switch to the main app where there's the Dockerfile and the docker-compose.yml file
+- Run `docker-compose up`. Make sure port `3000` is not taken if so change the port in docker-compose.yml file. 
+- Test the application on the link `127.0.0.1:3000/api/docs` 
