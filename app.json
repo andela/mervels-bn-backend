@@ -1,0 +1,19 @@
+{
+  "addons": [
+    "heroku-postgresql"
+  ],
+  "buildpacks": [
+
+  ],
+  "env": {
+    "NPM_CONFIG_PRODUCTION": {
+      "required": true
+    }
+  },
+  "formation": {
+  },
+  "name": "mervels-bn-backend",
+  "scripts": {
+  },
+  "stack": "heroku-18"
+}
