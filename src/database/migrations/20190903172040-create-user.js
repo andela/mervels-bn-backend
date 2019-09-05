@@ -1,5 +1,3 @@
-'use strict';
-
 export default {
   up: (queryInterface, Sequelize) => queryInterface.createTable('Users', {
     id: {

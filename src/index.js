@@ -9,7 +9,6 @@ const fs = require('fs'),
   passport = require('passport'),
   errorhandler = require('errorhandler');
 
-
 const isProduction = process.env.NODE_ENV === 'production';
 
 // Create global app object
@@ -39,7 +38,6 @@ app.use(
 if (!isProduction) {
   app.use(errorhandler());
 }
-
 
 app.use(require('./routes'));
 

@@ -1,5 +1,5 @@
 {
-  "name": "express-authorshaven",
+  "name": "express-barefoot-nomad",
   "version": "1.0.0",
   "description": "A Social platform for the creative at heart",
   "main": "index.js",
@@ -9,10 +9,23 @@
     "db-migrate:dev": "sequelize db:migrate --env development",
     "db-migrate:test": "sequelize db:migrate:undo:all --env test && sequelize db:migrate --env test",
     "lint": "./node_modules/.bin/eslint .",
-    "lint:fix": "npm run lint --fix",
+    "lint:fix": "prettier-eslint  '**/*.js' --write",
     "start": "npm run build && node ./src/build/index.js",
     "start:dev": "nodemon --exec babel-node src/index.js",
-    "test": "mocha --require @babel/register ./src/test/*.js --timeout 60000 --exit"
+    "test": "nyc mocha --require @babel/register ./src/test/*.js --timeout 60000 --exit",
+    "cover": "nyc --reporter=html --reporter=text npm test",
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
+  },
+  "lint-staged": {
+    "**/*.js": [
+      "npm run lint:fix",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
@@ -49,10 +62,16 @@
     "@babel/register": "^7.5.5",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
+    "coveralls": "^3.0.6",
     "eslint": "^6.3.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
+    "husky": "^3.0.5",
+    "lint-staged": "^9.2.5",
     "mocha": "^6.2.0",
-    "nodemon": "^1.19.2"
+    "nodemon": "^1.19.2",
+    "nyc": "^14.1.1",
+    "prettier-eslint": "^9.0.0",
+    "prettier-eslint-cli": "^5.0.0"
   }
 }
