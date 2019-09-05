@@ -1,0 +1,17 @@
+version: "3.7"
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+  web: 
+    environment:
+      DEV_DATABASE_URL: "postgres://postgres@db:5432/postgres"
+    build: .
+    depends_on:
+      - db
+    ports: 
+      [3000:3000]
+    
