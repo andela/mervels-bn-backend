@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable class-methods-use-this */
 import userService from '../services/userService';
 import Password from '../utils/generatePassword';
@@ -32,7 +33,8 @@ class Users {
         email: rawData.userEmail,
         firstName: rawData.firstName,
         lastName: rawData.lastName,
-        userRoles: rawData.userRoles
+        userRoles: rawData.userRoles,
+        accountVerified: data.accountVerified
       });
       data.token = token;
       const dataResponse = {
@@ -42,12 +44,19 @@ class Users {
         userRoles: data.userRoles,
         userToken: data.token
       };
-      return Response.customResponse(
-        res,
-        201,
-        'Account has been created successfully',
-        dataResponse
-      );
+      const link = `${req.protocol}://${process.env.baseUrl}/api/v1/auth/verify/?token=${token}`;
+      let verification;
+      try {
+        const msg = Emails.verificationLinkTemplate(link, dataResponse);
+        const result = await Emails.sendmail(msg);
+        verification = 'Verification link sent';
+      } catch (error) {
+        verification = 'Verification link not sent';
+      }
+      return Response.customResponse(res, 201, 'Account has been created successfully', {
+        ...dataResponse,
+        verification: { message: verification, link }
+      });
     } catch (error) {
       return next(error);
     }
@@ -97,6 +106,53 @@ class Users {
    * @param {object} res  details.
    * @returns {object}.
    */
+  async sendLink(req, res) {
+    const { userEmail } = req.body;
+    const user = await userService.findUserByEmail(userEmail);
+    if (!user) {
+      return Response.errorResponse(res, 404, 'this email is not registered');
+    }
+
+    const token = await SessionManager.generateToken(user);
+    const link = `${req.protocol}://${process.env.baseUrl}/api/v1/auth/verify/?token=${token}`;
+    try {
+      const msg = Emails.verificationLinkTemplate(link, user);
+      const _ = await Emails.sendmail(msg);
+      return Response.customResponse(res, 200, 'email sent with verification link', {
+        userEmail,
+        link
+      });
+    } catch (error) {
+      return Response.errorResponse(res, 500, 'internal error', error);
+    }
+  }
+
+  /**
+   * Generates a new password.
+   * @param {object} req  details.
+   * @param {object} res  details.
+   * @returns {object}.
+   */
+  async verify(req, res) {
+    const { token } = req.query;
+    try {
+      const { email } = SessionManager.verify(token);
+      const user = await userService.findUserByEmail(email);
+      if (user.accountVerified) {
+        return Response.errorResponse(res, 409, 'Email already verified', 'conflicts');
+      }
+      const result = userService.verifyEmail(email);
+      return Response.customResponse(res, 201, 'Email verified succesfully', { userEmail: email });
+    } catch (error) {
+      return Response.errorResponse(res, 401, 'The link is invalid or has expired', 'bad request');
+    }
+  }
+
+  /**
+   * @param {object} req request
+   * @param {object} res response
+   * @return {function} logIn
+   */
   async logIn(req, res) {
     try {
       const { userEmail, userPassword } = req.body;
@@ -104,6 +160,9 @@ class Users {
 
       if (!userExists) {
         return Response.errorResponse(res, 401, 'Invalid email or password entered');
+      }
+      if (userExists.accountVerified === false) {
+        return res.status(401).send({ status: res.statusCode, error: 'Email not verified' });
       }
       const user = userExists.dataValues;
 

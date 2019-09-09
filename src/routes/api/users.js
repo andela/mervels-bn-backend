@@ -12,6 +12,8 @@ router.use(passport.session());
 
 router.post('/signup', userValidator.validateSignup, Users.createUser);
 router.post('/signin', userValidator.validateSignIn, Users.logIn);
+router.post('/createLink', userValidator.validateSendLink, Users.sendLink);
+router.patch('/verify/', userValidator.validateVerifyLink, Users.verify);
 
 router.get(
   '/google',

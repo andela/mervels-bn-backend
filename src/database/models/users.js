@@ -37,6 +37,10 @@ export default (sequelize, DataTypes) => {
             'User Roles must either be Travel Team Member, Travel Administrator, Manager or Requester'
         }
       }
+    },
+    accountVerified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     }
   });
   Users.associate = function (models) {
