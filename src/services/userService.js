@@ -31,6 +31,21 @@ class UserService {
       throw error;
     }
   }
+
+  /**
+   * Get user by email if exists
+   * @param {string} email
+   * @return {object}
+   */
+  static async findUserByEmail(userEmail) {
+    try {
+      const user = await Users.findOne({ where: { userEmail } });
+
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default UserService;

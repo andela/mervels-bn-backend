@@ -66,5 +66,29 @@ class Users {
       return Response.errorResponse(res, 500, 'Failed to Login', error);
     }
   }
+
+  static async logIn(req, res) {
+    try {
+      const { userEmail, userPassword } = req.body;
+      const userExists = await UserService.findUserByEmail(userEmail);
+
+      if (!userExists) {
+        return Response.errorResponse(res, 401, 'Email does not exist');
+      }
+      const user = userExists.dataValues;
+
+      const match = await Password.checkPasswordMatch(userPassword, user.userPassword);
+      if (!match) {
+        return Response.errorResponse(res, 401, 'Wrong Password Entered');
+      }
+
+      user.userToken = SessionManager.createSession(user);
+      delete user.userPassword;
+
+      return Response.customResponse(res, 200, 'User signed In', user);
+    } catch (error) {
+      return Response.errorResponse(res, 500, 'Failed to Login', error);
+    }
+  }
 }
 export default new Users();

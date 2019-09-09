@@ -5,7 +5,6 @@ import server from '../index';
 const { expect } = chai;
 
 const signupUrl = '/api/v1/auth/signup';
-
 const signinUrl = '/api/v1/auth/signin';
 
 chai.use(chaiHttp);
