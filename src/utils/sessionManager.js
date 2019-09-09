@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import redis from 'redis';
 import { promisify } from 'util';
 
-const redisClient = redis.createClient(process.env.REDIS_SERVER);
+const redisClient = redis.createClient(process.env.REDIS_URL);
 
 const getAsync = promisify(redisClient.get).bind(redisClient);
 const delAsync = promisify(redisClient.del).bind(redisClient);

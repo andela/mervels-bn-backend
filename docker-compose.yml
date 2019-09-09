@@ -12,7 +12,7 @@ services:
   web: 
     environment:
       DEV_DATABASE_URL: "postgres://postgres@db:5432/postgres"
-      REDIS_SERVER: "redis://redis:6379"
+      REDIS_URL: "redis://redis:6379"
       TOKEN: "ANDELA"
     build: .
     depends_on:
