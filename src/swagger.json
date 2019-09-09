@@ -12,5 +12,86 @@
     "tags": [{
         "name": "users",
         "description": "Operations available to users"
-    }]
+    }],
+    "paths": {
+        "/auth/signup": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Create user",
+                "description": "Creates a new user account.",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [{
+                    "name": "user",
+                    "in": "body",
+                    "description": "user to sign up",
+                    "schema": {
+                        "type": "object",
+                        "required": [
+                            "email",
+                            "firstName",
+                            "lastName",
+                            "userPassword"
+                        ],
+                        "properties": {
+                            "userEmail": {
+                                "type": "string"
+                            },
+                            "firstName": {
+                                "type": "string"
+                            },
+                            "lastName": {
+                                "type": "string"
+                            },
+                            "userPassword": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }],
+                "responses": {
+                    "201": {
+                        "description": "User successfully created",
+                        "examples": {
+                            "application/json": {
+                                "status": 201,
+                                "message": "Account has been created successfully",
+                                "data": {
+                                    "firstName": "Jonathan",
+                                    "lastName": "Aurugai",
+                                    "userEmail": "jonathanaurugai12@gmail.com",
+                                    "userToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJzdE5hbWUiOiJKb25hdGhhbiIsImxhc3ROYW1lIjoiQXVydWdhaSIsImlhdCI6MTU2ODAzMzA5OX0.nqcXQO7Jp7vCR74ACogUBHlGyLPS3fGfuwNtj-ftyaQ"
+                                }
+                            }
+                        }
+                    }
+                },
+                "404": {
+                    "description": "ERROR",
+                    "examples": {
+                        "application/json": {
+                            "status": 404,
+                            "message": "user already exists"
+                        }
+                    },
+                "409": {
+                    "description": "user already exists",
+                    "examples": {
+                        "application/json": {
+                            "status": 409,
+                            "message": "user already exists"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 }
