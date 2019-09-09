@@ -19,14 +19,46 @@ class UserService {
 
   /**
    * Get user by email if exists
-   * @param {string} email
-   * @return {object}
+   * @param {string} userEmail email to be checked against
+   * @return {object} Oject of user if found
    */
   static async findUserByEmail(userEmail) {
     try {
       const user = await Users.findOne({ where: { userEmail } });
 
       return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get user by id if exists
+   * @param {string} id id to be checked against
+   * @return {object} Oject of user if found
+   */
+  static async findUserById(id) {
+    try {
+      const user = await Users.findOne({ where: { id } });
+
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * change user password
+   * @param {string} id id to be checked against
+   * @param {Object} user what to be updated
+   * @return {object} Oject of user if found
+   */
+  static async updateUser(id, user) {
+    try {
+      return await Users.update(user, {
+        returning: true,
+        where: [{ id }]
+      });
     } catch (error) {
       throw error;
     }

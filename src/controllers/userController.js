@@ -3,7 +3,7 @@ import userService from '../services/userService';
 import Password from '../utils/generatePassword';
 import SessionManager from '../utils/sessionManager';
 import Response from '../utils/response';
-
+import Emails from '../utils/email';
 /** Class representing a password util. */
 class Users {
   /**
@@ -118,6 +118,76 @@ class Users {
       return Response.customResponse(res, 200, 'User signed In successfully', user);
     } catch (error) {
       return Response.errorResponse(res, 500, 'Something went wrong', error);
+    }
+  }
+
+  /**
+   * Sends reset password email
+   * @param {Object} req  request details.
+   * @param {Object} res  response details.
+   * @param {Object} next middleware details
+   * @returns {Object}.
+   */
+  async requestPasswordReset(req, res, next) {
+    const { email } = req.body;
+    try {
+      const userAccount = await userService.findUserByEmail(email);
+      if (!userAccount) {
+        return Response.customResponse(res, 404, `We cant find an account linked to ${email}`);
+      }
+      const oneTimeToken = SessionManager.generateToken({
+        id: userAccount.id,
+        secret: `${userAccount.userPassword}-${userAccount.createdAt}`
+      });
+      const url = Emails.emailUrl({
+        endpoint: 'resetPassword',
+        userId: userAccount.id,
+        token: oneTimeToken
+      });
+      const message = Emails.resetPasswordTemplate(url, {
+        email: userAccount.userEmail,
+        name: userAccount.firstName
+      });
+      const result = await Emails.sendmail(message);
+      return Response.customResponse(res, 200, 'Check your email for reset password Link', url);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * resets new password
+   * @param {Object} req  request details.
+   * @param {Object} res  response details.
+   * @param {Object} next middleware details
+   * @returns {Object}.
+   */
+  async resetPassword(req, res, next) {
+    const { password, newPassword } = req.body;
+    const { userId, token } = req.params;
+    const id = parseInt(userId, 10);
+    try {
+      const userAccount = await userService.findUserById(id);
+      if (!userAccount) {
+        return Response.customResponse(res, 403, 'Forbidden Request');
+      }
+      const userDetails = SessionManager.decodeToken({
+        token,
+        secret: `${userAccount.userPassword}-${userAccount.createdAt}`
+      });
+      if (password !== newPassword) {
+        return Response.customResponse(res, 400, 'Password dont match re-type password');
+      }
+      const pass = new Password({ userPassword: password });
+      const userPassword = await pass.encryptPassword();
+      const updatedUser = await userService.updateUser(userDetails.id, { userPassword });
+      return Response.customResponse(
+        res,
+        200,
+        'Password has been sucessfully changed. Proceed to login'
+      );
+    } catch (error) {
+      next(error);
     }
   }
 }

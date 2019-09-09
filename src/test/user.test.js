@@ -8,6 +8,7 @@ import server from '../index';
 const { expect } = chai;
 
 const signupUrl = '/api/v1/auth/signup';
+const requestReset = '/api/v1/auth/requestPasswordReset';
 
 const signinUrl = '/api/v1/auth/signin';
 
@@ -38,6 +39,8 @@ const regDataWithWrongEmail = {
   userPassword: 'Root',
   userRoles: 'Travel Team Member'
 };
+const existUser = { email: regData.userEmail };
+const notUser = { email: 'joneuuuuuathanaurugai@gmail.com' };
 
 describe('Users', () => {
   describe('create an account', () => {
@@ -244,5 +247,38 @@ describe('Users', () => {
           done();
         });
     });
+  });
+});
+
+describe('Reset Password via Email', () => {
+  it('Sends reset password email', (done) => {
+    chai
+      .request(server)
+      .post(requestReset)
+      .send(existUser)
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+        expect(res.body.message).to.eq('Check your email for reset password Link');
+        expect(res.status).to.eq(200);
+        done();
+      });
+  });
+  it('Sends reset password email', (done) => {
+    chai
+      .request(server)
+      .post(requestReset)
+      .send(notUser)
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+        expect(res.body.message).to.eq(
+          'We cant find an account linked to joneuuuuuathanaurugai@gmail.com'
+        );
+        expect(res.status).to.eq(404);
+        done();
+      });
   });
 });

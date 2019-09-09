@@ -24,6 +24,9 @@
     },
     "TOKEN": {
       "required": true
+    },
+    "API_KEY": {
+      "required": true
     }
   },
   "formation": {

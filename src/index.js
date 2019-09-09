@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
 import '@babel/polyfill';
+import dotenv from 'dotenv';
 
 const fs = require('fs'),
   http = require('http'),
@@ -12,6 +13,7 @@ const fs = require('fs'),
   passport = require('passport'),
   errorhandler = require('errorhandler');
 
+dotenv.config();
 const isProduction = process.env.NODE_ENV === 'production';
 
 // Create global app object

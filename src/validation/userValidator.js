@@ -5,7 +5,9 @@
 import Joi from '@hapi/joi';
 import Response from '../utils/response';
 
-/** Class representing a validation util. */
+/**
+ * @class userValidator
+ */
 export default class userValidator {
   static async validateSignup(req, res, next) {
     const schema = Joi.object().keys({
@@ -57,6 +59,38 @@ export default class userValidator {
 
     await schema.validate(req.body, (err) => {
       if (err) return Response.errorResponse(res, 422, 'Validation failed', err.details);
+    });
+  }
+
+  /**
+   * resets new password
+   * @param {Object} req  request details.
+   * @param {Object} res  response details.
+   * @param {Object} next middleware details
+   * @returns {Object}.
+   */
+  static async resetPassword(req, res, next) {
+    const schema = Joi.object().keys({
+      password: Joi.string()
+        .regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/)
+        .trim()
+        .required()
+        .min(1)
+        .error(
+          () => 'userPassword field is required and must be a string atleast 1 number, 1uppercase'
+        ),
+      newPassword: Joi.string()
+        .regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/)
+        .trim()
+        .required()
+        .min(1)
+        .error(
+          () => 'userPassword field is required and must be a string atleast 1 number, 1uppercase'
+        )
+    });
+
+    await schema.validate(req.body, (err) => {
+      if (err) return Response.customResponse(res, 422, 'Validation failed', err.details);
       next();
     });
   }

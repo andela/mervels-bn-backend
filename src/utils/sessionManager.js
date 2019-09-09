@@ -18,7 +18,7 @@ redisClient
 /** Class representing a password util. */
 class SessionManager {
   /**
-   * Generates a new password.
+   * Generates a jwt token
    * @param {object} data User details.
    * @returns {string} token.
    */
@@ -30,7 +30,7 @@ class SessionManager {
         firstName: data.firstName,
         lastName: data.lastName
       },
-      process.env.TOKEN
+      data.secret || process.env.TOKEN
     );
     return token;
   }
@@ -49,6 +49,20 @@ class SessionManager {
   static async verifyToken(userEmail) {
     const result = await getAsync(userEmail);
     return result;
+  }
+  
+  /**
+   * decodes a jwt token.
+   * @param {object} data User details.
+   * @returns {string} token.
+   */
+  static decodeToken(data) {
+    // eslint-disable-next-line no-useless-catch
+    try {
+      return jwt.verify(data.token, data.secret);
+    } catch (error) {
+      throw error;
+    }
   }
 }
 
