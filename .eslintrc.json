@@ -32,7 +32,6 @@
       }]
     },
     "parserOptions": {
-      "sourceType": "module",
       "allowImportExportEverywhere": true
     }
   }
