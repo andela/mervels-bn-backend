@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 export default {
   up: (queryInterface, Sequelize) => queryInterface.createTable('Users', {
     id: {
@@ -6,7 +7,19 @@ export default {
       primaryKey: true,
       type: Sequelize.INTEGER
     },
-    example: {
+    firstName: {
+      type: Sequelize.STRING
+    },
+    lastName: {
+      type: Sequelize.STRING
+    },
+    userEmail: {
+      type: Sequelize.STRING
+    },
+    userPassword: {
+      type: Sequelize.STRING
+    },
+    userRoles: {
       type: Sequelize.STRING
     },
     createdAt: {

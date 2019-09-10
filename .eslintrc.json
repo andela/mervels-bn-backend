@@ -30,5 +30,10 @@
               "ClassDeclaration": true
           }
       }]
+    },
+    "parser": "babel-eslint",
+    "parserOptions": {
+      "sourceType": "module",
+      "allowImportExportEverywhere": true
     }
   }

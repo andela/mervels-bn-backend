@@ -1,7 +1,7 @@
 import express from 'express';
 
 const router = express.Router();
-// router.use('/', require('./users'));
+router.use('/auth/', require('./users'));
 
 router.use((err, req, res, next) => {
   if (err.name === 'ValidationError') {
