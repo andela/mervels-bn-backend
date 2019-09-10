@@ -49,21 +49,21 @@ class Users {
       const userExists = await userService.findUserByEmail(userEmail);
 
       if (!userExists) {
-        return Response.errorResponse(res, 401, 'Wrong email entered');
+        return Response.errorResponse(res, 401, 'Invalid email or password entered');
       }
       const user = userExists.dataValues;
 
       const match = await Password.checkPasswordMatch(userPassword, user.userPassword);
       if (!match) {
-        return Response.errorResponse(res, 401, 'Wrong password entered');
+        return Response.errorResponse(res, 401, 'Invalid emailor password entered');
       }
 
       user.userToken = await SessionManager.createSession(user);
       delete user.userPassword;
 
-      return Response.customResponse(res, 200, 'User signed In', user);
+      return Response.customResponse(res, 200, 'User signed In successfully', user);
     } catch (error) {
-      return Response.errorResponse(res, 500, 'Failed to Login', error);
+      return Response.errorResponse(res, 500, 'Something went wrong', error);
     }
   }
 }

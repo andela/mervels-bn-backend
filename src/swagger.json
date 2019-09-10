@@ -1,5 +1,5 @@
 {
-    "openapi": "3.0.0",
+    "swagger": "2.0",
     "info": {
         "version": "1.0.0",
         "description": "Make company global travel and accommodation easy and convenient for the strong workforce of savvy members of staff, by leveraging the modern web.\n",
@@ -9,89 +9,157 @@
             "email": "marveluniverse@marvel.com"
         }
     },
-    "tags": [{
-        "name": "users",
-        "description": "Operations available to users"
-    }],
+    "basePath": "/api/v1",
+    "tags": [
+      {
+        "name": "user",
+        "description": "User End Points"
+      }
+    ],
+    "schemes": [
+      "https",
+      "http"
+    ],
     "paths": {
-        "/auth/signup": {
-            "post": {
-                "tags": [
-                    "auth"
-                ],
-                "summary": "Create user",
-                "description": "Creates a new user account.",
-                "consumes": [
-                    "application/json",
-                    "application/x-www-form-urlencoded"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [{
-                    "name": "user",
-                    "in": "body",
-                    "description": "user to sign up",
-                    "schema": {
-                        "type": "object",
-                        "required": [
-                            "email",
-                            "firstName",
-                            "lastName",
-                            "userPassword"
-                        ],
-                        "properties": {
-                            "userEmail": {
-                                "type": "string"
-                            },
-                            "firstName": {
-                                "type": "string"
-                            },
-                            "lastName": {
-                                "type": "string"
-                            },
-                            "userPassword": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }],
-                "responses": {
-                    "201": {
-                        "description": "User successfully created",
-                        "examples": {
-                            "application/json": {
-                                "status": 201,
-                                "message": "Account has been created successfully",
-                                "data": {
-                                    "firstName": "Jonathan",
-                                    "lastName": "Aurugai",
-                                    "userEmail": "jonathanaurugai12@gmail.com",
-                                    "userToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJzdE5hbWUiOiJKb25hdGhhbiIsImxhc3ROYW1lIjoiQXVydWdhaSIsImlhdCI6MTU2ODAzMzA5OX0.nqcXQO7Jp7vCR74ACogUBHlGyLPS3fGfuwNtj-ftyaQ"
-                                }
-                            }
-                        }
-                    }
-                },
-                "404": {
-                    "description": "ERROR",
-                    "examples": {
-                        "application/json": {
-                            "status": 404,
-                            "message": "user already exists"
-                        }
-                    },
-                "409": {
-                    "description": "user already exists",
-                    "examples": {
-                        "application/json": {
-                            "status": 409,
-                            "message": "user already exists"
-                        }
-                    }
-                }
+      "/auth/signup": {
+        "post": {
+          "tags": [
+            "user"
+          ],
+          "summary": "Add a new user",
+          "description": "End point for creating a new user",
+          "operationId": "addUser",
+          "consumes": [
+            "application/json",
+            "application/xml"
+          ],
+          "produces": [
+            "application/xml",
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "User object that needs to be added to the store",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/User"
+              }
             }
+          ],
+          "responses": {
+            "422": {
+              "description": "Invalid input"
+            }
+          }
         }
+      },
+      "/auth/signin": {
+        "post": {
+          "tags": [
+            "user"
+          ],
+          "summary": "Add a new user",
+          "description": "End point for creating a new user",
+          "operationId": "registerUser",
+          "consumes": [
+            "application/json",
+            "application/xml"
+          ],
+          "produces": [
+            "application/xml",
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "User object that needs to be added to the store",
+              "schema": {
+                "$ref": "#/definitions/SignIn"
+              }
+            }
+          ],
+          "responses": {
+            "422": {
+              "description": "Invalid input"
+            }
+          }
+        }
+      }
+    },
+    "securityDefinitions": {
+      "api_key": {
+        "type": "apiKey",
+        "name": "authorization",
+        "in": "header"
+      }
+    },
+    "definitions": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "userEmail": {
+            "type": "string"
+          },
+          "userPassword": {
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "User"
+        }
+      },
+      "Status": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Status"
+          }
+        },
+        "xml": {
+          "name": "Status"
+        }
+      },
+      "SignIn": {
+        "type": "object",
+        "properties": {
+          "userEmail": {
+            "type": "string",
+            "description": "email",
+            "example": "name@example.com"
+          },
+          "userPassword": {
+            "type": "string",
+            "description": "password"
+          }
+        },
+        "xml": {
+          "name": "Price"
+        }
+      },
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
     }
-}
-}
+  }

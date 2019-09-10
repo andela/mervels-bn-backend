@@ -18,6 +18,7 @@ export default class userValidator {
     });
 
     await schema.validate(req.body, (err) => {
+      console.log(req.body);
       if (err) return Response.errorResponse(res, 422, 'Validation failed', err.details);
       next();
     });

@@ -99,4 +99,5 @@ typings/
 # Docker Volumes
 pgdata
 
+rddata
 # End of https://www.gitignore.io/api/node
