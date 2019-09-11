@@ -1,4 +1,19 @@
 import jwt from 'jsonwebtoken';
+import redis from 'redis';
+import { promisify } from 'util';
+
+const redisClient = redis.createClient(process.env.REDIS_SERVER);
+
+const getAsync = promisify(redisClient.get).bind(redisClient);
+const delAsync = promisify(redisClient.del).bind(redisClient);
+
+redisClient
+  .on('connect', () => {
+    console.log('redis connected');
+  })
+  .on('error', (error) => {
+    console.log(error);
+  });
 
 /** Class representing a password util. */
 class SessionManager {
@@ -19,5 +34,22 @@ class SessionManager {
     );
     return token;
   }
+
+  static async createSession(data) {
+    const result = await this.verifyToken(data.userEmail);
+
+    if (result !== null) {
+      return result;
+    }
+    const token = this.generateToken(data);
+    redisClient.set(data.userEmail, token);
+    return token;
+  }
+
+  static async verifyToken(userEmail) {
+    const result = await getAsync(userEmail);
+    return result;
+  }
 }
+
 export default SessionManager;

@@ -11,6 +11,7 @@ RUN npm install
 #Bundle Source Code 
 COPY . .
 
+COPY .env.example .env
 
 
 CMD [ "npm", "run",  "docker:start"]

@@ -15,5 +15,14 @@ class Response {
       data
     });
   }
+
+  static errorResponse(res, status, message = null, error = null) {
+    return res.status(status).json({
+      status,
+      message,
+      error
+    });
+  }
 }
+
 export default Response;

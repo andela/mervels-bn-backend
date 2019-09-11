@@ -18,15 +18,15 @@ class UserService {
   }
 
   /**
-   * Counts the users with the same email.
-   * @param {string} email The first number.
-   * @returns {object} The instance object.
+   * Get user by email if exists
+   * @param {string} email
+   * @return {object}
    */
-  static async findUserByEmail(email) {
+  static async findUserByEmail(userEmail) {
     try {
-      return await Users.findOne({
-        where: [{ userEmail: email }]
-      });
+      const user = await Users.findOne({ where: { userEmail } });
+
+      return user;
     } catch (error) {
       throw error;
     }

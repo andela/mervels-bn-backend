@@ -1,17 +1,23 @@
 version: "3.7"
 services:
   db:
-    image: postgres
+    image: "postgres:alpine"
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     ports:
       - '5432:5432'
+  redis:
+    image: redis
+
   web: 
     environment:
       DEV_DATABASE_URL: "postgres://postgres@db:5432/postgres"
+      REDIS_SERVER: "redis://redis:6379"
+      TOKEN: "ANDELA"
     build: .
     depends_on:
       - db
+      - redis
     ports: 
       [3000:3000]
     
