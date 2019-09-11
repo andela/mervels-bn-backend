@@ -14,7 +14,22 @@ const regData = {
   userEmail: 'jonathanaurugai@gmail.com',
   firstName: 'Jonathan',
   lastName: 'Aurugai',
-  userPassword: 'Root1234'
+  userPassword: 'Root1234@',
+  userRoles: 'Travel Team Member'
+};
+const regDataWithWrongPassword = {
+  userEmail: 'jonathanaurugai@gmail.com',
+  firstName: 'Jonathan',
+  lastName: 'Aurugai',
+  userPassword: 'Root',
+  userRoles: 'Travel Team Member'
+};
+const regDataWithWrongEmail = {
+  userEmail: 'jonathanaurugaigmail.com',
+  firstName: 'Jonathan',
+  lastName: 'Aurugai',
+  userPassword: 'Root',
+  userRoles: 'Travel Team Member'
 };
 
 describe('Users', () => {
@@ -30,13 +45,33 @@ describe('Users', () => {
           done();
         });
     });
+    it('with wrong password', (done) => {
+      chai
+        .request(server)
+        .post(signupUrl)
+        .send(regDataWithWrongPassword)
+        .end((_err, res) => {
+          expect(res.status).to.eq(422);
+          done();
+        });
+    });
+    it('with wrong Email', (done) => {
+      chai
+        .request(server)
+        .post(signupUrl)
+        .send(regDataWithWrongEmail)
+        .end((_err, res) => {
+          expect(res.status).to.eq(422);
+          done();
+        });
+    });
   });
 
   describe('User Login', () => {
     it('with correct credentials', (done) => {
       const user = {
         userEmail: 'jonathanaurugai@gmail.com',
-        userPassword: 'Root1234'
+        userPassword: 'Root1234@'
       };
       chai
         .request(server)
@@ -88,9 +123,26 @@ describe('Users', () => {
         });
     });
 
-    it('with incorrect fields', (done) => {
+    it('with incorrect email field', (done) => {
       const user = {
-        email: 'whjghj@stations.com',
+        Email: 'whjghj@stations.com',
+        userPassword: '123123'
+      };
+      chai
+        .request(server)
+        .post(signinUrl)
+        .send(user)
+        .end((err, res) => {
+          if (err) {
+            return done(err);
+          }
+          expect(res).to.have.status(422);
+          done();
+        });
+    });
+    it('with incorrect password field', (done) => {
+      const user = {
+        userEmail: 'whjghj@stations.com',
         password: '123123'
       };
       chai

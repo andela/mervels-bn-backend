@@ -16,6 +16,14 @@ class Response {
     });
   }
 
+  /**
+   * Generates a new password.
+   * @param {object} res  details.
+   * @param {string} status  details.
+   * @param {string} message  details.
+   * @param {object} error  details.
+   * @returns {object}.
+   */
   static errorResponse(res, status, message = null, error = null) {
     return res.status(status).json({
       status,
