@@ -4,6 +4,7 @@ import passport from 'passport';
 import Users from '../../controllers/userController';
 import '../../config/passport';
 import userValidator from '../../validation/userValidator';
+import verify from '../../middlewares/auth';
 
 const router = express.Router();
 
@@ -14,6 +15,7 @@ router.post('/signup', userValidator.validateSignup, Users.createUser);
 router.post('/signin', userValidator.validateSignIn, Users.logIn);
 router.post('/createLink', userValidator.validateSendLink, Users.sendLink);
 router.patch('/verify/', userValidator.validateVerifyLink, Users.verify);
+router.post('/signout', verify, Users.logout);
 
 router.get(
   '/google',
