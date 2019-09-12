@@ -5,7 +5,9 @@
 import Joi from '@hapi/joi';
 import Response from '../utils/response';
 
-/** Class representing a validation util. */
+/**
+ * @class user
+ */
 export default class userValidator {
   static async validateSignup(req, res, next) {
     const schema = Joi.object().keys({
@@ -40,6 +42,13 @@ export default class userValidator {
     });
   }
 
+  /**
+   * resets new password
+   * @param {Object} req  request details.
+   * @param {Object} res  response details.
+   * @param {Object} next middleware details
+   * @returns {Object}.
+   */
   static async validateSignIn(req, res, next) {
     const schema = Joi.object().keys({
       userEmail: Joi.string()
@@ -55,8 +64,49 @@ export default class userValidator {
         .error(() => 'userPassword field is required and must be a string and not empty')
     });
 
-    await schema.validate(req.body, (err) => {
-      if (err) return Response.errorResponse(res, 422, 'Validation failed', err.details);
+    schema.validate(req.body, (err) => {
+      if (err) {
+        next(err);
+      }
+      next();
+    });
+  }
+
+  /**
+   * resets new password
+   * @param {Object} req  request details.
+   * @param {Object} res  response details.
+   * @param {Object} next middleware details
+   * @returns {Object}.
+   */
+  static async resetPassword(req, res, next) {
+    const schema = Joi.object().keys({
+      password: Joi.string()
+        .regex(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!_`,/@#\-"=:;~<>'\$%\^&\*\?\|\+\(\)\[\]\{}\.])(?=.{8,})/
+        )
+        .trim()
+        .required()
+        .min(1)
+        .error(
+          () => 'Enter a Password string with atleast 1 number, 1 uppercase, 1 lowercase and 1 special Charcter'
+        ),
+      newPassword: Joi.string()
+        .regex(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!_`,/@#\-"=:;~<>'\$%\^&\*\?\|\+\(\)\[\]\{}\.])(?=.{8,})/
+        )
+        .trim()
+        .required()
+        .min(1)
+        .error(
+          () => 'Enter a Password string with atleast 1 number, 1 uppercase, 1 lowercase and 1 special Charcter'
+        )
+    });
+
+    schema.validate(req.body, (err) => {
+      if (err) {
+        next(err);
+      }
       next();
     });
   }

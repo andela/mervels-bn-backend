@@ -12,13 +12,13 @@ redisClient
     console.log('redis connected');
   })
   .on('error', (error) => {
-    console.log(error);
+    // console.log(error);
   });
 
 /** Class representing a password util. */
 class SessionManager {
   /**
-   * Generates a new password.
+   * Generates a jwt token
    * @param {object} data User details.
    * @returns {string} token.
    */
@@ -30,11 +30,17 @@ class SessionManager {
         firstName: data.firstName,
         lastName: data.lastName
       },
-      process.env.TOKEN
+      data.secret || process.env.TOKEN,
+      { expiresIn: '1hr' }
     );
     return token;
   }
 
+  /**
+   * Creates a reddis session.
+   * @param {object} data User details.
+   * @returns {string} token.
+   */
   static async createSession(data) {
     const result = await this.verifyToken(data.userEmail);
 
@@ -46,9 +52,28 @@ class SessionManager {
     return token;
   }
 
+  /**
+   * Checks if token is in use
+   * @param {object} userEmail User details.
+   * @returns {string} result.
+   */
   static async verifyToken(userEmail) {
     const result = await getAsync(userEmail);
     return result;
+  }
+
+  /**
+   * decodes a jwt token.
+   * @param {object} data User details.
+   * @returns {string} token.
+   */
+  static decodeToken(data) {
+    // eslint-disable-next-line no-useless-catch
+    try {
+      return jwt.verify(data.token, data.secret);
+    } catch (error) {
+      throw error;
+    }
   }
 }
 

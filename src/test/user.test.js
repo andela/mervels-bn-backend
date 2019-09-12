@@ -8,6 +8,7 @@ import server from '../index';
 const { expect } = chai;
 
 const signupUrl = '/api/v1/auth/signup';
+const requestReset = '/api/v1/auth/forgotPassword';
 
 const signinUrl = '/api/v1/auth/signin';
 
@@ -38,6 +39,8 @@ const regDataWithWrongEmail = {
   userPassword: 'Root',
   userRoles: 'Travel Team Member'
 };
+const existUser = { email: regData.userEmail };
+const notUser = { email: 'joneuuuuuathanaurugai@gmail.com' };
 
 describe('Users', () => {
   describe('create an account', () => {
@@ -164,6 +167,24 @@ describe('Users', () => {
           done();
         });
     });
+
+    it('with empty fields', (done) => {
+      const user = {
+        email: 'whjghj@stations.com',
+        password: ' '
+      };
+      chai
+        .request(server)
+        .post(signinUrl)
+        .send(user)
+        .end((err, res) => {
+          if (err) {
+            return done(err);
+          }
+          expect(res).to.have.status(422);
+          done();
+        });
+    });
   });
   describe('login through facebook', () => {
     it('redirects to facebook', (done) => {
@@ -244,5 +265,36 @@ describe('Users', () => {
           done();
         });
     });
+  });
+});
+
+describe('Reset Password via Email', () => {
+  it('Sends reset password email', (done) => {
+    chai
+      .request(server)
+      .post(requestReset)
+      .send(existUser)
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+        expect(res.body.message).to.eq('If email is found, check your email for the link');
+        expect(res.status).to.eq(200);
+        done();
+      });
+  });
+  it('Sends reset password email', (done) => {
+    chai
+      .request(server)
+      .post(requestReset)
+      .send(notUser)
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+        expect(res.body.message).to.eq('If email is found, check your email for the link');
+        expect(res.status).to.eq(200);
+        done();
+      });
   });
 });

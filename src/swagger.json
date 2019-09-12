@@ -87,6 +87,94 @@
             }
           }
         }
+      },
+      "/auth/forgotPassword": {
+        "post": {
+          "tags": [
+            "user"
+          ],
+          "summary": "Request for password reset via email",
+          "description": "User can request for a password reset",
+          "consumes": [
+            "application/x-www-form-urlencoded"
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "email",
+              "in": "formData",
+              "description": "Email for account to reset password 'test@example.com'",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "404": {
+              "description": "Account not Found"
+            },
+            "200": {
+              "description": "Email succesfully sent"
+            }
+          }
+        }
+      },
+      "/auth/resetPassword/{userId}/{token}": {
+        "put": {
+          "tags": [
+            "user"
+          ],
+          "summary": "Reset to new password",
+          "description": "User can reset their password",
+          "consumes": [
+            "application/x-www-form-urlencoded"
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "userId",
+              "in": "path",
+              "description": "Users Id attached to reset password link",
+              "required": true,
+              "type": "integer"
+            },
+            {
+              "name": "token",
+              "in": "path",
+              "description": "Token attached to reset password link",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "password",
+              "in": "formData",
+              "description": "Enter Users new password with atleast 1 number, 1uppercase, 1lowercase",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "newPassword",
+              "in": "formData",
+              "description": "Re-type Users new password",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "404": {
+              "description": "Password dont match"
+            },
+            "403": {
+              "description": "Forbidden Request"
+            },
+            "200": {
+              "description": "Password succesfully updated"
+            }
+          }
+        }
       }
     },
     "securityDefinitions": {
@@ -97,6 +185,27 @@
       }
     },
     "definitions": {
+      "Request": {
+        "required": [ "email"],
+        "type": "object",
+        "properties":{
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "Reset": {
+        "required": [ "password", "newPassword"],
+        "type": "object",
+        "properties":{
+          "password": {
+            "type": "string"
+          },
+          "newPassword": {
+            "type": "string"
+          }
+        }
+      },
       "User": {
         "type": "object",
         "properties": {
