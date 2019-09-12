@@ -26,7 +26,7 @@ class SessionManager {
     const token = jwt.sign(
       {
         id: data.id,
-        email: data.email,
+        userEmail: data.userEmail,
         firstName: data.firstName,
         lastName: data.lastName,
         accountVerified: data.accountVerified
@@ -71,10 +71,15 @@ class SessionManager {
   static decodeToken(data) {
     // eslint-disable-next-line no-useless-catch
     try {
-      return jwt.verify(data.token, data.secret);
+      return jwt.verify(data.token, data.secret || process.env.TOKEN);
     } catch (error) {
       throw error;
     }
+  }
+
+  static async destroyToken(user) {
+    const result = await delAsync(user.userEmail);
+    return result;
   }
 
   /**

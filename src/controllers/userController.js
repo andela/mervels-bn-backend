@@ -30,7 +30,7 @@ class Users {
       const data = await userService.createUser(rawData);
       const token = await SessionManager.generateToken({
         id: rawData.id,
-        email: rawData.userEmail,
+        userEmail: rawData.userEmail,
         firstName: rawData.firstName,
         lastName: rawData.lastName,
         userRoles: rawData.userRoles,
@@ -136,13 +136,13 @@ class Users {
   async verify(req, res) {
     const { token } = req.query;
     try {
-      const { email } = SessionManager.verify(token);
-      const user = await userService.findUserByEmail(email);
+      const { userEmail } = SessionManager.verify(token);
+      const user = await userService.findUserByEmail(userEmail);
       if (user.accountVerified) {
         return Response.errorResponse(res, 409, 'Email already verified', 'conflicts');
       }
-      const result = userService.verifyEmail(email);
-      return Response.customResponse(res, 201, 'Email verified succesfully', { userEmail: email });
+      const result = userService.verifyEmail(userEmail);
+      return Response.customResponse(res, 201, 'Email verified succesfully', { userEmail });
     } catch (error) {
       return Response.errorResponse(res, 401, 'The link is invalid or has expired', 'bad request');
     }
@@ -257,6 +257,12 @@ class Users {
     } catch (error) {
       next(error);
     }
+  }
+
+  async logout(req, res) {
+    const deleted = await SessionManager.destroyToken(req.user);
+
+    return Response.customResponse(res, 200, 'User logged out successfully');
   }
 }
 export default new Users();
