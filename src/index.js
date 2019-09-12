@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable no-unused-vars */
 import '@babel/polyfill';
 
 const fs = require('fs'),
@@ -15,6 +17,8 @@ const isProduction = process.env.NODE_ENV === 'production';
 // Create global app object
 const app = express();
 
+app.enable('trust proxy');
+
 app.use(cors());
 
 // Normal express config defaults
@@ -30,6 +34,14 @@ app.use(express.static(`${__dirname}/public`));
 if (!isProduction) {
   app.use(errorhandler());
 }
+
+app.use((req, res, next) => {
+  if (req.header('x-forwarded-proto') !== 'https' && isProduction) {
+    const newUrl = `https://${req.get('host') + req.originalUrl}`;
+    res.redirect(newUrl);
+  }
+  next();
+});
 
 app.use(require('./routes'));
 

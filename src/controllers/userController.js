@@ -53,6 +53,50 @@ class Users {
     }
   }
 
+  /**
+   * Generates a new password.
+   * @param {object} req  details.
+   * @param {object} res  details.
+   * @returns {object}.
+   */
+  async socialLogin(req, res) {
+    const userEmail = req.user.email;
+    const { firstName, lastName } = req.user;
+    const userRoles = 'Requester';
+    let data;
+    data = await userService.findUserByEmail(userEmail);
+    if (!data) {
+      data = await userService.createUser({
+        userEmail,
+        firstName,
+        lastName,
+        userRoles
+      });
+    }
+    const token = await SessionManager.generateToken({
+      id: data.id,
+      email: data.userEmail,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      userRoles: data.userRoles
+    });
+    data.token = token;
+    const dataResponse = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      userEmail: data.userEmail,
+      userRoles: data.userRoles,
+      userToken: data.token
+    };
+    return Response.customResponse(res, 200, 'Successfully logged in!', dataResponse);
+  }
+
+  /**
+   * Generates a new password.
+   * @param {object} req  details.
+   * @param {object} res  details.
+   * @returns {object}.
+   */
   async logIn(req, res) {
     try {
       const { userEmail, userPassword } = req.body;

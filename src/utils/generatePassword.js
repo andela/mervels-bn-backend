@@ -21,6 +21,12 @@ class Password {
     return newPassword;
   }
 
+  /**
+   * Encrypts the  password.
+   * @param {string} password  details.
+   * @param {string} hashedPassword  details.
+   * @returns {function} newPassword.
+   */
   static async checkPasswordMatch(password, hashedPassword) {
     return compareSync(password, hashedPassword);
   }
