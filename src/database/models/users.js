@@ -1,15 +1,42 @@
 export default (sequelize, DataTypes) => {
-  const Users = sequelize.define(
-    'Users',
-    {
-      firstName: DataTypes.STRING,
-      lastName: DataTypes.STRING,
-      userEmail: DataTypes.STRING,
-      userPassword: DataTypes.STRING,
-      userRoles: DataTypes.STRING
+  const Users = sequelize.define('Users', {
+    firstName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        is: ['^[a-z]+$', 'i']
+      }
     },
-    {}
-  );
+    lastName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        is: ['^[a-z]+$', 'i']
+      }
+    },
+    userEmail: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        isEmail: true
+      }
+    },
+    userPassword: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    userRoles: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        isIn: {
+          args: [['Travel Team Member', 'Travel Administrator', 'Manager', 'Requester']],
+          msg:
+            'User Roles must either be Travel Team Member, Travel Administrator, Manager or Requester'
+        }
+      }
+    }
+  });
   Users.associate = function (models) {
     // associations can be defined here
   };
