@@ -27,6 +27,12 @@
     },
     "API_KEY": {
       "required": true
+    },
+    "FROM_EMAIL": {
+      "required": true
+    },
+    "baseUrl": {
+      "required": true
     }
   },
   "formation": {

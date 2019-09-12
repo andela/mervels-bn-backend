@@ -1,7 +1,7 @@
 /** Class representing response util. */
 class Response {
   /**
-   * Generates a new password.
+   * Retuns a structured response
    * @param {object} res  details.
    * @param {string} status  details.
    * @param {string} message  details.

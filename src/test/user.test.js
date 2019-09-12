@@ -8,7 +8,7 @@ import server from '../index';
 const { expect } = chai;
 
 const signupUrl = '/api/v1/auth/signup';
-const requestReset = '/api/v1/auth/requestPasswordReset';
+const requestReset = '/api/v1/auth/forgotPassword';
 
 const signinUrl = '/api/v1/auth/signin';
 
@@ -167,6 +167,24 @@ describe('Users', () => {
           done();
         });
     });
+
+    it('with empty fields', (done) => {
+      const user = {
+        email: 'whjghj@stations.com',
+        password: ' '
+      };
+      chai
+        .request(server)
+        .post(signinUrl)
+        .send(user)
+        .end((err, res) => {
+          if (err) {
+            return done(err);
+          }
+          expect(res).to.have.status(422);
+          done();
+        });
+    });
   });
   describe('login through facebook', () => {
     it('redirects to facebook', (done) => {
@@ -260,7 +278,7 @@ describe('Reset Password via Email', () => {
         if (err) {
           return done(err);
         }
-        expect(res.body.message).to.eq('Check your email for reset password Link');
+        expect(res.body.message).to.eq('If email is found, check your email for the link');
         expect(res.status).to.eq(200);
         done();
       });
@@ -274,10 +292,8 @@ describe('Reset Password via Email', () => {
         if (err) {
           return done(err);
         }
-        expect(res.body.message).to.eq(
-          'We cant find an account linked to joneuuuuuathanaurugai@gmail.com'
-        );
-        expect(res.status).to.eq(404);
+        expect(res.body.message).to.eq('If email is found, check your email for the link');
+        expect(res.status).to.eq(200);
         done();
       });
   });

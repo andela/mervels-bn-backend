@@ -14,7 +14,7 @@ class Emails {
    * @returns {String} reset password email template
    */
   static resetPasswordTemplate(url, user) {
-    const from = 'marveldev53@gmail.com';
+    const from = process.env.FROM_EMAIL;
     const to = user.email;
     const subject = ' BareFoot Password Reset ';
     const html = `

@@ -35,5 +35,7 @@ router.get(
 router.get('/facebook/redirect', passport.authenticate('facebook'), Users.socialLogin);
 router.post('/requestPasswordReset', Users.requestPasswordReset);
 router.patch('/resetPassword/:userId/:token', userValidator.resetPassword, Users.resetPassword);
+router.post('/forgotPassword', Users.requestPasswordReset);
+router.put('/resetPassword/:userId/:token', userValidator.resetPassword, Users.resetPassword);
 
 module.exports = router;

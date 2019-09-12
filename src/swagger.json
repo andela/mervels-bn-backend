@@ -88,7 +88,7 @@
           }
         }
       },
-      "/auth/requestPasswordReset": {
+      "/auth/forgotPassword": {
         "post": {
           "tags": [
             "user"
@@ -121,7 +121,7 @@
         }
       },
       "/auth/resetPassword/{userId}/{token}": {
-        "post": {
+        "put": {
           "tags": [
             "user"
           ],

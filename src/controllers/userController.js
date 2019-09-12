@@ -133,7 +133,11 @@ class Users {
     try {
       const userAccount = await userService.findUserByEmail(email);
       if (!userAccount) {
-        return Response.customResponse(res, 404, `We cant find an account linked to ${email}`);
+        return Response.customResponse(
+          res,
+          200,
+          'If email is found, check your email for the link'
+        );
       }
       const oneTimeToken = SessionManager.generateToken({
         id: userAccount.id,
@@ -149,7 +153,12 @@ class Users {
         name: userAccount.firstName
       });
       const result = await Emails.sendmail(message);
-      return Response.customResponse(res, 200, 'Check your email for reset password Link', url);
+      return Response.customResponse(
+        res,
+        200,
+        'If email is found, check your email for the link',
+        url
+      );
     } catch (error) {
       next(error);
     }
@@ -176,7 +185,7 @@ class Users {
         secret: `${userAccount.userPassword}-${userAccount.createdAt}`
       });
       if (password !== newPassword) {
-        return Response.customResponse(res, 400, 'Password dont match re-type password');
+        return Response.customResponse(res, 400, 'Passwords do not match re-type password');
       }
       const pass = new Password({ userPassword: password });
       const userPassword = await pass.encryptPassword();

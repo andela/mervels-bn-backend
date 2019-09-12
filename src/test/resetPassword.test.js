@@ -5,35 +5,37 @@ import server from '../index';
 
 const { expect } = chai;
 
-const requestReset = '/api/v1/auth/requestPasswordReset';
+const requestReset = '/api/v1/auth/forgotPassword';
 let Url;
+const signupUrl = '/api/v1/auth/signup';
 const resetUrlWrong = '/api/v1/auth/resetPassword/1/eyJhbGciOiJIUzI1';
 
 const regData = {
-  userEmail: 'jonasssthanaurugai@gmail.com',
+  userEmail: 'hanaurugai@gmail.com',
   firstName: 'Jonathan',
   lastName: 'Aurugai',
-  userPassword: 'Root1234'
+  userPassword: 'Root1234@',
+  userRoles: 'Travel Team Member'
 };
 
 chai.use(chaiHttp);
 
 const correctPassword = {
-  password: '11AAwwwwww',
-  newPassword: '11AAwwwwww'
+  password: '11AAwwwwww@',
+  newPassword: '11AAwwwwww@'
 };
 const wrongPassword = {
   password: 'wwwwwwwwww',
   newPassword: 'wwwwwwwwww'
 };
 const nonMatchPassword = {
-  password: '11AAwwwwww',
-  newPassword: 'wwwwQQ111wwwwww'
+  password: '11AAwwwwww@#',
+  newPassword: 'wwwwQQ111wwwwww@#'
 };
 const emptyPassword = {
-  password: '11AAwwwwww'
+  password: '11AAwwwwww@#'
 };
-const existUser = { email: 'jonasssthanaurugai@gmail.com' };
+const existUser = { email: 'hanaurugai@gmail.com' };
 let resetUrl;
 let token;
 
@@ -41,9 +43,11 @@ describe('Reset new Password', () => {
   before((done) => {
     chai
       .request(server)
-      .post('/api/v1/auth/signup')
+      .post(signupUrl)
       .send(regData)
       .end((_err, res) => {
+        expect(res.body.message).to.eq('Account has been created successfully');
+        expect(res.status).to.eq(201);
         done();
       });
   });
@@ -66,7 +70,7 @@ describe('Reset new Password', () => {
   it('Changes new password', (done) => {
     chai
       .request(server)
-      .patch(resetUrl)
+      .put(resetUrl)
       .send(correctPassword)
       .end((err, res) => {
         if (err) {
@@ -80,7 +84,7 @@ describe('Reset new Password', () => {
   it('Doesnot Change new password if password format is wrong', (done) => {
     chai
       .request(server)
-      .patch(resetUrl)
+      .put(resetUrl)
       .send(wrongPassword)
       .end((err, res) => {
         if (err) {
@@ -93,7 +97,7 @@ describe('Reset new Password', () => {
   it('Doesnot Change to new password if password doenot match', (done) => {
     chai
       .request(server)
-      .patch(resetUrl)
+      .put(resetUrl)
       .send(nonMatchPassword)
       .end((err, res) => {
         if (err) {
@@ -106,7 +110,7 @@ describe('Reset new Password', () => {
   it('Doesnot Change to new password if one password entry is empty', (done) => {
     chai
       .request(server)
-      .patch(resetUrl)
+      .put(resetUrl)
       .send(emptyPassword)
       .end((err, res) => {
         if (err) {
@@ -119,7 +123,7 @@ describe('Reset new Password', () => {
   it('Doesnot Change Password if userId is corrupted with an non userID', (done) => {
     chai
       .request(server)
-      .patch(`/api/v1/auth/resetPassword/8/${token}`)
+      .put(`/api/v1/auth/resetPassword/8/${token}`)
       .send(nonMatchPassword)
       .end((err, res) => {
         if (err) {
@@ -132,7 +136,7 @@ describe('Reset new Password', () => {
   it('Doesnot Change Password if userId is corrupted with an non userID', (done) => {
     chai
       .request(server)
-      .patch(`/api/v1/auth/resetPassword/8/${token}`)
+      .put(`/api/v1/auth/resetPassword/8/${token}`)
       .send(nonMatchPassword)
       .end((err, res) => {
         if (err) {
@@ -145,7 +149,7 @@ describe('Reset new Password', () => {
   it('Doesnot Change Password if token is corrupted', (done) => {
     chai
       .request(server)
-      .patch(resetUrlWrong)
+      .put(resetUrlWrong)
       .send(nonMatchPassword)
       .end((err, res) => {
         if (err) {
