@@ -110,4 +110,42 @@ export default class userValidator {
       next();
     });
   }
+
+  /**
+   * @param {object} req  request.
+   * @param {object} res  response.
+   * @param {function} next next.
+   * @returns {object}.
+   */
+  static async validateSendLink(req, res, next) {
+    const schema = Joi.object().keys({
+      userEmail: Joi.string()
+        .email()
+        .trim()
+        .required()
+        .error(() => 'userEmail field is required and must be an email')
+    });
+    schema.validate(req.body, (error) => {
+      if (error) return Response.errorResponse(res, 400, 'validations failed', error.details);
+      next();
+    });
+  }
+
+  /**
+   * @param {object} req  request.
+   * @param {object} res  response.
+   * @param {function} next next.
+   * @returns {object}.
+   */
+  static async validateVerifyLink(req, res, next) {
+    const schema = Joi.object().keys({
+      token: Joi.string()
+        .required()
+        .error(() => 'token  is required and must be a string')
+    });
+    schema.validate(req.query, (error) => {
+      if (error) return Response.errorResponse(res, 400, 'validations failed', error.details);
+      next();
+    });
+  }
 }

@@ -11,6 +11,8 @@ const signupUrl = '/api/v1/auth/signup';
 const requestReset = '/api/v1/auth/forgotPassword';
 
 const signinUrl = '/api/v1/auth/signin';
+const sendLinkUrl = '/api/v1/auth/createLink';
+let token1;
 
 const loginWithGoogle = '/api/v1/auth/google';
 const loginWithFacebook = '/api/v1/auth/facebook';
@@ -44,14 +46,132 @@ const notUser = { email: 'joneuuuuuathanaurugai@gmail.com' };
 
 describe('Users', () => {
   describe('create an account', () => {
-    it('with vaild properties', (done) => {
+    it('with valid properties and send an email with verification link', (done) => {
       chai
         .request(server)
         .post(signupUrl)
         .send(regData)
         .end((_err, res) => {
+          token1 = res.body.data.userToken;
           expect(res.body.message).to.eq('Account has been created successfully');
           expect(res.status).to.eq(201);
+          expect(res.body.data.verification.message).to.eq('Verification link sent');
+          done();
+        });
+    });
+    it('should not login if the email is not verified', (done) => {
+      const user = {
+        userEmail: 'jonathanaurugai@gmail.com',
+        userPassword: 'Root1234'
+      };
+      chai
+        .request(server)
+        .post(signinUrl)
+        .send(user)
+        .end((_err, res) => {
+          expect(res.status).to.eq(401);
+          expect(res.body.error).to.eq('Email not verified');
+          done();
+        });
+    });
+    it('should send a verification link to a registered email', (done) => {
+      chai
+        .request(server)
+        .post(sendLinkUrl)
+        .send({ userEmail: regData.userEmail })
+        .end((_err, res) => {
+          expect(res.body.message).to.eq('email sent with verification link');
+          expect(res.status).to.eq(200);
+          expect(res.body.data.link).to.be.a('string');
+          done();
+        });
+    });
+    it('should not send a verification link to a unregistered email', (done) => {
+      chai
+        .request(server)
+        .post(sendLinkUrl)
+        .send({ userEmail: 'unkown@barefoot.to' })
+        .end((_err, res) => {
+          expect(res.body.message).to.eq('this email is not registered');
+          expect(res.status).to.eq(404);
+          done();
+        });
+    });
+    it('should not send a verification if no email is provided', (done) => {
+      chai
+        .request(server)
+        .post(sendLinkUrl)
+        .send({})
+        .end((_err, res) => {
+          expect(res.status).to.eq(400);
+          done();
+        });
+    });
+    it('should not send a verification there is invalid email', (done) => {
+      chai
+        .request(server)
+        .post(sendLinkUrl)
+        .send({ userEmail: 'bahat.ghassd.com' })
+        .end((_err, res) => {
+          expect(res.status).to.eq(400);
+          done();
+        });
+    });
+    it('should not send a verification the email is empty', (done) => {
+      chai
+        .request(server)
+        .post(sendLinkUrl)
+        .send({ userEmail: ' ' })
+        .end((_err, res) => {
+          expect(res.status).to.eq(400);
+          done();
+        });
+    });
+    it('should verify an email via verification link', (done) => {
+      chai
+        .request(server)
+        .patch(`/api/v1/auth/verify/?token=${token1}`)
+        .end((_err, res) => {
+          expect(res.status).to.eq(201);
+          done();
+        });
+    });
+    it('should give an error if an email is already verified', (done) => {
+      chai
+        .request(server)
+        .patch(`/api/v1/auth/verify/?token=${token1}`)
+        .end((_err, res) => {
+          expect(res.status).to.eq(409);
+          done();
+        });
+    });
+    it('should give error when the token is not provided', (done) => {
+      chai
+        .request(server)
+        .patch('/api/v1/auth/verify/?token=')
+        .end((_err, res) => {
+          expect(res.status).to.eq(400);
+          done();
+        });
+    });
+
+    it('should give error when the token is invalid or expired', (done) => {
+      chai
+        .request(server)
+        .patch('/api/v1/auth/verify/?token=invalidorexpiredtoken')
+        .end((_err, res) => {
+          expect(res.status).to.eq(401);
+          done();
+        });
+    });
+
+    it('should give error when the secret key is invalid', (done) => {
+      process.env.TOKEN = 'ASGDKASJHD';
+      chai
+        .request(server)
+        .patch(`/api/v1/auth/verify/?token=${token1}`)
+        .end((_err, res) => {
+          expect(res.status).to.eq(401);
           done();
         });
     });

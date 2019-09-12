@@ -63,6 +63,16 @@ class UserService {
       throw error;
     }
   }
+
+  /**
+   * gets the user with the provided email.
+   * @param {string} email The first number.
+   * @returns {object} The  object.
+   */
+  static async verifyEmail(email) {
+    const result = await Users.update({ accountVerified: true }, { where: [{ userEmail: email }] });
+    return result;
+  }
 }
 
 export default UserService;

@@ -175,7 +175,98 @@
             }
           }
         }
-      }
+      },
+      "/auth/createLink": {
+        "post": {
+            "tags": [
+                "auth"
+            ],
+            "summary": "Verification link",
+            "description": "Sends a verification link to email",
+            "consumes": [
+                "application/json",
+                "application/x-www-form-urlencoded"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "parameters": [{
+                "name": "email",
+                "in": "body",
+                "description": "Email to receive the link",
+                "schema": {
+                  "$ref": "#/definitions/CreateLink"
+                }
+            }],
+            "responses": {
+                "200": {
+                    "description": "Email sent with a verification link",
+                    "examples": {
+                        "application/json": {
+                            "status": 200,
+                            "message": "email sent with verification link",
+                            "data": {
+                                "userEmail": "bahati.robben@andela1.com",
+                                "link": "http://localhost:3000/api/v1/auth/verify/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJiYWhhdGkucm9iYmVuQGFuZGVsYTEuY29tIiwiZmlyc3ROYW1lIjoicm9iYmVucyIsImxhc3ROYW1lIjoiZmlqc29pYXMiLCJpYXQiOjE1NjgxMjg4MDJ9.PsoH0R3T6L7sn9MndPKJSLORX6l-y6kf_O-zDs7z4I4"
+                            }
+                        }
+                    }
+                },
+            
+            "404": {
+                "description": "user not found",
+                "examples": {
+                    "application/json": {
+                        "status": 404,
+                        "message": "this email is not registered"
+                    }
+                }
+        }
+    }
+    }
+  },"/auth/verify/?token={token}": {
+    "patch": {
+        "tags": [
+            "auth"
+        ],
+        "summary": "Verification link",
+        "description": "Sends a verification link to email",
+        "consumes": [
+        ],
+        "produces": [
+            "application/json"
+        ],
+        "parameters": [{
+            "name": "token",
+            "in": "path",
+            "description": "email verification",
+            "type": "string"
+        }],
+        "responses": {
+            "200": {
+                "description": "Email verified",
+                "examples": {
+                    "application/json": {
+                        "status": 201,
+                        "message": "Email verified",
+                        "data": {                            
+                            "status": 201,
+                            "message": "Email verified succesfully",
+                            "userEmail": "bahati.robben@andela.com"
+                        }
+                    }
+                }
+            },
+        
+        "404": {
+            "description": "user not found",
+            "examples": {
+                "application/json": {
+                    "status": 409,
+                    "error": "Email already verified"
+                }
+            }
+    }
     },
     "securityDefinitions": {
       "api_key": {
@@ -255,6 +346,19 @@
           "name": "Price"
         }
       },
+      "CreateLink": {
+        "type": "object",
+        "properties": {
+          "userEmail": {
+            "type": "string",
+            "description": "email",
+            "example": "name@example.com"
+          }
+        },
+        "xml": {
+          "name": "Email"
+        }
+      },
       "ApiResponse": {
         "type": "object",
         "properties": {
@@ -271,4 +375,6 @@
         }
       }
     }
-  }
+  
+}
+  }}}

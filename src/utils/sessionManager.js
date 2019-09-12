@@ -26,9 +26,10 @@ class SessionManager {
     const token = jwt.sign(
       {
         id: data.id,
-        email: data.userEmail,
+        email: data.email,
         firstName: data.firstName,
-        lastName: data.lastName
+        lastName: data.lastName,
+        accountVerified: data.accountVerified
       },
       data.secret || process.env.TOKEN,
       { expiresIn: '1hr' }
@@ -75,6 +76,15 @@ class SessionManager {
       throw error;
     }
   }
-}
 
+  /**
+   * Generates a new password.
+   * @param {string} token User details.
+   * @param {string} secret secret_key for token.
+   * @returns {object} payload.
+   */
+  static verify(token) {
+    return jwt.verify(token, process.env.TOKEN);
+  }
+}
 export default SessionManager;
