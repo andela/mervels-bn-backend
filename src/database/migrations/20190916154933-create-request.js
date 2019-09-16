@@ -1,31 +1,30 @@
 /* eslint-disable no-unused-vars */
 export default {
   up: (queryInterface, Sequelize) =>
-    queryInterface.createTable("Users", {
+    queryInterface.createTable("Requests", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      firstName: {
+      from: {
         type: Sequelize.STRING
       },
-      lastName: {
+      travelDate: {
+        type: Sequelize.DATEONLY
+      },
+      returnDate: {
+        type: Sequelize.DATEONLY
+      },
+      reason: {
         type: Sequelize.STRING
       },
-      userEmail: {
+      status: {
         type: Sequelize.STRING
       },
-      userPassword: {
-        type: Sequelize.STRING
-      },
-      userRoles: {
-        type: Sequelize.STRING
-      },
-      accountVerified: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
+      user: {
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
@@ -36,5 +35,5 @@ export default {
         type: Sequelize.DATE
       }
     }),
-  down: (queryInterface, Sequelize) => queryInterface.dropTable("Users")
+  down: (queryInterface, Sequelize) => queryInterface.dropTable("Requests")
 };

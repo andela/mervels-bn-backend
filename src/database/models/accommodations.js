@@ -1,6 +1,6 @@
 const accommodations = (sequelize, DataTypes) => {
   const Accommodations = sequelize.define(
-    'Accommodations',
+    "Accommodations",
     {
       name: {
         allowNull: false,
@@ -9,11 +9,11 @@ const accommodations = (sequelize, DataTypes) => {
       status: {
         allowNull: false,
         type: DataTypes.STRING,
-        defaultValue: 'Available',
+        defaultValue: "Available",
         validate: {
           isIn: {
-            args: [['Available', 'Unavailable']],
-            msg: 'Status can only be Available or Unavailable'
+            args: [["Available", "Unavailable"]],
+            msg: "Status can only be Available or Unavailable"
           }
         }
       },
@@ -25,17 +25,23 @@ const accommodations = (sequelize, DataTypes) => {
     },
     {}
   );
-  Accommodations.associate = (models) => {
+  Accommodations.associate = models => {
     Accommodations.hasMany(models.Rooms, {
-      foreignKey: 'accommodationId',
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE'
+      foreignKey: "accommodationId",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE"
     });
     Accommodations.belongsTo(models.Locations, {
-      foreignKey: 'locationId',
-      onDelete: 'CASCADE'
+      foreignKey: "locationId",
+      onDelete: "CASCADE"
+    });
+    Accommodations.belongsToMany(models.Requests, {
+      through: "AccommodationRequests",
+      as: "requests",
+      foreignKey: "accommodationId"
     });
   };
   return Accommodations;
 };
+
 export default accommodations;

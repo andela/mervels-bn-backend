@@ -1,5 +1,5 @@
-import dotenv from 'dotenv';
-import { v2 as cloudinary } from 'cloudinary';
+import dotenv from "dotenv";
+import { v2 as cloudinary } from "cloudinary";
 
 dotenv.config();
 
@@ -9,8 +9,8 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-const upload = async (file) => {
-  const image = await cloudinary.uploader.upload(file, (result) => result);
+const upload = async file => {
+  const image = await cloudinary.uploader.upload(file, result => result);
   return image;
 };
 

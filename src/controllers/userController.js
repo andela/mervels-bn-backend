@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable class-methods-use-this */
-import userService from '../services/userService';
-import Password from '../utils/generatePassword';
-import SessionManager from '../utils/sessionManager';
-import Response from '../utils/response';
-import Emails from '../utils/email';
+import userService from "../services/userService";
+import Password from "../utils/generatePassword";
+import SessionManager from "../utils/sessionManager";
+import Response from "../utils/response";
+import Emails from "../utils/email";
 /** Class representing a password util. */
 class Users {
   /**
@@ -19,7 +19,7 @@ class Users {
     try {
       const details = await userService.findUserByEmail(rawData.userEmail);
       if (details) {
-        return Response.customResponse(res, 409, 'user already exists');
+        return Response.customResponse(res, 409, "user already exists");
       }
       // generate a hashed password
       const obj = new Password(rawData);
@@ -49,14 +49,19 @@ class Users {
       try {
         const msg = Emails.verificationLinkTemplate(link, dataResponse);
         const result = await Emails.sendmail(msg);
-        verification = 'Verification link sent';
+        verification = "Verification link sent";
       } catch (error) {
-        verification = 'Verification link not sent';
+        verification = "Verification link not sent";
       }
-      return Response.customResponse(res, 201, 'Account has been created successfully', {
-        ...dataResponse,
-        verification: { message: verification, link }
-      });
+      return Response.customResponse(
+        res,
+        201,
+        "Account has been created successfully",
+        {
+          ...dataResponse,
+          verification: { message: verification, link }
+        }
+      );
     } catch (error) {
       return next(error);
     }
@@ -71,7 +76,7 @@ class Users {
   async socialLogin(req, res) {
     const userEmail = req.user.email;
     const { firstName, lastName } = req.user;
-    const userRoles = 'Requester';
+    const userRoles = "Requester";
     let data;
     data = await userService.findUserByEmail(userEmail);
     if (!data) {
@@ -97,7 +102,12 @@ class Users {
       userRoles: data.userRoles,
       userToken: data.token
     };
-    return Response.customResponse(res, 200, 'Successfully logged in!', dataResponse);
+    return Response.customResponse(
+      res,
+      200,
+      "Successfully logged in!",
+      dataResponse
+    );
   }
 
   /**
@@ -110,7 +120,7 @@ class Users {
     const { userEmail } = req.body;
     const user = await userService.findUserByEmail(userEmail);
     if (!user) {
-      return Response.errorResponse(res, 404, 'this email is not registered');
+      return Response.errorResponse(res, 404, "this email is not registered");
     }
 
     const token = await SessionManager.generateToken(user);
@@ -118,12 +128,17 @@ class Users {
     try {
       const msg = Emails.verificationLinkTemplate(link, user);
       const _ = await Emails.sendmail(msg);
-      return Response.customResponse(res, 200, 'email sent with verification link', {
-        userEmail,
-        link
-      });
+      return Response.customResponse(
+        res,
+        200,
+        "email sent with verification link",
+        {
+          userEmail,
+          link
+        }
+      );
     } catch (error) {
-      return Response.errorResponse(res, 500, 'internal error', error);
+      return Response.errorResponse(res, 500, "internal error", error);
     }
   }
 
@@ -139,12 +154,24 @@ class Users {
       const { userEmail } = SessionManager.verify(token);
       const user = await userService.findUserByEmail(userEmail);
       if (user.accountVerified) {
-        return Response.errorResponse(res, 409, 'Email already verified', 'conflicts');
+        return Response.errorResponse(
+          res,
+          409,
+          "Email already verified",
+          "conflicts"
+        );
       }
       const result = userService.verifyEmail(userEmail);
-      return Response.customResponse(res, 201, 'Email verified succesfully', { userEmail });
+      return Response.customResponse(res, 201, "Email verified succesfully", {
+        userEmail
+      });
     } catch (error) {
-      return Response.errorResponse(res, 401, 'The link is invalid or has expired', 'bad request');
+      return Response.errorResponse(
+        res,
+        401,
+        "The link is invalid or has expired",
+        "bad request"
+      );
     }
   }
 
@@ -159,24 +186,42 @@ class Users {
       const userExists = await userService.findUserByEmail(userEmail);
 
       if (!userExists) {
-        return Response.errorResponse(res, 401, 'Invalid email or password entered');
+        return Response.errorResponse(
+          res,
+          401,
+          "Invalid email or password entered"
+        );
       }
       if (userExists.accountVerified === false) {
-        return res.status(401).send({ status: res.statusCode, error: 'Email not verified' });
+        return res
+          .status(401)
+          .send({ status: res.statusCode, error: "Email not verified" });
       }
       const user = userExists.dataValues;
 
-      const match = await Password.checkPasswordMatch(userPassword, user.userPassword);
+      const match = await Password.checkPasswordMatch(
+        userPassword,
+        user.userPassword
+      );
       if (!match) {
-        return Response.errorResponse(res, 401, 'Invalid emailor password entered');
+        return Response.errorResponse(
+          res,
+          401,
+          "Invalid emailor password entered"
+        );
       }
 
       user.userToken = await SessionManager.createSession(user);
       delete user.userPassword;
 
-      return Response.customResponse(res, 200, 'User signed In successfully', user);
+      return Response.customResponse(
+        res,
+        200,
+        "User signed In successfully",
+        user
+      );
     } catch (error) {
-      return Response.errorResponse(res, 500, 'Something went wrong', error);
+      return Response.errorResponse(res, 500, "Something went wrong", error);
     }
   }
 
@@ -195,7 +240,7 @@ class Users {
         return Response.customResponse(
           res,
           200,
-          'If email is found, check your email for the link'
+          "If email is found, check your email for the link"
         );
       }
       const oneTimeToken = SessionManager.generateToken({
@@ -203,7 +248,7 @@ class Users {
         secret: `${userAccount.userPassword}-${userAccount.createdAt}`
       });
       const url = Emails.emailUrl({
-        endpoint: 'resetPassword',
+        endpoint: "resetPassword",
         userId: userAccount.id,
         token: oneTimeToken
       });
@@ -215,7 +260,7 @@ class Users {
       return Response.customResponse(
         res,
         200,
-        'If email is found, check your email for the link',
+        "If email is found, check your email for the link",
         url
       );
     } catch (error) {
@@ -237,22 +282,28 @@ class Users {
     try {
       const userAccount = await userService.findUserById(id);
       if (!userAccount) {
-        return Response.customResponse(res, 403, 'Forbidden Request');
+        return Response.customResponse(res, 403, "Forbidden Request");
       }
       const userDetails = SessionManager.decodeToken({
         token,
         secret: `${userAccount.userPassword}-${userAccount.createdAt}`
       });
       if (password !== newPassword) {
-        return Response.customResponse(res, 400, 'Passwords do not match re-type password');
+        return Response.customResponse(
+          res,
+          400,
+          "Passwords do not match re-type password"
+        );
       }
       const pass = new Password({ userPassword: password });
       const userPassword = await pass.encryptPassword();
-      const updatedUser = await userService.updateUser(userDetails.id, { userPassword });
+      const updatedUser = await userService.updateUser(userDetails.id, {
+        userPassword
+      });
       return Response.customResponse(
         res,
         200,
-        'Password has been sucessfully changed. Proceed to login'
+        "Password has been sucessfully changed. Proceed to login"
       );
     } catch (error) {
       next(error);
@@ -262,7 +313,7 @@ class Users {
   async logout(req, res) {
     const deleted = await SessionManager.destroyToken(req.user);
 
-    return Response.customResponse(res, 200, 'User logged out successfully');
+    return Response.customResponse(res, 200, "User logged out successfully");
   }
 }
 export default new Users();
