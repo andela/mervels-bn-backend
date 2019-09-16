@@ -29,7 +29,8 @@ class SessionManager {
         userEmail: data.userEmail,
         firstName: data.firstName,
         lastName: data.lastName,
-        accountVerified: data.accountVerified
+        accountVerified: data.accountVerified,
+        userRoles: data.userRoles
       },
       data.secret || process.env.TOKEN,
       { expiresIn: '1hr' }
@@ -49,6 +50,7 @@ class SessionManager {
       return result;
     }
     const token = this.generateToken(data);
+
     redisClient.set(data.userEmail, token);
     return token;
   }

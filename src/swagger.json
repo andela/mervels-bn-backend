@@ -14,6 +14,10 @@
       {
         "name": "user",
         "description": "User End Points"
+      },
+      {
+        "name": "accommodations",
+        "description": "Travel admin creates accommodations"
       }
     ],
     "schemes": [
@@ -377,4 +381,406 @@
     }
   
 }
-  }}}
+  },
+  "/accommodations": {
+    "get": {
+        "tags": [
+            "accommodation"
+        ],
+        "summary": "List all accommodations",
+        "description": "List all accommodations in the application",
+        "produces": [
+            "application/json"
+        ],
+        "parameters": [
+            {
+                "name": "Authorization",
+                "in": "header",
+                "description": "an authorization header",
+                "required": true,
+                "type": "string"
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Accomodations found",
+                "examples": {
+                    "application/json": {
+                        "status": 200,
+                        "message": "Accommodations fetched successfully",
+                        "data": [
+                            {
+                                "id": 3,
+                                "name": "burundi",
+                                "available": true,
+                                "imageUrl": "hjgsdjas",
+                                "location": "Kigali",
+                                "createdAt": "2019-09-16T17:52:41.777Z",
+                                "updatedAt": "2019-09-17T15:22:35.152Z",
+                                "Rooms": [
+                                    {
+                                        "id": 1,
+                                        "name": "D4",
+                                        "type": "2 bedroom",
+                                        "accommodationId": 3,
+                                        "available": true,
+                                        "createdAt": "2019-09-16T18:12:36.039Z",
+                                        "updatedAt": "2019-09-16T18:12:36.039Z"
+                                    },
+                                    {
+                                        "id": 2,
+                                        "name": "D5",
+                                        "type": "2 bedroom",
+                                        "accommodationId": 3,
+                                        "available": true,
+                                        "createdAt": "2019-09-16T18:13:15.379Z",
+                                        "updatedAt": "2019-09-16T18:13:15.379Z"
+                                    },
+                                    {
+                                        "id": 9,
+                                        "name": "kalisimbi",
+                                        "type": "two bedroom",
+                                        "accommodationId": 3,
+                                        "available": true,
+                                        "createdAt": "2019-09-17T15:05:29.878Z",
+                                        "updatedAt": "2019-09-17T15:05:29.878Z"
+                                    }
+                                ]
+                            }
+                    
+                        ]
+                    }
+                }
+            },
+            "401": {
+                "description": "invalid or expired token",
+                "examples": {
+                    "application/json": {
+                        "status": 401,
+                        "message": "Invalid or expired token used",
+                        "error": {
+                          "name": "JsonWebTokenError",
+                          "message": "jwt must be provided"
+                      }
+                    }
+                }
+            }
+        }
+    },
+    "post": {
+        "tags": [
+            "accommodation"
+        ],
+        "summary": "creates a new accommodation",
+        "description": "creates a new accommodation",
+        "consumes": [
+            "application/x-www-form-urlencoded",
+            "application/json"
+        ],
+        "produces": [
+            "application/json"
+        ],
+        "parameters": [
+            {
+                "name": "Authorization",
+                "in": "header",
+                "description": "an authorization header",
+                "required": true,
+                "type": "string"
+            },
+            {
+                "name": "name",
+                "in": "formData",
+                "description": "Name of accommodation to create",
+                "required": true,
+                "type": "string"
+            },
+            {
+                "name": "locationId",
+                "in": "formData",
+                "description": "Location of the accommodation",
+                "required": true,
+                "type": "integer"
+            },
+            {
+                "name": "image",
+                "in": "formData",
+                "description": "Url to image of the meal",
+                "type": "file"
+            }
+        ],
+        "responses": {
+            "201": {
+                "description": "Accommodation was added successfully",
+                "examples": {
+                    "application/json": {
+                      "status": 201,
+                      "message": "Accommodation created successfully",
+                      "data": {
+                          "available": true,
+                          "id": 16,
+                          "name": "Mariot",
+                          "location": "Kigali",
+                          "imageUrl": "http://res.cloudinary.com/bahati/image/upload/v1568746852/rkovhn3mjeifjs3o91ed.png",
+                          "updatedAt": "2019-09-17T19:00:51.165Z",
+                          "createdAt": "2019-09-17T19:00:51.165Z"
+                      }
+                    }
+                }
+            },
+            "400": {
+                "description": "Invalid input",
+                "examples": {
+                    "application/json": {
+                      "status": 400,
+                      "message": "validations failed",
+                      "error": [
+                          {
+                              "message": "name field is required and must be a string",
+                              "path": [
+                                  "name"
+                              ],
+                              "type": "any.required",
+                              "context": {
+                                  "key": "name",
+                                  "label": "name"
+                              }
+                          }
+                      ]
+                    }
+                }
+            },
+            "401": {
+              "description": "invalid or expired token",
+              "examples": {
+                  "application/json": {
+                      "status": 401,
+                      "message": "Invalid or expired token used",
+                      "error": {
+                        "name": "JsonWebTokenError",
+                        "message": "jwt must be provided"
+                    }
+                  }
+              }
+          },
+            "403": {
+                "status": 403,
+                "message": "You are not allowed to perform this task",
+                "error":"Authorization error"
+            }
+        }
+    }
+},
+"/accommodations/{accommodationId}":{
+  "get": {
+    "tags": [
+        "accommodation"
+    ],
+    "summary": "Get one accommodation",
+    "description": "List all accommodations in the application",
+    "produces": [
+        "application/json"
+    ],
+    "parameters": [
+        {
+            "name": "Authorization",
+            "in": "header",
+            "description": "an authorization header",
+            "required": true,
+            "type": "string"
+        },
+        {
+          "name": "accommodationId",
+          "in": "path",
+          "description": "accommodation Id",
+          "required": true,
+          "type": "integer"
+      }
+    ],
+    "responses": {
+        "200": {
+            "description": "Accomodation found",
+            "examples": {
+                "application/json": {
+                    "status": 200,
+                    "message": "Accommodation fetched successfully",
+                    "data": 
+                        {
+                            "id": 3,
+                            "name": "burundi",
+                            "available": true,
+                            "imageUrl": "hjgsdjas",
+                            "location": "Kigali",
+                            "createdAt": "2019-09-16T17:52:41.777Z",
+                            "updatedAt": "2019-09-17T15:22:35.152Z",
+                            "Rooms": [
+                                {
+                                    "id": 1,
+                                    "name": "D4",
+                                    "type": "2 bedroom",
+                                    "accommodationId": 3,
+                                    "available": true,
+                                    "createdAt": "2019-09-16T18:12:36.039Z",
+                                    "updatedAt": "2019-09-16T18:12:36.039Z"
+                                },
+                                {
+                                    "id": 2,
+                                    "name": "D5",
+                                    "type": "2 bedroom",
+                                    "accommodationId": 3,
+                                    "available": true,
+                                    "createdAt": "2019-09-16T18:13:15.379Z",
+                                    "updatedAt": "2019-09-16T18:13:15.379Z"
+                                },
+                                {
+                                    "id": 9,
+                                    "name": "kalisimbi",
+                                    "type": "two bedroom",
+                                    "accommodationId": 3,
+                                    "available": true,
+                                    "createdAt": "2019-09-17T15:05:29.878Z",
+                                    "updatedAt": "2019-09-17T15:05:29.878Z"
+                                }
+                            ]
+                        }
+                }
+            }
+        },
+        "401": {
+            "description": "invalid or expired token",
+            "examples": {
+                "application/json": {
+                    "status": 401,
+                    "message": "Invalid or expired token used",
+                    "error": {
+                      "name": "JsonWebTokenError",
+                      "message": "jwt must be provided"
+                  }
+                }
+            }
+        },
+        "404": {
+          "description": "accommodation not found",
+          "examples": {
+              "application/json": {
+                "status": 404,
+                "message": "error",
+                "error": "Accommodation not found"
+                }
+          }
+      }
+    }
+}
+},
+"/accommodations/rooms":{
+  "post": {
+    "tags": [
+        "accommodation"
+    ],
+    "summary": "creates a new room",
+    "description": "creates a new room",
+    "consumes": [
+        "application/x-www-form-urlencoded",
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "parameters": [
+        {
+            "name": "Authorization",
+            "in": "header",
+            "description": "an authorization header",
+            "required": true,
+            "type": "string"
+        },
+        {
+            "name": "name",
+            "in": "formData",
+            "description": "Name of room to create",
+            "required": true,
+            "type": "string"
+        },
+        {
+            "name": "type",
+            "in": "formData",
+            "description": "type of the room",
+            "required": true,
+            "type": "string"
+        },
+        {
+            "name": "accommodationId",
+            "in": "formData",
+            "description": "accommodation to contain the room",
+            "required": true,
+            "type": "integer"
+        }
+    ],
+    "responses": {
+        "201": {
+            "description": "Room was added successfully",
+            "examples": {
+                "application/json": {
+                  "status": 201,
+                  "message": "Room created successfully",
+                  "data": {
+                      "available": true,
+                      "id": 13,
+                      "name": "muhabura3",
+                      "type": "two bedroom",
+                      "accommodationId": 10,
+                      "updatedAt": "2019-09-17T16:20:47.765Z",
+                      "createdAt": "2019-09-17T16:20:47.765Z"
+                  }
+                }
+            }
+        },
+        "400": {
+            "description": "Invalid input",
+            "examples": {
+                "application/json": {
+                  "status": 400,
+                  "message": "validations failed",
+                  "error": [
+                      {
+                          "message": "name field is required and must be a string",
+                          "path": [
+                              "name"
+                          ],
+                          "type": "any.required",
+                          "context": {
+                              "key": "name",
+                              "label": "name"
+                          }
+                      }
+                  ]
+                }
+            }
+        },
+        "401": {
+          "description": "invalid or expired token",
+          "examples": {
+              "application/json": {
+                  "status": 401,
+                  "message": "Invalid or expired token used",
+                  "error": {
+                    "name": "JsonWebTokenError",
+                    "message": "jwt must be provided"
+                }
+              }
+          }
+      },
+        "403": {
+            "status": 403,
+            "message": "You are not allowed to perform this task",
+            "error":"Authorization error"
+        },
+        "404": {
+          "status": 404,
+          "message": "error",
+          "error": "Accommodation not found"
+        }
+    }
+}
+}
+  }}
