@@ -1,5 +1,5 @@
 /* eslint-disable no-useless-catch */
-import database from "../database/models";
+import database from '../database/models';
 
 const { Requests } = database;
 /** Class representing a Request services. */
@@ -16,7 +16,7 @@ class RequestService {
         include: [
           {
             model: database.Accommodations,
-            as: "accommodations"
+            as: 'accommodations'
           }
         ]
       });

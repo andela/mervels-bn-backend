@@ -1,21 +1,21 @@
 /* eslint-disable no-underscore-dangle */
-import chai from "chai";
-import chaiHttp from "chai-http";
-import server from "../index";
+import chai from 'chai';
+import chaiHttp from 'chai-http';
+import server from '../index';
 
 const { expect } = chai;
 chai.use(chaiHttp);
 
 let token;
 
-const signinUrl = "/api/v1/auth/signin";
-const getMyRequestUrl = "/api/v1/requests/my-requests";
+const signinUrl = '/api/v1/auth/signin';
+const getMyRequestUrl = '/api/v1/requests/my-requests';
 
-describe("Get Requests", () => {
-  before("with correct credentials", done => {
+describe('Get Requests', () => {
+  before('with correct credentials', (done) => {
     const user = {
-      userEmail: "jonashyaka2@gmail.com",
-      userPassword: "Root1234@"
+      userEmail: 'jonashyaka2@gmail.com',
+      userPassword: 'Root1234@'
     };
     chai
       .request(server)
@@ -26,18 +26,18 @@ describe("Get Requests", () => {
           return done(err);
         }
         expect(res).to.have.status(200);
-        expect(res.body.data).to.have.property("userToken");
+        expect(res.body.data).to.have.property('userToken');
 
         token = res.body.data.userToken;
 
         done();
       });
   });
-  it("when they are logged In", done => {
+  it('when they are logged In', (done) => {
     chai
       .request(server)
       .get(getMyRequestUrl)
-      .set("Authorization", `Bearer ${token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send()
       .end((_err, res) => {
         if (_err) done(_err);

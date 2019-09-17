@@ -1,6 +1,6 @@
-import jwt from "jsonwebtoken";
-import redis from "redis";
-import { promisify } from "util";
+import jwt from 'jsonwebtoken';
+import redis from 'redis';
+import { promisify } from 'util';
 
 const redisClient = redis.createClient(process.env.REDIS_URL);
 
@@ -8,10 +8,10 @@ const getAsync = promisify(redisClient.get).bind(redisClient);
 const delAsync = promisify(redisClient.del).bind(redisClient);
 
 redisClient
-  .on("connect", () => {
-    console.log("redis connected");
+  .on('connect', () => {
+    console.log('redis connected');
   })
-  .on("error", error => {
+  .on('error', (error) => {
     // console.log(error);
   });
 
@@ -33,7 +33,7 @@ class SessionManager {
         userRoles: data.userRoles
       },
       data.secret || process.env.TOKEN,
-      { expiresIn: "1hr" }
+      { expiresIn: '1hr' }
     );
     return token;
   }

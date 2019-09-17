@@ -1,821 +1,830 @@
 {
-    "swagger": "2.0",
-    "info": {
-        "version": "1.0.0",
-        "description": "Make company global travel and accommodation easy and convenient for the strong workforce of savvy members of staff, by leveraging the modern web.\n",
-        "title": "Barefoot Nomad",
-        "contact": {
-            "name": "Marvel Universe",
-            "email": "marveluniverse@marvel.com"
-        }
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "description": "Make company global travel and accommodation easy and convenient for the strong workforce of savvy members of staff, by leveraging the modern web.\n",
+    "title": "Barefoot Nomad",
+    "contact": {
+      "name": "Marvel Universe",
+      "email": "marveluniverse@marvel.com"
+    }
+  },
+  "basePath": "/api/v1",
+  "tags": [{
+      "name": "user",
+      "description": "User End Points"
     },
-    "basePath": "/api/v1",
-    "tags": [
-      {
-        "name": "user",
-        "description": "User End Points"
-      },
-      {
-        "name": "accommodations",
-        "description": "Travel admin creates accommodations"
-      },
-      {
-        "name": "request",
-        "description": "Request End Points"
-      }
-    ],
-    "schemes": [
-      "https",
-      "http"
-    ],
-    "paths": {
-      "/auth/signup": {
-        "post": {
-          "tags": [
-            "user"
-          ],
-          "summary": "Add a new user",
-          "description": "End point for creating a new user",
-          "operationId": "addUser",
-          "consumes": [
-            "application/json",
-            "application/xml"
-          ],
-          "produces": [
-            "application/xml",
-            "application/json"
-          ],
-          "parameters": [
-            {
-              "in": "body",
-              "name": "body",
-              "description": "User object that needs to be added to the store",
-              "required": true,
-              "schema": {
-                "$ref": "#/definitions/User"
-              }
-            }
-          ],
-          "responses": {
-            "422": {
-              "description": "Invalid input"
-            }
-          }
-        }
-      },
-      "/auth/signin": {
-        "post": {
-          "tags": [
-            "user"
-          ],
-          "summary": "Add a new user",
-          "description": "End point for creating a new user",
-          "operationId": "registerUser",
-          "consumes": [
-            "application/json",
-            "application/xml"
-          ],
-          "produces": [
-            "application/xml",
-            "application/json"
-          ],
-          "parameters": [
-            {
-              "in": "body",
-              "name": "body",
-              "description": "User object that needs to be added to the store",
-              "schema": {
-                "$ref": "#/definitions/SignIn"
-              }
-            }
-          ],
-          "responses": {
-            "422": {
-              "description": "Invalid input"
-            }
-          }
-        }
-      },
-      "/auth/forgotPassword": {
-        "post": {
-          "tags": [
-            "user"
-          ],
-          "summary": "Request for password reset via email",
-          "description": "User can request for a password reset",
-          "consumes": [
-            "application/x-www-form-urlencoded"
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "parameters": [
-            {
-              "name": "email",
-              "in": "formData",
-              "description": "Email for account to reset password 'test@example.com'",
-              "required": true,
-              "type": "string"
-            }
-          ],
-          "responses": {
-            "404": {
-              "description": "Account not Found"
-            },
-            "200": {
-              "description": "Email succesfully sent"
-            }
-          }
-        }
-      },
-      "/auth/resetPassword/{userId}/{token}": {
-        "put": {
-          "tags": [
-            "user"
-          ],
-          "summary": "Reset to new password",
-          "description": "User can reset their password",
-          "consumes": [
-            "application/x-www-form-urlencoded"
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "parameters": [
-            {
-              "name": "userId",
-              "in": "path",
-              "description": "Users Id attached to reset password link",
-              "required": true,
-              "type": "integer"
-            },
-            {
-              "name": "token",
-              "in": "path",
-              "description": "Token attached to reset password link",
-              "required": true,
-              "type": "string"
-            },
-            {
-              "name": "password",
-              "in": "formData",
-              "description": "Enter Users new password with atleast 1 number, 1uppercase, 1lowercase",
-              "required": true,
-              "type": "string"
-            },
-            {
-              "name": "newPassword",
-              "in": "formData",
-              "description": "Re-type Users new password",
-              "required": true,
-              "type": "string"
-            }
-          ],
-          "responses": {
-            "404": {
-              "description": "Password dont match"
-            },
-            "403": {
-              "description": "Forbidden Request"
-            },
-            "200": {
-              "description": "Password succesfully updated"
-            }
-          }
-        }
-      },
-      "/auth/createLink": {
-        "post": {
-            "tags": [
-                "auth"
-            ],
-            "summary": "Verification link",
-            "description": "Sends a verification link to email",
-            "consumes": [
-                "application/json",
-                "application/x-www-form-urlencoded"
-            ],
-            "produces": [
-                "application/json"
-            ],
-            "parameters": [{
-                "name": "email",
-                "in": "body",
-                "description": "Email to receive the link",
-                "schema": {
-                  "$ref": "#/definitions/CreateLink"
-                }
-            }],
-            "responses": {
-                "200": {
-                    "description": "Email sent with a verification link",
-                    "examples": {
-                        "application/json": {
-                            "status": 200,
-                            "message": "email sent with verification link",
-                            "data": {
-                                "userEmail": "bahati.robben@andela1.com",
-                                "link": "http://localhost:3000/api/v1/auth/verify/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJiYWhhdGkucm9iYmVuQGFuZGVsYTEuY29tIiwiZmlyc3ROYW1lIjoicm9iYmVucyIsImxhc3ROYW1lIjoiZmlqc29pYXMiLCJpYXQiOjE1NjgxMjg4MDJ9.PsoH0R3T6L7sn9MndPKJSLORX6l-y6kf_O-zDs7z4I4"
-                            }
-                        }
-                    }
-                },
-            
-            "404": {
-                "description": "user not found",
-                "examples": {
-                    "application/json": {
-                        "status": 404,
-                        "message": "this email is not registered"
-                    }
-                }
-        }
+    {
+      "name": "accommodations",
+      "description": "Travel admin creates accommodations"
     }
-    }
-  },"/auth/verify/?token={token}": {
-    "patch": {
+  ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/auth/signup": {
+      "post": {
         "tags": [
-            "auth"
+          "user"
+        ],
+        "summary": "Add a new user",
+        "description": "End point for creating a new user",
+        "operationId": "addUser",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+          "in": "body",
+          "name": "body",
+          "description": "User object that needs to be added to the store",
+          "required": true,
+          "schema": {
+            "$ref": "#/definitions/User"
+          }
+        }],
+        "responses": {
+          "422": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/auth/signin": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Add a new user",
+        "description": "End point for creating a new user",
+        "operationId": "registerUser",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+          "in": "body",
+          "name": "body",
+          "description": "User object that needs to be added to the store",
+          "schema": {
+            "$ref": "#/definitions/SignIn"
+          }
+        }],
+        "responses": {
+          "422": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/auth/forgotPassword": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Request for password reset via email",
+        "description": "User can request for a password reset",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "email",
+          "in": "formData",
+          "description": "Email for account to reset password 'test@example.com'",
+          "required": true,
+          "type": "string"
+        }],
+        "responses": {
+          "404": {
+            "description": "Account not Found"
+          },
+          "200": {
+            "description": "Email succesfully sent"
+          }
+        }
+      }
+    },
+    "/auth/resetPassword/{userId}/{token}": {
+      "put": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Reset to new password",
+        "description": "User can reset their password",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "userId",
+            "in": "path",
+            "description": "Users Id attached to reset password link",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "token",
+            "in": "path",
+            "description": "Token attached to reset password link",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "description": "Enter Users new password with atleast 1 number, 1uppercase, 1lowercase",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "newPassword",
+            "in": "formData",
+            "description": "Re-type Users new password",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Password dont match"
+          },
+          "403": {
+            "description": "Forbidden Request"
+          },
+          "200": {
+            "description": "Password succesfully updated"
+          }
+        }
+      }
+    },
+    "/auth/createLink": {
+      "post": {
+        "tags": [
+          "auth"
         ],
         "summary": "Verification link",
         "description": "Sends a verification link to email",
         "consumes": [
+          "application/json",
+          "application/x-www-form-urlencoded"
         ],
         "produces": [
-            "application/json"
+          "application/json"
         ],
         "parameters": [{
-            "name": "token",
-            "in": "path",
-            "description": "email verification",
-            "type": "string"
+          "name": "email",
+          "in": "body",
+          "description": "Email to receive the link",
+          "schema": {
+            "$ref": "#/definitions/CreateLink"
+          }
         }],
         "responses": {
-            "200": {
-                "description": "Email verified",
-                "examples": {
-                    "application/json": {
-                        "status": 201,
-                        "message": "Email verified",
-                        "data": {                            
-                            "status": 201,
-                            "message": "Email verified succesfully",
-                            "userEmail": "bahati.robben@andela.com"
-                        }
-                    }
+          "200": {
+            "description": "Email sent with a verification link",
+            "examples": {
+              "application/json": {
+                "status": 200,
+                "message": "email sent with verification link",
+                "data": {
+                  "userEmail": "bahati.robben@andela1.com",
+                  "link": "http://localhost:3000/api/v1/auth/verify/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJiYWhhdGkucm9iYmVuQGFuZGVsYTEuY29tIiwiZmlyc3ROYW1lIjoicm9iYmVucyIsImxhc3ROYW1lIjoiZmlqc29pYXMiLCJpYXQiOjE1NjgxMjg4MDJ9.PsoH0R3T6L7sn9MndPKJSLORX6l-y6kf_O-zDs7z4I4"
                 }
-            },
-        
-        "404": {
+              }
+            }
+          },
+
+          "404": {
             "description": "user not found",
             "examples": {
-                "application/json": {
-                    "status": 409,
-                    "error": "Email already verified"
-                }
+              "application/json": {
+                "status": 404,
+                "message": "this email is not registered"
+              }
             }
-    }
-    },
-    "securityDefinitions": {
-      "api_key": {
-        "type": "apiKey",
-        "name": "authorization",
-        "in": "header"
-      }
-    },
-    "definitions": {
-      "Request": {
-        "required": [ "email"],
-        "type": "object",
-        "properties":{
-          "email": {
-            "type": "string"
-          }
-        }
-      },
-      "Reset": {
-        "required": [ "password", "newPassword"],
-        "type": "object",
-        "properties":{
-          "password": {
-            "type": "string"
-          },
-          "newPassword": {
-            "type": "string"
-          }
-        }
-      },
-      "User": {
-        "type": "object",
-        "properties": {
-          "firstName": {
-            "type": "string"
-          },
-          "lastName": {
-            "type": "string"
-          },
-          "userEmail": {
-            "type": "string"
-          },
-          "userPassword": {
-            "type": "string"
-          }
-        },
-        "xml": {
-          "name": "User"
-        }
-      },
-      "Status": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "type": "string",
-            "description": "Status"
-          }
-        },
-        "xml": {
-          "name": "Status"
-        }
-      },
-      "SignIn": {
-        "type": "object",
-        "properties": {
-          "userEmail": {
-            "type": "string",
-            "description": "email",
-            "example": "name@example.com"
-          },
-          "userPassword": {
-            "type": "string",
-            "description": "password"
-          }
-        },
-        "xml": {
-          "name": "Price"
-        }
-      },
-      "CreateLink": {
-        "type": "object",
-        "properties": {
-          "userEmail": {
-            "type": "string",
-            "description": "email",
-            "example": "name@example.com"
-          }
-        },
-        "xml": {
-          "name": "Email"
-        }
-      },
-      "ApiResponse": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "type": {
-            "type": "string"
-          },
-          "message": {
-            "type": "string"
           }
         }
       }
-    }
-  
-}
-  },
-  "/accommodations": {
-    "get": {
+    },
+    "/auth/verify/?token={token}": {
+      "patch": {
         "tags": [
-            "accommodation"
+          "auth"
+        ],
+        "summary": "Verification link",
+        "description": "Sends a verification link to email",
+        "consumes": [],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "token",
+          "in": "path",
+          "description": "email verification",
+          "type": "string"
+        }],
+        "responses": {
+          "200": {
+            "description": "Email verified",
+            "examples": {
+              "application/json": {
+                "status": 201,
+                "message": "Email verified",
+                "data": {
+                  "status": 201,
+                  "message": "Email verified succesfully",
+                  "userEmail": "bahati.robben@andela.com"
+                }
+              }
+            }
+          },
+
+          "404": {
+            "description": "user not found",
+            "examples": {
+              "application/json": {
+                "status": 409,
+                "error": "Email already verified"
+              }
+            }
+          }
+        },
+        "securityDefinitions": {
+          "api_key": {
+            "type": "apiKey",
+            "name": "authorization",
+            "in": "header"
+          }
+        },
+        "definitions": {
+          "Request": {
+            "required": ["email"],
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string"
+              }
+            }
+          },
+          "Reset": {
+            "required": ["password", "newPassword"],
+            "type": "object",
+            "properties": {
+              "password": {
+                "type": "string"
+              },
+              "newPassword": {
+                "type": "string"
+              }
+            }
+          },
+          "User": {
+            "type": "object",
+            "properties": {
+              "firstName": {
+                "type": "string"
+              },
+              "lastName": {
+                "type": "string"
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userPassword": {
+                "type": "string"
+              }
+            },
+            "xml": {
+              "name": "User"
+            }
+          },
+          "Status": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "description": "Status"
+              }
+            },
+            "xml": {
+              "name": "Status"
+            }
+          },
+          "SignIn": {
+            "type": "object",
+            "properties": {
+              "userEmail": {
+                "type": "string",
+                "description": "email",
+                "example": "name@example.com"
+              },
+              "userPassword": {
+                "type": "string",
+                "description": "password"
+              }
+            },
+            "xml": {
+              "name": "Price"
+            }
+          },
+          "CreateLink": {
+            "type": "object",
+            "properties": {
+              "userEmail": {
+                "type": "string",
+                "description": "email",
+                "example": "name@example.com"
+              }
+            },
+            "xml": {
+              "name": "Email"
+            }
+          },
+          "ApiResponse": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "type": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              }
+            }
+          }
+        }
+
+      }
+    },
+    "/auth/updateRole": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Update user role",
+        "description": "End point for updating the user role",
+        "operationId": "Update user role",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+          "in": "body",
+          "name": "body",
+          "description": "User object that needs to be updated",
+          "schema": {
+            "$ref": "#/definitions/updateRole"
+          }
+        }],
+        "responses": {
+          "422": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/accommodations": {
+      "get": {
+        "tags": [
+          "accommodation"
         ],
         "summary": "List all accommodations",
         "description": "List all accommodations in the application",
         "produces": [
-            "application/json"
+          "application/json"
         ],
-        "parameters": [
-            {
-                "name": "Authorization",
-                "in": "header",
-                "description": "an authorization header",
-                "required": true,
-                "type": "string"
-            }
-        ],
+        "parameters": [{
+          "name": "Authorization",
+          "in": "header",
+          "description": "an authorization header",
+          "required": true,
+          "type": "string"
+        }],
         "responses": {
-            "200": {
-                "description": "Accomodations found",
-                "examples": {
-                    "application/json": {
-                        "status": 200,
-                        "message": "Accommodations fetched successfully",
-                        "data": [
-                            {
-                                "id": 3,
-                                "name": "burundi",
-                                "available": true,
-                                "imageUrl": "hjgsdjas",
-                                "location": "Kigali",
-                                "createdAt": "2019-09-16T17:52:41.777Z",
-                                "updatedAt": "2019-09-17T15:22:35.152Z",
-                                "Rooms": [
-                                    {
-                                        "id": 1,
-                                        "name": "D4",
-                                        "type": "2 bedroom",
-                                        "accommodationId": 3,
-                                        "available": true,
-                                        "createdAt": "2019-09-16T18:12:36.039Z",
-                                        "updatedAt": "2019-09-16T18:12:36.039Z"
-                                    },
-                                    {
-                                        "id": 2,
-                                        "name": "D5",
-                                        "type": "2 bedroom",
-                                        "accommodationId": 3,
-                                        "available": true,
-                                        "createdAt": "2019-09-16T18:13:15.379Z",
-                                        "updatedAt": "2019-09-16T18:13:15.379Z"
-                                    },
-                                    {
-                                        "id": 9,
-                                        "name": "kalisimbi",
-                                        "type": "two bedroom",
-                                        "accommodationId": 3,
-                                        "available": true,
-                                        "createdAt": "2019-09-17T15:05:29.878Z",
-                                        "updatedAt": "2019-09-17T15:05:29.878Z"
-                                    }
-                                ]
-                            }
-                    
-                        ]
-                    }
-                }
-            },
-            "401": {
-                "description": "invalid or expired token",
-                "examples": {
-                    "application/json": {
-                        "status": 401,
-                        "message": "Invalid or expired token used",
-                        "error": {
-                          "name": "JsonWebTokenError",
-                          "message": "jwt must be provided"
+          "200": {
+            "description": "Accomodations found",
+            "examples": {
+              "application/json": {
+                "status": 200,
+                "message": "Accommodations fetched successfully",
+                "data": [{
+                    "id": 3,
+                    "name": "burundi",
+                    "available": true,
+                    "imageUrl": "hjgsdjas",
+                    "location": "Kigali",
+                    "createdAt": "2019-09-16T17:52:41.777Z",
+                    "updatedAt": "2019-09-17T15:22:35.152Z",
+                    "Rooms": [{
+                        "id": 1,
+                        "name": "D4",
+                        "type": "2 bedroom",
+                        "accommodationId": 3,
+                        "available": true,
+                        "createdAt": "2019-09-16T18:12:36.039Z",
+                        "updatedAt": "2019-09-16T18:12:36.039Z"
+                      },
+                      {
+                        "id": 2,
+                        "name": "D5",
+                        "type": "2 bedroom",
+                        "accommodationId": 3,
+                        "available": true,
+                        "createdAt": "2019-09-16T18:13:15.379Z",
+                        "updatedAt": "2019-09-16T18:13:15.379Z"
+                      },
+                      {
+                        "id": 9,
+                        "name": "kalisimbi",
+                        "type": "two bedroom",
+                        "accommodationId": 3,
+                        "available": true,
+                        "createdAt": "2019-09-17T15:05:29.878Z",
+                        "updatedAt": "2019-09-17T15:05:29.878Z"
                       }
-                    }
-                }
+                    ]
+                  }
+
+                ]
+              }
             }
+          },
+          "401": {
+            "description": "invalid or expired token",
+            "examples": {
+              "application/json": {
+                "status": 401,
+                "message": "Invalid or expired token used",
+                "error": {
+                  "name": "JsonWebTokenError",
+                  "message": "jwt must be provided"
+                }
+              }
+            }
+          }
         }
-    },
-    "post": {
+      },
+      "post": {
         "tags": [
-            "accommodation"
+          "accommodation"
         ],
         "summary": "creates a new accommodation",
         "description": "creates a new accommodation",
         "consumes": [
-            "application/x-www-form-urlencoded",
-            "application/json"
+          "application/x-www-form-urlencoded",
+          "application/json"
         ],
         "produces": [
-            "application/json"
+          "application/json"
         ],
-        "parameters": [
-            {
-                "name": "Authorization",
-                "in": "header",
-                "description": "an authorization header",
-                "required": true,
-                "type": "string"
-            },
-            {
-                "name": "name",
-                "in": "formData",
-                "description": "Name of accommodation to create",
-                "required": true,
-                "type": "string"
-            },
-            {
-                "name": "locationId",
-                "in": "formData",
-                "description": "Location of the accommodation",
-                "required": true,
-                "type": "integer"
-            },
-            {
-                "name": "image",
-                "in": "formData",
-                "description": "Url to image of the meal",
-                "type": "file"
-            }
-        ],
-        "responses": {
-            "201": {
-                "description": "Accommodation was added successfully",
-                "examples": {
-                    "application/json": {
-                      "status": 201,
-                      "message": "Accommodation created successfully",
-                      "data": {
-                          "available": true,
-                          "id": 16,
-                          "name": "Mariot",
-                          "location": "Kigali",
-                          "imageUrl": "http://res.cloudinary.com/bahati/image/upload/v1568746852/rkovhn3mjeifjs3o91ed.png",
-                          "updatedAt": "2019-09-17T19:00:51.165Z",
-                          "createdAt": "2019-09-17T19:00:51.165Z"
-                      }
-                    }
-                }
-            },
-            "400": {
-                "description": "Invalid input",
-                "examples": {
-                    "application/json": {
-                      "status": 400,
-                      "message": "validations failed",
-                      "error": [
-                          {
-                              "message": "name field is required and must be a string",
-                              "path": [
-                                  "name"
-                              ],
-                              "type": "any.required",
-                              "context": {
-                                  "key": "name",
-                                  "label": "name"
-                              }
-                          }
-                      ]
-                    }
-                }
-            },
-            "401": {
-              "description": "invalid or expired token",
-              "examples": {
-                  "application/json": {
-                      "status": 401,
-                      "message": "Invalid or expired token used",
-                      "error": {
-                        "name": "JsonWebTokenError",
-                        "message": "jwt must be provided"
-                    }
-                  }
-              }
-          },
-            "403": {
-                "status": 403,
-                "message": "You are not allowed to perform this task",
-                "error":"Authorization error"
-            }
-        }
-    }
-},
-"/accommodations/{accommodationId}":{
-  "get": {
-    "tags": [
-        "accommodation"
-    ],
-    "summary": "Get one accommodation",
-    "description": "List all accommodations in the application",
-    "produces": [
-        "application/json"
-    ],
-    "parameters": [
-        {
+        "parameters": [{
             "name": "Authorization",
             "in": "header",
             "description": "an authorization header",
             "required": true,
             "type": "string"
-        },
-        {
-          "name": "accommodationId",
-          "in": "path",
-          "description": "accommodation Id",
-          "required": true,
-          "type": "integer"
-      }
-    ],
-    "responses": {
-        "200": {
-            "description": "Accomodation found",
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "Name of accommodation to create",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "locationId",
+            "in": "formData",
+            "description": "Location of the accommodation",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "description": "Url to image of the meal",
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Accommodation was added successfully",
             "examples": {
-                "application/json": {
-                    "status": 200,
-                    "message": "Accommodation fetched successfully",
-                    "data": 
-                        {
-                            "id": 3,
-                            "name": "burundi",
-                            "available": true,
-                            "imageUrl": "hjgsdjas",
-                            "location": "Kigali",
-                            "createdAt": "2019-09-16T17:52:41.777Z",
-                            "updatedAt": "2019-09-17T15:22:35.152Z",
-                            "Rooms": [
-                                {
-                                    "id": 1,
-                                    "name": "D4",
-                                    "type": "2 bedroom",
-                                    "accommodationId": 3,
-                                    "available": true,
-                                    "createdAt": "2019-09-16T18:12:36.039Z",
-                                    "updatedAt": "2019-09-16T18:12:36.039Z"
-                                },
-                                {
-                                    "id": 2,
-                                    "name": "D5",
-                                    "type": "2 bedroom",
-                                    "accommodationId": 3,
-                                    "available": true,
-                                    "createdAt": "2019-09-16T18:13:15.379Z",
-                                    "updatedAt": "2019-09-16T18:13:15.379Z"
-                                },
-                                {
-                                    "id": 9,
-                                    "name": "kalisimbi",
-                                    "type": "two bedroom",
-                                    "accommodationId": 3,
-                                    "available": true,
-                                    "createdAt": "2019-09-17T15:05:29.878Z",
-                                    "updatedAt": "2019-09-17T15:05:29.878Z"
-                                }
-                            ]
-                        }
+              "application/json": {
+                "status": 201,
+                "message": "Accommodation created successfully",
+                "data": {
+                  "available": true,
+                  "id": 16,
+                  "name": "Mariot",
+                  "location": "Kigali",
+                  "imageUrl": "http://res.cloudinary.com/bahati/image/upload/v1568746852/rkovhn3mjeifjs3o91ed.png",
+                  "updatedAt": "2019-09-17T19:00:51.165Z",
+                  "createdAt": "2019-09-17T19:00:51.165Z"
                 }
+              }
             }
-        },
-        "401": {
+          },
+          "400": {
+            "description": "Invalid input",
+            "examples": {
+              "application/json": {
+                "status": 400,
+                "message": "validations failed",
+                "error": [{
+                  "message": "name field is required and must be a string",
+                  "path": [
+                    "name"
+                  ],
+                  "type": "any.required",
+                  "context": {
+                    "key": "name",
+                    "label": "name"
+                  }
+                }]
+              }
+            }
+          },
+          "401": {
             "description": "invalid or expired token",
             "examples": {
-                "application/json": {
-                    "status": 401,
-                    "message": "Invalid or expired token used",
-                    "error": {
-                      "name": "JsonWebTokenError",
-                      "message": "jwt must be provided"
-                  }
+              "application/json": {
+                "status": 401,
+                "message": "Invalid or expired token used",
+                "error": {
+                  "name": "JsonWebTokenError",
+                  "message": "jwt must be provided"
                 }
+              }
             }
-        },
-        "404": {
-          "description": "accommodation not found",
-          "examples": {
+          },
+          "403": {
+            "status": 403,
+            "message": "You are not allowed to perform this task",
+            "error": "Authorization error"
+          }
+        }
+      }
+    },
+    "/accommodations/{accommodationId}": {
+      "get": {
+        "tags": [
+          "accommodation"
+        ],
+        "summary": "Get one accommodation",
+        "description": "List all accommodations in the application",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "Authorization",
+            "in": "header",
+            "description": "an authorization header",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "accommodationId",
+            "in": "path",
+            "description": "accommodation Id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Accomodation found",
+            "examples": {
+              "application/json": {
+                "status": 200,
+                "message": "Accommodation fetched successfully",
+                "data": {
+                  "id": 3,
+                  "name": "burundi",
+                  "available": true,
+                  "imageUrl": "hjgsdjas",
+                  "location": "Kigali",
+                  "createdAt": "2019-09-16T17:52:41.777Z",
+                  "updatedAt": "2019-09-17T15:22:35.152Z",
+                  "Rooms": [{
+                      "id": 1,
+                      "name": "D4",
+                      "type": "2 bedroom",
+                      "accommodationId": 3,
+                      "available": true,
+                      "createdAt": "2019-09-16T18:12:36.039Z",
+                      "updatedAt": "2019-09-16T18:12:36.039Z"
+                    },
+                    {
+                      "id": 2,
+                      "name": "D5",
+                      "type": "2 bedroom",
+                      "accommodationId": 3,
+                      "available": true,
+                      "createdAt": "2019-09-16T18:13:15.379Z",
+                      "updatedAt": "2019-09-16T18:13:15.379Z"
+                    },
+                    {
+                      "id": 9,
+                      "name": "kalisimbi",
+                      "type": "two bedroom",
+                      "accommodationId": 3,
+                      "available": true,
+                      "createdAt": "2019-09-17T15:05:29.878Z",
+                      "updatedAt": "2019-09-17T15:05:29.878Z"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "invalid or expired token",
+            "examples": {
+              "application/json": {
+                "status": 401,
+                "message": "Invalid or expired token used",
+                "error": {
+                  "name": "JsonWebTokenError",
+                  "message": "jwt must be provided"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "accommodation not found",
+            "examples": {
               "application/json": {
                 "status": 404,
                 "message": "error",
                 "error": "Accommodation not found"
-                }
+              }
+            }
           }
+        }
       }
-    }
-}
-},
-"/accommodations/rooms":{
-  "post": {
-    "tags": [
-        "accommodation"
-    ],
-    "summary": "creates a new room",
-    "description": "creates a new room",
-    "consumes": [
-        "application/x-www-form-urlencoded",
-        "application/json"
-    ],
-    "produces": [
-        "application/json"
-    ],
-    "parameters": [
-        {
+    },
+    "/accommodations/rooms": {
+      "post": {
+        "tags": [
+          "accommodation"
+        ],
+        "summary": "creates a new room",
+        "description": "creates a new room",
+        "consumes": [
+          "application/x-www-form-urlencoded",
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [{
             "name": "Authorization",
             "in": "header",
             "description": "an authorization header",
             "required": true,
             "type": "string"
-        },
-        {
+          },
+          {
             "name": "name",
             "in": "formData",
             "description": "Name of room to create",
             "required": true,
             "type": "string"
-        },
-        {
+          },
+          {
             "name": "type",
             "in": "formData",
             "description": "type of the room",
             "required": true,
             "type": "string"
-        },
-        {
+          },
+          {
             "name": "accommodationId",
             "in": "formData",
             "description": "accommodation to contain the room",
             "required": true,
             "type": "integer"
-        }
-    ],
-    "responses": {
-        "201": {
+          }
+        ],
+        "responses": {
+          "201": {
             "description": "Room was added successfully",
             "examples": {
-                "application/json": {
-                  "status": 201,
-                  "message": "Room created successfully",
-                  "data": {
-                      "available": true,
-                      "id": 13,
-                      "name": "muhabura3",
-                      "type": "two bedroom",
-                      "accommodationId": 10,
-                      "updatedAt": "2019-09-17T16:20:47.765Z",
-                      "createdAt": "2019-09-17T16:20:47.765Z"
-                  }
-                }
-            }
-        },
-        "400": {
-            "description": "Invalid input",
-            "examples": {
-                "application/json": {
-                  "status": 400,
-                  "message": "validations failed",
-                  "error": [
-                      {
-                          "message": "name field is required and must be a string",
-                          "path": [
-                              "name"
-                          ],
-                          "type": "any.required",
-                          "context": {
-                              "key": "name",
-                              "label": "name"
-                          }
-                      }
-                  ]
-                }
-            }
-        },
-        "401": {
-          "description": "invalid or expired token",
-          "examples": {
               "application/json": {
-                  "status": 401,
-                  "message": "Invalid or expired token used",
-                  "error": {
-                    "name": "JsonWebTokenError",
-                    "message": "jwt must be provided"
+                "status": 201,
+                "message": "Room created successfully",
+                "data": {
+                  "available": true,
+                  "id": 13,
+                  "name": "muhabura3",
+                  "type": "two bedroom",
+                  "accommodationId": 10,
+                  "updatedAt": "2019-09-17T16:20:47.765Z",
+                  "createdAt": "2019-09-17T16:20:47.765Z"
                 }
               }
-          }
-      },
-        "403": {
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "examples": {
+              "application/json": {
+                "status": 400,
+                "message": "validations failed",
+                "error": [{
+                  "message": "name field is required and must be a string",
+                  "path": [
+                    "name"
+                  ],
+                  "type": "any.required",
+                  "context": {
+                    "key": "name",
+                    "label": "name"
+                  }
+                }]
+              }
+            }
+          },
+          "401": {
+            "description": "invalid or expired token",
+            "examples": {
+              "application/json": {
+                "status": 401,
+                "message": "Invalid or expired token used",
+                "error": {
+                  "name": "JsonWebTokenError",
+                  "message": "jwt must be provided"
+                }
+              }
+            }
+          },
+          "403": {
             "status": 403,
             "message": "You are not allowed to perform this task",
-            "error":"Authorization error"
-        },
-        "404": {
-          "status": 404,
-          "message": "error",
-          "error": "Accommodation not found"
+            "error": "Authorization error"
+          },
+          "404": {
+            "status": 404,
+            "message": "error",
+            "error": "Accommodation not found"
+          }
         }
-    }
-}
-  },
-  "/requests/my-requests": {
-    "get": {
-      "tags": [
+      }
+    },
+    "/requests/my-requests": {
+      "get": {
+        "tags": [
           "request"
-      ],
-      "summary": "View my requests",
-      "description": "User can view all the request he/she has made",
-      "produces": [
+        ],
+        "summary": "View my requests",
+        "description": "User can view all the request he/she has made",
+        "produces": [
           "application/json"
-      ],
-      "responses": {
-        "401": {
-          "status": 401,
-          "message": "Invalid or expired token used"
-        },
-        "200": {
-          "status": 200,
-          "message": "Your requests were retrieved successfully",
-          "data": []
+        ],
+        "responses": {
+          "401": {
+            "status": 401,
+            "message": "Invalid or expired token used"
+          },
+          "200": {
+            "status": 200,
+            "message": "Your requests were retrieved successfully",
+            "data": []
+          }
         }
       }
     }
-  }
-},
-"securityDefinitions": {
-"Bearer": { "type": "apiKey", "name": "Authorization", "in": "header" }
-},
-"security": [
-{
-  "Bearer": []
+  },
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "security": [{
+    "Bearer": []
+  }]
 }
-]}

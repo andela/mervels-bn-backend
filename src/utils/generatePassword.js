@@ -1,4 +1,4 @@
-import { hash, genSalt, compareSync } from "bcrypt";
+import { hash, genSalt, compareSync } from 'bcrypt';
 
 /** Class representing a password util. */
 class Password {

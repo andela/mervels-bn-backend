@@ -1,5 +1,5 @@
 /* eslint-disable no-useless-catch */
-import database from "../database/models";
+import database from '../database/models';
 
 const { Accommodations, Rooms } = database;
 
@@ -41,7 +41,7 @@ class AccommodationService {
         include: [
           {
             model: database.Rooms,
-            as: "Rooms"
+            as: 'Rooms'
           }
         ]
       });
@@ -62,7 +62,7 @@ class AccommodationService {
         include: [
           {
             model: database.Rooms,
-            as: "Rooms"
+            as: 'Rooms'
           }
         ]
       });

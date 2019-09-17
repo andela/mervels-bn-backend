@@ -1,5 +1,5 @@
 /* eslint-disable no-useless-catch */
-import database from "../database/models";
+import database from '../database/models';
 
 const { Locations } = database;
 
