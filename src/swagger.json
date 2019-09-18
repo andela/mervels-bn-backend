@@ -79,14 +79,16 @@
           "application/xml",
           "application/json"
         ],
-        "parameters": [{
-          "in": "body",
-          "name": "body",
-          "description": "User object that needs to be added to the store",
-          "schema": {
-            "$ref": "#/definitions/SignIn"
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User object that needs to be added to the store",
+            "schema": {
+              "$ref": "#/definitions/SignIn"
+            }
           }
-        }],
+        ],
         "responses": {
           "422": {
             "description": "Invalid input"
@@ -107,13 +109,15 @@
         "produces": [
           "application/json"
         ],
-        "parameters": [{
-          "name": "email",
-          "in": "formData",
-          "description": "Email for account to reset password 'test@example.com'",
-          "required": true,
-          "type": "string"
-        }],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "Email for account to reset password 'test@example.com'",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "responses": {
           "404": {
             "description": "Account not Found"
@@ -137,7 +141,8 @@
         "produces": [
           "application/json"
         ],
-        "parameters": [{
+        "parameters": [
+          {
             "name": "userId",
             "in": "path",
             "description": "Users Id attached to reset password link",
@@ -193,14 +198,16 @@
         "produces": [
           "application/json"
         ],
-        "parameters": [{
-          "name": "email",
-          "in": "body",
-          "description": "Email to receive the link",
-          "schema": {
-            "$ref": "#/definitions/CreateLink"
+        "parameters": [
+          {
+            "name": "email",
+            "in": "body",
+            "description": "Email to receive the link",
+            "schema": {
+              "$ref": "#/definitions/CreateLink"
+            }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "Email sent with a verification link",
@@ -215,7 +222,6 @@
               }
             }
           },
-
           "404": {
             "description": "user not found",
             "examples": {
@@ -239,12 +245,14 @@
         "produces": [
           "application/json"
         ],
-        "parameters": [{
-          "name": "token",
-          "in": "path",
-          "description": "email verification",
-          "type": "string"
-        }],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "description": "email verification",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Email verified",
@@ -260,7 +268,6 @@
               }
             }
           },
-
           "404": {
             "description": "user not found",
             "examples": {
@@ -280,7 +287,9 @@
         },
         "definitions": {
           "Request": {
-            "required": ["email"],
+            "required": [
+              "email"
+            ],
             "type": "object",
             "properties": {
               "email": {
@@ -289,7 +298,10 @@
             }
           },
           "Reset": {
-            "required": ["password", "newPassword"],
+            "required": [
+              "password",
+              "newPassword"
+            ],
             "type": "object",
             "properties": {
               "password": {
@@ -378,7 +390,6 @@
             }
           }
         }
-
       }
     },
     "/auth/updateRole": {
@@ -397,14 +408,16 @@
           "application/xml",
           "application/json"
         ],
-        "parameters": [{
-          "in": "body",
-          "name": "body",
-          "description": "User object that needs to be updated",
-          "schema": {
-            "$ref": "#/definitions/updateRole"
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User object that needs to be updated",
+            "schema": {
+              "$ref": "#/definitions/updateRole"
+            }
           }
-        }],
+        ],
         "responses": {
           "422": {
             "description": "Invalid input"
@@ -422,13 +435,15 @@
         "produces": [
           "application/json"
         ],
-        "parameters": [{
-          "name": "Authorization",
-          "in": "header",
-          "description": "an authorization header",
-          "required": true,
-          "type": "string"
-        }],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "an authorization header",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Accomodations found",
@@ -436,7 +451,8 @@
               "application/json": {
                 "status": 200,
                 "message": "Accommodations fetched successfully",
-                "data": [{
+                "data": [
+                  {
                     "id": 3,
                     "name": "burundi",
                     "available": true,
@@ -444,7 +460,8 @@
                     "location": "Kigali",
                     "createdAt": "2019-09-16T17:52:41.777Z",
                     "updatedAt": "2019-09-17T15:22:35.152Z",
-                    "Rooms": [{
+                    "Rooms": [
+                      {
                         "id": 1,
                         "name": "D4",
                         "type": "2 bedroom",
@@ -473,7 +490,6 @@
                       }
                     ]
                   }
-
                 ]
               }
             }
@@ -506,7 +522,8 @@
         "produces": [
           "application/json"
         ],
-        "parameters": [{
+        "parameters": [
+          {
             "name": "Authorization",
             "in": "header",
             "description": "an authorization header",
@@ -559,17 +576,19 @@
               "application/json": {
                 "status": 400,
                 "message": "validations failed",
-                "error": [{
-                  "message": "name field is required and must be a string",
-                  "path": [
-                    "name"
-                  ],
-                  "type": "any.required",
-                  "context": {
-                    "key": "name",
-                    "label": "name"
+                "error": [
+                  {
+                    "message": "name field is required and must be a string",
+                    "path": [
+                      "name"
+                    ],
+                    "type": "any.required",
+                    "context": {
+                      "key": "name",
+                      "label": "name"
+                    }
                   }
-                }]
+                ]
               }
             }
           },
@@ -604,7 +623,8 @@
         "produces": [
           "application/json"
         ],
-        "parameters": [{
+        "parameters": [
+          {
             "name": "Authorization",
             "in": "header",
             "description": "an authorization header",
@@ -634,7 +654,8 @@
                   "location": "Kigali",
                   "createdAt": "2019-09-16T17:52:41.777Z",
                   "updatedAt": "2019-09-17T15:22:35.152Z",
-                  "Rooms": [{
+                  "Rooms": [
+                    {
                       "id": 1,
                       "name": "D4",
                       "type": "2 bedroom",
@@ -706,7 +727,8 @@
         "produces": [
           "application/json"
         ],
-        "parameters": [{
+        "parameters": [
+          {
             "name": "Authorization",
             "in": "header",
             "description": "an authorization header",
@@ -760,17 +782,19 @@
               "application/json": {
                 "status": 400,
                 "message": "validations failed",
-                "error": [{
-                  "message": "name field is required and must be a string",
-                  "path": [
-                    "name"
-                  ],
-                  "type": "any.required",
-                  "context": {
-                    "key": "name",
-                    "label": "name"
+                "error": [
+                  {
+                    "message": "name field is required and must be a string",
+                    "path": [
+                      "name"
+                    ],
+                    "type": "any.required",
+                    "context": {
+                      "key": "name",
+                      "label": "name"
+                    }
                   }
-                }]
+                ]
               }
             }
           },
@@ -861,6 +885,201 @@
           "description": "Server Error"
         }
       }
+    },
+    "/requests/oneWay": {
+      "post": {
+        "tags": [
+          "requests"
+        ],
+        "summary": "create a One way trip request",
+        "description": "this endpoint sends and creates a one way trip",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "One way request data entered by the user",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/oneWay"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request sucessfully retrieved"
+          },
+          "422": {
+            "description": "Wrong Data format is entered"
+          },
+          "404": {
+            "description": "Accommodation or location not found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/profile": {
+      "patch": {
+        "path": "/profile",
+        "tags": [
+          "user profile"
+        ],
+        "summary": "Update user profile details",
+        "description": "End point for updating user profile by using userId in the token",
+        "operationId": "updateProfile",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User Profile needs to be updated",
+            "schema": {
+              "$ref": "#/definitions/UserProfile"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile updated successfully"
+          },
+          "401": {
+            "description": "Invalid or Expired token used"
+          },
+          "422": {
+            "description": "Validation error in one or more fields"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": {
+          "bearerAuth": []
+        }
+      },
+      "get": {
+        "tags": [
+          "user profile"
+        ],
+        "summary": "Get user profile details",
+        "description": "End point for getting user profile by using userId in the token",
+        "operationId": "getProfile",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "User profile retrieved successfully"
+          },
+          "401": {
+            "description": "Invalid or Expired token used"
+          },
+          "422": {
+            "description": "Validation error in one or more fields"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "barefoot_auth": [
+              "write:profiles",
+              "read:profiles"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "oneWay": {
+      "required": [
+        "from",
+        "to",
+        "travelDate",
+        "reason",
+        "accommodation"
+      ],
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string",
+          "example": "Kigali, Rwanda"
+        },
+        "to": {
+          "type": "integer",
+          "example": 1,
+          "summary": "this is the locationId"
+        },
+        "travelDate": {
+          "type": "date",
+          "example": "2020-01-01",
+          "summary": "this is the date of travel and should atleast today"
+        },
+        "reason": {
+          "type": "string",
+          "example": "this is my travel reason and it should be more than 30 characters",
+          "summary": "this is reason and should be more than 30 characters"
+        },
+        "accommodation": {
+          "type": "integer",
+          "example": 1,
+          "summary": "this is the accommodationId"
+        }
+      }
+    },
+    "UserProfile": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "phoneNumber": {
+          "type": "string"
+        },
+        "birthDate": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "User"
+      }
     }
   },
   "/requests/returnTrip":{
@@ -904,94 +1123,9 @@
     }
    }
   },
-  "definitions":{
-    "oneWay": {
-      "required": [
-        "from",
-        "to",
-        "travelDate",
-        "reason",
-        "accommodation"
-      ],
-      "type": "object",
-      "properties": {
-        "from": {
-          "type": "string",
-          "example": "Kigali, Rwanda"
-        },
-        "to": {
-          "type": "integer",
-          "example": 1,
-          "summary": "this is the locationId"
-        },
-        "travelDate": {
-          "type": "date",
-          "example": "2020-01-01",
-          "summary": "this is the date of travel and should atleast today"
-        },
-        "reason": {
-          "type": "string",
-          "example": "this is my travel reason and it should be more than 30 characters",
-          "summary": "this is reason and should be more than 30 characters"
-        },
-        "accommodation": {
-          "type": "integer",
-          "example": 1,
-          "summary": "this is the accommodationId"
-        }
-      }
-    },
-    "returnTrip": {
-      "required": [
-        "from",
-        "to",
-        "travelDate",
-        "returnDate",
-        "reason",
-        "accommodation"
-      ],
-      "type": "object",
-      "properties": {
-        "from": {
-          "type": "string",
-          "example": "Kigali, Rwanda"
-        },
-        "to": {
-          "type": "integer",
-          "example": 1,
-          "summary": "this is the locationId"
-        },
-        "travelDate": {
-          "type": "date",
-          "example": "2020-01-01",
-          "summary": "this is the date of travel and should atleast today"
-        },
-        "returnDate": {
-          "type": "date",
-          "example": "2020-02-30",
-          "summary": "this is the date of return and should be greater tha travel date"
-        },
-        "reason": {
-          "type": "string",
-          "example": "this is my travel reason and it should be more than 30 characters",
-          "summary": "this is reason and should be more than 30 characters"
-        },
-        "accommodation": {
-          "type": "integer",
-          "example": 1,
-          "summary": "this is the accommodationId"
-        }
-      }
-    }
-  },
-  "securityDefinitions": {
-    "Bearer": { "type": "apiKey", "name": "Authorization", "in": "header" }
-  },
   "security": [
-  {
-    "Bearer": []
-  }
+    {
+      "Bearer": []
+    }
   ]
 }
-
-

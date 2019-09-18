@@ -1,5 +1,5 @@
 /* eslint-disable func-names */
-/* eslint-disable no-unused-vars */
+
 export default (sequelize, DataTypes) => {
   const Users = sequelize.define('Users', {
     firstName: {
@@ -44,9 +44,16 @@ export default (sequelize, DataTypes) => {
       defaultValue: false
     }
   });
-  Users.associate = (models) => {
+
+  Users.associate = function (models) {
+    // associations can be defined here
     Users.hasMany(models.Requests, {
       foreignKey: 'user'
+    });
+
+    Users.hasOne(models.UserProfile, {
+      foreignKey: 'userId',
+      as: 'userProfile'
     });
   };
   return Users;

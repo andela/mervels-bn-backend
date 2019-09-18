@@ -13,6 +13,8 @@ const requestReset = '/api/v1/auth/forgotPassword';
 const signinUrl = '/api/v1/auth/signin';
 const sendLinkUrl = '/api/v1/auth/createLink';
 const updateRole = '/api/v1/auth/updateRole';
+const profileUrl = '/api/v1/profile';
+
 let token1;
 let superToken;
 
@@ -238,6 +240,7 @@ describe('User Login', () => {
         done();
       });
   });
+
   it('with wrong password', (done) => {
     const user = {
       userEmail: 'wi@stations.com',
@@ -346,51 +349,6 @@ describe('login through facebook', () => {
           'api/v1/auth/facebook/redirect?__mock_strategy_callback=true'
         );
         expect(res.status).to.eq(200);
-        done();
-      });
-  });
-});
-
-describe('Users Logout', () => {
-  it('when they are logged In', (done) => {
-    chai
-      .request(server)
-      .post(signout)
-      .set('Authorization', `Bearer ${token}`)
-      .send()
-      .end((_err, res) => {
-        if (_err) done(_err);
-        expect(res.body.message).to.eq('User logged out successfully');
-        expect(res.status).to.eq(200);
-        done();
-      });
-  });
-  it('when they are not logged In', (done) => {
-    chai
-      .request(server)
-      .post(signout)
-      .set('Authorization', `Bearer ${token}`)
-      .send()
-      .end((_err, res) => {
-        if (_err) done(_err);
-
-        expect(res.body.message).to.eq('User not logged In');
-        expect(res.status).to.eq(401);
-        done();
-      });
-  });
-
-  it('by passing incorrect token', (done) => {
-    chai
-      .request(server)
-      .post(signout)
-      .set('Authorization', 'WrongToken sadasdasdasd')
-      .send()
-      .end((_err, res) => {
-        if (_err) done(_err);
-
-        expect(res.body.message).to.eq('Invalid or expired token used');
-        expect(res.status).to.eq(401);
         done();
       });
   });
@@ -532,5 +490,127 @@ describe('Test Access', () => {
           done();
         });
     });
+  });
+});
+
+describe('User Profile', () => {
+  it('should get user Profile', (done) => {
+    chai
+      .request(server)
+      .get(profileUrl)
+      .set('Authorization', `Bearer ${token}`)
+      .end((_err, res) => {
+        if (_err) done(_err);
+
+        expect(res.status).to.eq(200);
+        expect(res.body.data).to.have.property('userEmail');
+        expect(res.body.data).to.have.property('userProfile');
+
+        done();
+      });
+  });
+
+  it('should update user Profile', (done) => {
+    const profileData = {
+      gender: 'MALE',
+      language: 'English',
+      currency: 'Francs',
+      department: 'Operations'
+    };
+
+    chai
+      .request(server)
+      .patch(profileUrl)
+      .set('Authorization', `Bearer ${token}`)
+      .send(profileData)
+      .end((_err, res) => {
+        if (_err) done(_err);
+
+        expect(res.status).to.eq(200);
+        expect(res.body.data.userProfile.gender).to.eq('MALE');
+        expect(res.body.data.userProfile.language).to.eq('English');
+        expect(res.body.data.userProfile.currency).to.eq('Francs');
+
+        done();
+      });
+  });
+  it('should not update user Profile if wrong field in phoneNumber', (done) => {
+    const profileData = {
+      phoneNumber: '1232asdasds'
+    };
+    chai
+      .request(server)
+      .patch(profileUrl)
+      .set('Authorization', `Bearer ${token}`)
+      .send(profileData)
+      .end((_err, res) => {
+        if (_err) done(_err);
+
+        expect(res.status).to.eq(422);
+
+        done();
+      });
+  });
+  it('should not update user Profile if wrong field in birthDate', (done) => {
+    const profileData = {
+      birthDate: '20-10-2019'
+    };
+    chai
+      .request(server)
+      .patch(profileUrl)
+      .set('Authorization', `Bearer ${token}`)
+      .send(profileData)
+      .end((_err, res) => {
+        if (_err) done(_err);
+
+        expect(res.status).to.eq(422);
+
+        done();
+      });
+  });
+});
+
+describe('Users Logout', () => {
+  it('when they are logged In', (done) => {
+    chai
+      .request(server)
+      .post(signout)
+      .set('Authorization', `Bearer ${token}`)
+      .send()
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.body.message).to.eq('User logged out successfully');
+        expect(res.status).to.eq(200);
+        done();
+      });
+  });
+  it('when they are not logged In', (done) => {
+    chai
+      .request(server)
+      .post(signout)
+      .set('Authorization', `Bearer ${token}`)
+      .send()
+      .end((_err, res) => {
+        if (_err) done(_err);
+
+        expect(res.body.message).to.eq('User not logged In');
+        expect(res.status).to.eq(401);
+        done();
+      });
+  });
+
+  it('by passing incorrect token', (done) => {
+    chai
+      .request(server)
+      .post(signout)
+      .set('Authorization', 'WrongToken sadasdasdasd')
+      .send()
+      .end((_err, res) => {
+        if (_err) done(_err);
+
+        expect(res.body.message).to.eq('Invalid or expired token used');
+        expect(res.status).to.eq(401);
+        done();
+      });
   });
 });

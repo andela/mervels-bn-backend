@@ -46,9 +46,9 @@ class SessionManager {
   static async createSession(data) {
     const result = await this.verifyToken(data.userEmail);
 
-    if (result !== null) {
-      return result;
-    }
+    // if (result !== null) {
+    //   return result;
+    // }
     const token = this.generateToken(data);
 
     redisClient.set(data.userEmail, token);
