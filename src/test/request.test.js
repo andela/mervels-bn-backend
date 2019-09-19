@@ -12,6 +12,7 @@ let token;
 const signinUrl = '/api/v1/auth/signin';
 const getMyRequestUrl = '/api/v1/requests/my-requests';
 const oneway = '/api/v1/requests/oneWay';
+const returnTrip = '/api/v1/requests/returnTrip';
 
 const oneWay = {
   from: 'Kigali, Rwanda',
@@ -66,6 +67,25 @@ const WrongDescription = {
   to: 1,
   travelDate: '2019-11-02',
   reason: 'iam travelling cause',
+  accommodation: 1
+};
+
+const returnTripData = {
+  from: 'Kigali, Rwanda',
+  to: 1,
+  travelDate: '2019-11-02',
+  returnDate: '2019-11-20',
+  reason:
+    'iam travelling cause the company allows us to, i mean the company finances everything so why not',
+  accommodation: 1
+};
+const wrongreturnDate = {
+  from: 'Kigali, Rwanda',
+  to: 1,
+  travelDate: '2019-11-02',
+  returnDate: '2019-11-00',
+  reason:
+    'iam travelling cause the company allows us to, i mean the company finances everything so why not',
   accommodation: 1
 };
 
@@ -193,6 +213,31 @@ describe('Get Requests', () => {
       .post(oneway)
       .set('Authorization', `Bearer ${token}`)
       .send(WrongDescription)
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(422);
+        done();
+      });
+  });
+
+  it('User should request a return trip with correct fields', (done) => {
+    chai
+      .request(server)
+      .post(returnTrip)
+      .set('Authorization', `Bearer ${token}`)
+      .send(returnTripData)
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(200);
+        done();
+      });
+  });
+  it('User should not request a return trip withwrong returnDate', (done) => {
+    chai
+      .request(server)
+      .post(returnTrip)
+      .set('Authorization', `Bearer ${token}`)
+      .send(wrongreturnDate)
       .end((_err, res) => {
         if (_err) done(_err);
         expect(res.status).to.eq(422);

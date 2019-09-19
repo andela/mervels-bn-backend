@@ -6,8 +6,8 @@ const { Locations } = database;
 /** Class representing a Accommodation service */
 class LocationService {
   /**
-   * gets a location by id.
-   * @param {object} id locatoin id.
+   * Creates a new accommodation.
+   * @param {object} id The first number.
    * @returns {object} The User object.
    */
   static async getLocationById(id) {

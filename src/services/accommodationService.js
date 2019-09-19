@@ -20,8 +20,8 @@ class AccommodationService {
 
   /**
    * Creates a new room.
-   * @param {object} room room details.
-   * @returns {object} The room object.
+   * @param {object} room The first number.
+   * @returns {object} The User object.
    */
   static async createRoom(room) {
     try {
@@ -32,7 +32,8 @@ class AccommodationService {
   }
 
   /**
-   * gets all accommodations.
+   * Creates a new room.
+   * @param {object} room The first number.
    * @returns {object} The User object.
    */
   static async getAllAccommodations() {
@@ -52,8 +53,8 @@ class AccommodationService {
 
   /**
    * Creates a new room.
-   * @param {object} id The id would be easier..
-   * @returns {object} The accommodation object.
+   * @param {object} id The first number.
+   * @returns {object} The User object.
    */
   static async getAccommodationById(id) {
     try {
