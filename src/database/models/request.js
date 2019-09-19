@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 export default (sequelize, DataTypes) => {
   const Requests = sequelize.define(
-    "Requests",
+    'Requests',
     {
       from: {
         type: DataTypes.STRING,
@@ -31,11 +31,11 @@ export default (sequelize, DataTypes) => {
       status: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: "Pending",
+        defaultValue: 'Pending',
         validate: {
           isIn: {
-            args: [["Pending", "Approved", "Rejected"]],
-            msg: "Status can only be Pending, Approved or Rejected"
+            args: [['Pending', 'Approved', 'Rejected']],
+            msg: 'Status can only be Pending, Approved or Rejected'
           }
         }
       },
@@ -49,15 +49,15 @@ export default (sequelize, DataTypes) => {
     },
     {}
   );
-  Requests.associate = models => {
+  Requests.associate = (models) => {
     Requests.belongsTo(models.Users, {
-      foreignKey: "user",
-      onDelete: "CASCADE"
+      foreignKey: 'user',
+      onDelete: 'CASCADE'
     });
     Requests.belongsToMany(models.Accommodations, {
-      through: "AccommodationRequests",
-      as: "accommodations",
-      foreignKey: "requestId"
+      through: 'AccommodationRequests',
+      as: 'accommodations',
+      foreignKey: 'requestId'
     });
   };
   return Requests;

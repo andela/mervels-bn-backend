@@ -1,5 +1,5 @@
 /* eslint-disable no-useless-catch */
-import database from "../database/models";
+import database from '../database/models';
 
 const { Users } = database;
 /** Class representing a User services. */
@@ -48,6 +48,21 @@ class UserService {
   }
 
   /**
+   * Get user by id if exists
+   * @param {string} userRole role to be checked against
+   * @return {object} Oject of user if found
+   */
+  static async findUserByRole(userRole) {
+    try {
+      const user = await Users.findOne({ where: { userRoles: userRole } });
+
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
    * change user password
    * @param {string} id id to be checked against
    * @param {Object} user what to be updated
@@ -70,10 +85,18 @@ class UserService {
    * @returns {object} The  object.
    */
   static async verifyEmail(email) {
-    const result = await Users.update(
-      { accountVerified: true },
-      { where: [{ userEmail: email }] }
-    );
+    const result = await Users.update({ accountVerified: true }, { where: [{ userEmail: email }] });
+    return result;
+  }
+
+  /**
+   * gets the user with the provided email.
+   * @param {string} email The email.
+   * @param {string} userRole The userRole
+   * @returns {object} The  object.
+   */
+  static async updateRole(email, userRole) {
+    const result = await Users.update({ userRoles: userRole }, { where: [{ userEmail: email }] });
     return result;
   }
 }

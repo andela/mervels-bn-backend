@@ -1,9 +1,9 @@
-import express from "express";
-import fileupload from "express-fileupload";
-import Accommodations from "../../controllers/accommodationController";
-import verify from "../../middlewares/auth";
-import accommodationValidator from "../../validation/accommodationValidation";
-import Access from "../../middlewares/userRoles";
+import express from 'express';
+import fileupload from 'express-fileupload';
+import Accommodations from '../../controllers/accommodationController';
+import verify from '../../middlewares/auth';
+import accommodationValidator from '../../validation/accommodationValidation';
+import Access from '../../middlewares/userRoles';
 
 const router = express.Router();
 router.use(
@@ -13,22 +13,22 @@ router.use(
 );
 
 router.post(
-  "/rooms",
+  '/rooms',
   verify,
   Access.travelAdmin,
   accommodationValidator.validateCreateRoom,
   Accommodations.createRoom
 );
 router.post(
-  "/",
+  '/',
   verify,
   Access.travelAdmin,
   accommodationValidator.validateCreateAccommodation,
   Accommodations.createAccommodation
 );
-router.get("/", verify, Accommodations.getAllAccommodations);
+router.get('/', verify, Accommodations.getAllAccommodations);
 router.get(
-  "/:accommodationId",
+  '/:accommodationId',
   verify,
   accommodationValidator.validateGetOneAccommodation,
   Accommodations.getAccommodationById

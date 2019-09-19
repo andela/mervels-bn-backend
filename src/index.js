@@ -1,35 +1,35 @@
 /* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
-import "@babel/polyfill";
-import dotenv from "dotenv";
+import '@babel/polyfill';
+import dotenv from 'dotenv';
 
-const fs = require("fs"),
-  http = require("http"),
-  path = require("path"),
-  methods = require("methods"),
-  express = require("express"),
-  bodyParser = require("body-parser"),
-  cors = require("cors"),
-  passport = require("passport"),
-  errorhandler = require("errorhandler");
+const fs = require('fs'),
+  http = require('http'),
+  path = require('path'),
+  methods = require('methods'),
+  express = require('express'),
+  bodyParser = require('body-parser'),
+  cors = require('cors'),
+  passport = require('passport'),
+  errorhandler = require('errorhandler');
 
 dotenv.config();
-const isProduction = process.env.NODE_ENV === "production";
+const isProduction = process.env.NODE_ENV === 'production';
 
 // Create global app object
 const app = express();
 
-app.enable("trust proxy");
+app.enable('trust proxy');
 
 app.use(cors());
 
 // Normal express config defaults
-app.use(require("morgan")("dev"));
+app.use(require('morgan')('dev'));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use(require("method-override")());
+app.use(require('method-override')());
 
 app.use(express.static(`${__dirname}/public`));
 
@@ -38,18 +38,18 @@ if (!isProduction) {
 }
 
 app.use((req, res, next) => {
-  if (req.header("x-forwarded-proto") !== "https" && isProduction) {
-    const newUrl = `https://${req.get("host") + req.originalUrl}`;
+  if (req.header('x-forwarded-proto') !== 'https' && isProduction) {
+    const newUrl = `https://${req.get('host') + req.originalUrl}`;
     res.redirect(newUrl);
   }
   next();
 });
 
-app.use(require("./routes"));
+app.use(require('./routes'));
 
 // / catch 404 and forward to error handler
 app.use((req, res, next) => {
-  const err = new Error("Not Found");
+  const err = new Error('Not Found');
   err.status = 404;
   next(err);
 });

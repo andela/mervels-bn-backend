@@ -3,8 +3,8 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
-import Joi from "@hapi/joi";
-import Response from "../utils/response";
+import Joi from '@hapi/joi';
+import Response from '../utils/response';
 
 /**
  * @class user
@@ -31,26 +31,13 @@ export default class userValidator {
           /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+=<>|.-])[0-9a-zA-Z!@#$%^&*()_+=<>|.-]{8,}$/
         )
         .error(
-          () =>
-            "Password should contain a minimum of 8 characters (upper and lowercase letters, numbers and at least one special character)"
-        ),
-      userRoles: Joi.string()
-        .valid(
-          "Travel Team Member",
-          "Travel Administrator",
-          "Manager",
-          "Requester"
+          () => 'Password should contain a minimum of 8 characters (upper and lowercase letters, numbers and at least one special character)'
         )
-        .required()
     });
-    schema.validate(req.body, err => {
-      if (err)
-        return Response.errorResponse(
-          res,
-          422,
-          "Validation failed",
-          err.details[0].message
-        );
+    schema.validate(req.body, (err) => {
+      if (err) {
+        return Response.errorResponse(res, 422, 'Validation failed', err.details[0].message);
+      }
       next();
     });
   }
@@ -69,18 +56,15 @@ export default class userValidator {
         .trim()
         .required()
         .min(5)
-        .error(() => "userEmail field is required and must be an email"),
+        .error(() => 'userEmail field is required and must be an email'),
       userPassword: Joi.string()
         .trim()
         .required()
         .min(1)
-        .error(
-          () =>
-            "userPassword field is required and must be a string and not empty"
-        )
+        .error(() => 'userPassword field is required and must be a string and not empty')
     });
 
-    schema.validate(req.body, err => {
+    schema.validate(req.body, (err) => {
       if (err) {
         next(err);
       }
@@ -105,8 +89,7 @@ export default class userValidator {
         .required()
         .min(1)
         .error(
-          () =>
-            "Enter a Password string with atleast 1 number, 1 uppercase, 1 lowercase and 1 special Charcter"
+          () => 'Enter a Password string with atleast 1 number, 1 uppercase, 1 lowercase and 1 special Charcter'
         ),
       newPassword: Joi.string()
         .regex(
@@ -116,12 +99,11 @@ export default class userValidator {
         .required()
         .min(1)
         .error(
-          () =>
-            "Enter a Password string with atleast 1 number, 1 uppercase, 1 lowercase and 1 special Charcter"
+          () => 'Enter a Password string with atleast 1 number, 1 uppercase, 1 lowercase and 1 special Charcter'
         )
     });
 
-    schema.validate(req.body, err => {
+    schema.validate(req.body, (err) => {
       if (err) {
         next(err);
       }
@@ -141,16 +123,12 @@ export default class userValidator {
         .email()
         .trim()
         .required()
-        .error(() => "userEmail field is required and must be an email")
+        .error(() => 'userEmail field is required and must be an email')
     });
-    schema.validate(req.body, error => {
-      if (error)
-        return Response.errorResponse(
-          res,
-          400,
-          "validations failed",
-          error.details
-        );
+    schema.validate(req.body, (error) => {
+      if (error) {
+        return Response.errorResponse(res, 400, 'validations failed', error.details);
+      }
       next();
     });
   }
@@ -165,16 +143,33 @@ export default class userValidator {
     const schema = Joi.object().keys({
       token: Joi.string()
         .required()
-        .error(() => "token  is required and must be a string")
+        .error(() => 'token  is required and must be a string')
     });
-    schema.validate(req.query, error => {
-      if (error)
-        return Response.errorResponse(
-          res,
-          400,
-          "validations failed",
-          error.details
-        );
+    schema.validate(req.query, (error) => {
+      if (error) {
+        return Response.errorResponse(res, 400, 'validations failed', error.details);
+      }
+      next();
+    });
+  }
+
+  /**
+   * @param {object} req  request.
+   * @param {object} res  response.
+   * @param {function} next next.
+   * @returns {object}.
+   */
+  static async validateUserRole(req, res, next) {
+    const schema = Joi.object().keys({
+      userEmail: Joi.string()
+        .email()
+        .required(),
+      userRole: Joi.string()
+        .valid('Travel Team Member', 'Travel Administrator', 'Manager', 'Requester')
+        .required()
+    });
+    schema.validate(req.body, (err) => {
+      if (err) return Response.errorResponse(res, 422, 'Validation failed', err.details[0].message);
       next();
     });
   }

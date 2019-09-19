@@ -1,19 +1,19 @@
 /* eslint-disable func-names */
 /* eslint-disable no-unused-vars */
 export default (sequelize, DataTypes) => {
-  const Users = sequelize.define("Users", {
+  const Users = sequelize.define('Users', {
     firstName: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        is: ["^[a-z]+$", "i"]
+        is: ['^[a-z]+$', 'i']
       }
     },
     lastName: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        is: ["^[a-z]+$", "i"]
+        is: ['^[a-z]+$', 'i']
       }
     },
     userEmail: {
@@ -30,18 +30,12 @@ export default (sequelize, DataTypes) => {
     userRoles: {
       type: DataTypes.STRING,
       allowNull: false,
+      defaultValue: 'Requester',
       validate: {
         isIn: {
-          args: [
-            [
-              "Travel Team Member",
-              "Travel Administrator",
-              "Manager",
-              "Requester"
-            ]
-          ],
+          args: [['Travel Team Member', 'Travel Administrator', 'Manager', 'Requester']],
           msg:
-            "User Roles must either be Travel Team Member, Travel Administrator, Manager or Requester"
+            'User Roles must either be Travel Team Member, Travel Administrator, Manager or Requester'
         }
       }
     },
@@ -50,9 +44,9 @@ export default (sequelize, DataTypes) => {
       defaultValue: false
     }
   });
-  Users.associate = function(models) {
+  Users.associate = function (models) {
     Users.hasMany(models.Requests, {
-      foreignKey: "user"
+      foreignKey: 'user'
     });
   };
   return Users;

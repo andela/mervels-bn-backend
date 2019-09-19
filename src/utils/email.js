@@ -1,5 +1,5 @@
-import sgMail from "@sendgrid/mail";
-import dotenv from "dotenv";
+import sgMail from '@sendgrid/mail';
+import dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -16,7 +16,7 @@ class Emails {
   static resetPasswordTemplate(url, user) {
     const from = process.env.FROM_EMAIL;
     const to = user.email;
-    const subject = " BareFoot Password Reset ";
+    const subject = ' BareFoot Password Reset ';
     const html = `
       <body style="margin: 0; padding: 0;">
         <table border="0" cellpadding="0" cellspacing="0" width="900px" style="padding: 0 40px 0 40px; background-color:#f1f2f3;">
@@ -90,7 +90,7 @@ class Emails {
   static verificationLinkTemplate(url, user) {
     const from = process.env.FROM_EMAIL;
     const to = user.userEmail;
-    const subject = " BareFoot email verification link ";
+    const subject = ' BareFoot email verification link ';
     const html = `
       <body style="margin: 0; padding: 0;">
         <table border="0" cellpadding="0" cellspacing="0" width="900px" style="padding: 0 40px 0 40px; background-color:#f1f2f3;">
@@ -155,7 +155,7 @@ class Emails {
   static async sendmail(msg) {
     let message;
     sgMail.setApiKey(process.env.API_KEY);
-    if (process.env.NODE_ENV === "test") {
+    if (process.env.NODE_ENV === 'test') {
       message = {
         ...msg,
         mail_settings: {
