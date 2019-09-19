@@ -18,6 +18,10 @@
       {
         "name": "accommodations",
         "description": "Travel admin creates accommodations"
+      },
+      {
+        "name": "request",
+        "description": "Request End Points"
       }
     ],
     "schemes": [
@@ -782,5 +786,36 @@
         }
     }
 }
+  },
+  "/requests/my-requests": {
+    "get": {
+      "tags": [
+          "request"
+      ],
+      "summary": "View my requests",
+      "description": "User can view all the request he/she has made",
+      "produces": [
+          "application/json"
+      ],
+      "responses": {
+        "401": {
+          "status": 401,
+          "message": "Invalid or expired token used"
+        },
+        "200": {
+          "status": 200,
+          "message": "Your requests were retrieved successfully",
+          "data": []
+        }
+      }
+    }
+  }
+},
+"securityDefinitions": {
+"Bearer": { "type": "apiKey", "name": "Authorization", "in": "header" }
+},
+"security": [
+{
+  "Bearer": []
 }
-  }}
+]}

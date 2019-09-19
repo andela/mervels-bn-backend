@@ -1,4 +1,4 @@
-import Response from '../utils/response';
+import Response from "../utils/response";
 /** Class representing accommodation controller. */
 class Access {
   /**
@@ -10,12 +10,12 @@ class Access {
    */
   static async travelAdmin(req, res, next) {
     const { userRoles } = req.user;
-    if (userRoles !== 'Travel Administrator') {
+    if (userRoles !== "Travel Administrator") {
       return Response.errorResponse(
         res,
         403,
-        'You are not allowed to perform this task',
-        'Authorization error'
+        "You are not allowed to perform this task",
+        "Authorization error"
       );
     }
     next();

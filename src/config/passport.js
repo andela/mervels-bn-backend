@@ -1,19 +1,19 @@
 /* eslint-disable global-require */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-unused-vars */
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 let FacebookStrategy;
 let GoogleStrategy;
-if (process.env.NODE_ENV !== 'test') {
-  FacebookStrategy = require('passport-facebook').Strategy;
-  GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+if (process.env.NODE_ENV !== "test") {
+  FacebookStrategy = require("passport-facebook").Strategy;
+  GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
 } else {
-  FacebookStrategy = require('@passport-next/passport-mocked').Strategy;
-  GoogleStrategy = require('@passport-next/passport-mocked').OAuth2Strategy;
+  FacebookStrategy = require("@passport-next/passport-mocked").Strategy;
+  GoogleStrategy = require("@passport-next/passport-mocked").OAuth2Strategy;
 }
 
-const passport = require('passport');
+const passport = require("passport");
 
 dotenv.config();
 
@@ -24,10 +24,10 @@ passport.serializeUser((user, done) => {
 passport.use(
   new GoogleStrategy(
     {
-      name: 'google',
+      name: "google",
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: '/api/v1/auth/google/redirect'
+      callbackURL: "/api/v1/auth/google/redirect"
     },
     (accessToken, refreshToken, profile, done) => {
       try {
@@ -46,11 +46,11 @@ passport.use(
 passport.use(
   new FacebookStrategy(
     {
-      name: 'facebook',
+      name: "facebook",
       clientID: process.env.FB_CLIENT_ID,
       clientSecret: process.env.FB_CLIENT_SECRET,
-      callbackURL: '/api/v1/auth/facebook/redirect',
-      profileFields: ['emails', 'name']
+      callbackURL: "/api/v1/auth/facebook/redirect",
+      profileFields: ["emails", "name"]
     },
     (accessToken, refreshToken, profile, done) => {
       try {

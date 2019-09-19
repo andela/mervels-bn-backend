@@ -1,5 +1,5 @@
 /* eslint-disable no-useless-catch */
-import database from '../database/models';
+import database from "../database/models";
 
 const { Users } = database;
 /** Class representing a User services. */
@@ -70,7 +70,10 @@ class UserService {
    * @returns {object} The  object.
    */
   static async verifyEmail(email) {
-    const result = await Users.update({ accountVerified: true }, { where: [{ userEmail: email }] });
+    const result = await Users.update(
+      { accountVerified: true },
+      { where: [{ userEmail: email }] }
+    );
     return result;
   }
 }

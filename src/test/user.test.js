@@ -1,71 +1,73 @@
 /* eslint-disable no-underscore-dangle */
-import chai from 'chai';
-import chaiHttp from 'chai-http';
-import passport from 'passport';
-import '../config/passport';
-import server from '../index';
+import chai from "chai";
+import chaiHttp from "chai-http";
+import passport from "passport";
+import "../config/passport";
+import server from "../index";
 
 const { expect } = chai;
 
-const signupUrl = '/api/v1/auth/signup';
-const requestReset = '/api/v1/auth/forgotPassword';
+const signupUrl = "/api/v1/auth/signup";
+const requestReset = "/api/v1/auth/forgotPassword";
 
-const signinUrl = '/api/v1/auth/signin';
-const sendLinkUrl = '/api/v1/auth/createLink';
+const signinUrl = "/api/v1/auth/signin";
+const sendLinkUrl = "/api/v1/auth/createLink";
 let token1;
 
-const loginWithGoogle = '/api/v1/auth/google';
-const loginWithFacebook = '/api/v1/auth/facebook';
-const googleRedirect = '/api/v1/auth/google/redirect';
-const facebookRedirect = '/api/v1/auth/facebook/redirect';
-const signout = '/api/v1/auth/signout';
+const loginWithGoogle = "/api/v1/auth/google";
+const loginWithFacebook = "/api/v1/auth/facebook";
+const googleRedirect = "/api/v1/auth/google/redirect";
+const facebookRedirect = "/api/v1/auth/facebook/redirect";
+const signout = "/api/v1/auth/signout";
 
 chai.use(chaiHttp);
 
 const regData = {
-  userEmail: 'jonathanaurugai@gmail.com',
-  firstName: 'Jonathan',
-  lastName: 'Aurugai',
-  userPassword: 'Root1234@',
-  userRoles: 'Travel Team Member'
+  userEmail: "jonathanaurugai@gmail.com",
+  firstName: "Jonathan",
+  lastName: "Aurugai",
+  userPassword: "Root1234@",
+  userRoles: "Travel Team Member"
 };
 const regDataWithWrongPassword = {
-  userEmail: 'jonathanaurugai@gmail.com',
-  firstName: 'Jonathan',
-  lastName: 'Aurugai',
-  userPassword: 'Root',
-  userRoles: 'Travel Team Member'
+  userEmail: "jonathanaurugai@gmail.com",
+  firstName: "Jonathan",
+  lastName: "Aurugai",
+  userPassword: "Root",
+  userRoles: "Travel Team Member"
 };
 const regDataWithWrongEmail = {
-  userEmail: 'jonathanaurugaigmail.com',
-  firstName: 'Jonathan',
-  lastName: 'Aurugai',
-  userPassword: 'Root',
-  userRoles: 'Travel Team Member'
+  userEmail: "jonathanaurugaigmail.com",
+  firstName: "Jonathan",
+  lastName: "Aurugai",
+  userPassword: "Root",
+  userRoles: "Travel Team Member"
 };
 const existUser = { email: regData.userEmail };
-const notUser = { email: 'joneuuuuuathanaurugai@gmail.com' };
+const notUser = { email: "joneuuuuuathanaurugai@gmail.com" };
 
 let token;
 
-describe('create an account', () => {
-  it('with valid properties and send an email with verification link', (done) => {
+describe("create an account", () => {
+  it("with valid properties and send an email with verification link", done => {
     chai
       .request(server)
       .post(signupUrl)
       .send(regData)
       .end((_err, res) => {
         token1 = res.body.data.userToken;
-        expect(res.body.message).to.eq('Account has been created successfully');
+        expect(res.body.message).to.eq("Account has been created successfully");
         expect(res.status).to.eq(201);
-        expect(res.body.data.verification.message).to.eq('Verification link sent');
+        expect(res.body.data.verification.message).to.eq(
+          "Verification link sent"
+        );
         done();
       });
   });
-  it('should not login if the email is not verified', (done) => {
+  it("should not login if the email is not verified", done => {
     const user = {
-      userEmail: 'jonathanaurugai@gmail.com',
-      userPassword: 'Root1234'
+      userEmail: "jonathanaurugai@gmail.com",
+      userPassword: "Root1234"
     };
     chai
       .request(server)
@@ -73,34 +75,34 @@ describe('create an account', () => {
       .send(user)
       .end((_err, res) => {
         expect(res.status).to.eq(401);
-        expect(res.body.error).to.eq('Email not verified');
+        expect(res.body.error).to.eq("Email not verified");
         done();
       });
   });
-  it('should send a verification link to a registered email', (done) => {
+  it("should send a verification link to a registered email", done => {
     chai
       .request(server)
       .post(sendLinkUrl)
       .send({ userEmail: regData.userEmail })
       .end((_err, res) => {
-        expect(res.body.message).to.eq('email sent with verification link');
+        expect(res.body.message).to.eq("email sent with verification link");
         expect(res.status).to.eq(200);
-        expect(res.body.data.link).to.be.a('string');
+        expect(res.body.data.link).to.be.a("string");
         done();
       });
   });
-  it('should not send a verification link to a unregistered email', (done) => {
+  it("should not send a verification link to a unregistered email", done => {
     chai
       .request(server)
       .post(sendLinkUrl)
-      .send({ userEmail: 'unkown@barefoot.to' })
+      .send({ userEmail: "unkown@barefoot.to" })
       .end((_err, res) => {
-        expect(res.body.message).to.eq('this email is not registered');
+        expect(res.body.message).to.eq("this email is not registered");
         expect(res.status).to.eq(404);
         done();
       });
   });
-  it('should not send a verification if no email is provided', (done) => {
+  it("should not send a verification if no email is provided", done => {
     chai
       .request(server)
       .post(sendLinkUrl)
@@ -110,27 +112,27 @@ describe('create an account', () => {
         done();
       });
   });
-  it('should not send a verification there is invalid email', (done) => {
+  it("should not send a verification there is invalid email", done => {
     chai
       .request(server)
       .post(sendLinkUrl)
-      .send({ userEmail: 'bahat.ghassd.com' })
+      .send({ userEmail: "bahat.ghassd.com" })
       .end((_err, res) => {
         expect(res.status).to.eq(400);
         done();
       });
   });
-  it('should not send a verification the email is empty', (done) => {
+  it("should not send a verification the email is empty", done => {
     chai
       .request(server)
       .post(sendLinkUrl)
-      .send({ userEmail: ' ' })
+      .send({ userEmail: " " })
       .end((_err, res) => {
         expect(res.status).to.eq(400);
         done();
       });
   });
-  it('should verify an email via verification link', (done) => {
+  it("should verify an email via verification link", done => {
     chai
       .request(server)
       .patch(`/api/v1/auth/verify/?token=${token1}`)
@@ -139,7 +141,7 @@ describe('create an account', () => {
         done();
       });
   });
-  it('should give an error if an email is already verified', (done) => {
+  it("should give an error if an email is already verified", done => {
     chai
       .request(server)
       .patch(`/api/v1/auth/verify/?token=${token1}`)
@@ -148,28 +150,28 @@ describe('create an account', () => {
         done();
       });
   });
-  it('should give error when the token is not provided', (done) => {
+  it("should give error when the token is not provided", done => {
     chai
       .request(server)
-      .patch('/api/v1/auth/verify/?token=')
+      .patch("/api/v1/auth/verify/?token=")
       .end((_err, res) => {
         expect(res.status).to.eq(400);
         done();
       });
   });
 
-  it('should give error when the token is invalid or expired', (done) => {
+  it("should give error when the token is invalid or expired", done => {
     chai
       .request(server)
-      .patch('/api/v1/auth/verify/?token=invalidorexpiredtoken')
+      .patch("/api/v1/auth/verify/?token=invalidorexpiredtoken")
       .end((_err, res) => {
         expect(res.status).to.eq(401);
         done();
       });
   });
 
-  it('should give error when the secret key is invalid', (done) => {
-    process.env.TOKEN = 'ASGDKASJHD';
+  it("should give error when the secret key is invalid", done => {
+    process.env.TOKEN = "ASGDKASJHD";
     chai
       .request(server)
       .patch(`/api/v1/auth/verify/?token=${token1}`)
@@ -178,7 +180,7 @@ describe('create an account', () => {
         done();
       });
   });
-  it('with wrong password', (done) => {
+  it("with wrong password", done => {
     chai
       .request(server)
       .post(signupUrl)
@@ -188,7 +190,7 @@ describe('create an account', () => {
         done();
       });
   });
-  it('with wrong Email', (done) => {
+  it("with wrong Email", done => {
     chai
       .request(server)
       .post(signupUrl)
@@ -200,11 +202,11 @@ describe('create an account', () => {
   });
 });
 
-describe('User Login', () => {
-  it('with correct credentials', (done) => {
+describe("User Login", () => {
+  it("with correct credentials", done => {
     const user = {
-      userEmail: 'jonathanaurugai@gmail.com',
-      userPassword: 'Root1234@'
+      userEmail: "jonathanaurugai@gmail.com",
+      userPassword: "Root1234@"
     };
     chai
       .request(server)
@@ -215,17 +217,17 @@ describe('User Login', () => {
           return done(err);
         }
         expect(res).to.have.status(200);
-        expect(res.body.data).to.have.property('userToken');
+        expect(res.body.data).to.have.property("userToken");
 
         token = res.body.data.userToken;
 
         done();
       });
   });
-  it('with wrong email', (done) => {
+  it("with wrong email", done => {
     const user = {
-      userEmail: 'whjghj@stations.com',
-      userPassword: '123123'
+      userEmail: "whjghj@stations.com",
+      userPassword: "123123"
     };
     chai
       .request(server)
@@ -239,10 +241,10 @@ describe('User Login', () => {
         done();
       });
   });
-  it('with wrong password', (done) => {
+  it("with wrong password", done => {
     const user = {
-      userEmail: 'wi@stations.com',
-      userPassword: '123123sajhgsd'
+      userEmail: "wi@stations.com",
+      userPassword: "123123sajhgsd"
     };
     chai
       .request(server)
@@ -257,10 +259,10 @@ describe('User Login', () => {
       });
   });
 
-  it('with incorrect email field', (done) => {
+  it("with incorrect email field", done => {
     const user = {
-      Email: 'whjghj@stations.com',
-      userPassword: '123123'
+      Email: "whjghj@stations.com",
+      userPassword: "123123"
     };
     chai
       .request(server)
@@ -274,10 +276,10 @@ describe('User Login', () => {
         done();
       });
   });
-  it('with incorrect password field', (done) => {
+  it("with incorrect password field", done => {
     const user = {
-      userEmail: 'whjghj@stations.com',
-      password: '123123'
+      userEmail: "whjghj@stations.com",
+      password: "123123"
     };
     chai
       .request(server)
@@ -292,10 +294,10 @@ describe('User Login', () => {
       });
   });
 
-  it('with empty fields', (done) => {
+  it("with empty fields", done => {
     const user = {
-      email: 'whjghj@stations.com',
-      password: ' '
+      email: "whjghj@stations.com",
+      password: " "
     };
     chai
       .request(server)
@@ -311,40 +313,40 @@ describe('User Login', () => {
   });
 });
 
-describe('login through facebook', () => {
-  it('redirects to facebook', (done) => {
+describe("login through facebook", () => {
+  it("redirects to facebook", done => {
     chai
       .request(server)
       .get(loginWithFacebook)
       .end((_err, res) => {
         res.redirects[0].should.contain(
-          'api/v1/auth/facebook/redirect?__mock_strategy_callback=true'
+          "api/v1/auth/facebook/redirect?__mock_strategy_callback=true"
         );
         done();
       });
   });
-  it('Should add user', (done) => {
+  it("Should add user", done => {
     const strategy = passport._strategies.facebook;
     strategy._token_response = {
-      access_token: 'at-1234',
+      access_token: "at-1234",
       expires_in: 3600
     };
 
     strategy._profile = {
       id: 1234,
-      provider: 'facebook',
+      provider: "facebook",
       _json: {
-        first_name: 'Jonathan',
-        last_name: 'Shyaka'
+        first_name: "Jonathan",
+        last_name: "Shyaka"
       },
-      emails: [{ value: 'jonathanshyaka@example.com' }]
+      emails: [{ value: "jonathanshyaka@example.com" }]
     };
     chai
       .request(server)
       .get(facebookRedirect)
       .end((_err, res) => {
         res.redirects[0].should.contain(
-          'api/v1/auth/facebook/redirect?__mock_strategy_callback=true'
+          "api/v1/auth/facebook/redirect?__mock_strategy_callback=true"
         );
         expect(res.status).to.eq(200);
         done();
@@ -352,87 +354,87 @@ describe('login through facebook', () => {
   });
 });
 
-describe('Users Logout', () => {
-  it('when they are logged In', (done) => {
+describe("Users Logout", () => {
+  it("when they are logged In", done => {
     chai
       .request(server)
       .post(signout)
-      .set('Authorization', `Bearer ${token}`)
+      .set("Authorization", `Bearer ${token}`)
       .send()
       .end((_err, res) => {
         if (_err) done(_err);
 
         console.log(token);
 
-        expect(res.body.message).to.eq('User logged out successfully');
+        expect(res.body.message).to.eq("User logged out successfully");
         expect(res.status).to.eq(200);
         done();
       });
   });
-  it('when they are not logged In', (done) => {
+  it("when they are not logged In", done => {
     chai
       .request(server)
       .post(signout)
-      .set('Authorization', `Bearer ${token}`)
+      .set("Authorization", `Bearer ${token}`)
       .send()
       .end((_err, res) => {
         if (_err) done(_err);
 
-        expect(res.body.message).to.eq('User not logged In');
+        expect(res.body.message).to.eq("User not logged In");
         expect(res.status).to.eq(401);
         done();
       });
   });
 
-  it('by passing incorrect token', (done) => {
+  it("by passing incorrect token", done => {
     chai
       .request(server)
       .post(signout)
-      .set('Authorization', 'WrongToken sadasdasdasd')
+      .set("Authorization", "WrongToken sadasdasdasd")
       .send()
       .end((_err, res) => {
         if (_err) done(_err);
 
-        expect(res.body.message).to.eq('Invalid or expired token used');
+        expect(res.body.message).to.eq("Invalid or expired token used");
         expect(res.status).to.eq(401);
         done();
       });
   });
 });
-describe('login through google', () => {
-  it('redirects to google', (done) => {
+describe("login through google", () => {
+  it("redirects to google", done => {
     chai
       .request(server)
       .get(loginWithGoogle)
       .end((_err, res) => {
         res.redirects[0].should.contain(
-          'api/v1/auth/google/redirect?__mock_strategy_callback=true'
+          "api/v1/auth/google/redirect?__mock_strategy_callback=true"
         );
         done();
       });
   });
-  it('Should add user', (done) => {
+  it("Should add user", done => {
     const strategy = passport._strategies.google;
     strategy._token_response = {
-      access_token: 'at-1234',
+      access_token: "at-1234",
       expires_in: 3600
     };
 
     strategy._profile = {
       id: 1234,
-      provider: 'google',
+      provider: "google",
       _json: {
-        given_name: 'Jonathan',
-        family_name: 'Shyaka'
+        given_name: "Jonathan",
+        family_name: "Shyaka"
       },
-      emails: [{ value: 'jonathanshyaka@example.com' }]
+      emails: [{ value: "jonathanshyaka@example.com" }]
     };
     chai
       .request(server)
       .get(googleRedirect)
       .end((_err, res) => {
         res.redirects[0].should.contain(
-          'api/v1/auth/google/redirect?__mock_strategy_callback=true'
+          "api/v1/auth/google/redirect?__mock_strategy_callback=true"
         );
         expect(res.status).to.eq(200);
         done();
@@ -440,8 +442,8 @@ describe('login through google', () => {
   });
 });
 
-describe('Reset Password via Email', () => {
-  it('Sends reset password email', (done) => {
+describe("Reset Password via Email", () => {
+  it("Sends reset password email", done => {
     chai
       .request(server)
       .post(requestReset)
@@ -450,12 +452,14 @@ describe('Reset Password via Email', () => {
         if (err) {
           return done(err);
         }
-        expect(res.body.message).to.eq('If email is found, check your email for the link');
+        expect(res.body.message).to.eq(
+          "If email is found, check your email for the link"
+        );
         expect(res.status).to.eq(200);
         done();
       });
   });
-  it('Sends reset password email', (done) => {
+  it("Sends reset password email", done => {
     chai
       .request(server)
       .post(requestReset)
@@ -464,7 +468,9 @@ describe('Reset Password via Email', () => {
         if (err) {
           return done(err);
         }
-        expect(res.body.message).to.eq('If email is found, check your email for the link');
+        expect(res.body.message).to.eq(
+          "If email is found, check your email for the link"
+        );
         expect(res.status).to.eq(200);
         done();
       });

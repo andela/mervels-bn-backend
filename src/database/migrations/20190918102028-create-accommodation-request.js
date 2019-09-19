@@ -1,31 +1,25 @@
 /* eslint-disable no-unused-vars */
 export default {
   up: (queryInterface, Sequelize) =>
-    queryInterface.createTable("Rooms", {
+    queryInterface.createTable("AccommodationRequests", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
-      type: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
-      status: {
-        allowNull: false,
-        type: Sequelize.STRING,
-        defaultValue: true
-      },
-      accommodationId: {
-        allowNull: false,
+      requestId: {
         type: Sequelize.INTEGER,
         onDelete: "CASCADE",
-        onUpdate: "CASCADE",
+        references: {
+          model: "Requests",
+          key: "id",
+          as: "requestId"
+        }
+      },
+      accommodationId: {
+        type: Sequelize.INTEGER,
+        onDelete: "CASCADE",
         references: {
           model: "Accommodations",
           key: "id",
@@ -41,5 +35,6 @@ export default {
         type: Sequelize.DATE
       }
     }),
-  down: (queryInterface, Sequelize) => queryInterface.dropTable("Rooms")
+  down: (queryInterface, Sequelize) =>
+    queryInterface.dropTable("AccommodationRequests")
 };
