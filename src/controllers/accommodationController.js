@@ -24,10 +24,22 @@ class AccommodationController {
       if (!location) {
         return Response.errorResponse(res, 404, 'Location not found', 'error');
       }
-      const accommodation = await AccommodationService.createAccommodation(req.body);
-      return Response.customResponse(res, 201, 'Accommodation created successfully', accommodation);
+      const accommodation = await AccommodationService.createAccommodation(
+        req.body
+      );
+      return Response.customResponse(
+        res,
+        201,
+        'Accommodation created successfully',
+        accommodation
+      );
     } catch (error) {
-      return Response.errorResponse(res, 500, 'something went wrong', 'internal error');
+      return Response.errorResponse(
+        res,
+        500,
+        'something went wrong',
+        'internal error'
+      );
     }
   }
 
@@ -40,14 +52,31 @@ class AccommodationController {
   async createRoom(req, res) {
     try {
       const { accommodationId } = req.body;
-      const exist = await AccommodationService.getAccommodationById(accommodationId);
+      const exist = await AccommodationService.getAccommodationById(
+        accommodationId
+      );
       if (!exist) {
-        return Response.errorResponse(res, 404, 'error', 'Accommodation not found');
+        return Response.errorResponse(
+          res,
+          404,
+          'error',
+          'Accommodation not found'
+        );
       }
       const room = await AccommodationService.createRoom(req.body);
-      return Response.customResponse(res, 201, 'Room created successfully', room);
+      return Response.customResponse(
+        res,
+        201,
+        'Room created successfully',
+        room
+      );
     } catch (error) {
-      return Response.errorResponse(res, 500, 'something went wrong', 'internal error');
+      return Response.errorResponse(
+        res,
+        500,
+        'something went wrong',
+        'internal error'
+      );
     }
   }
 
@@ -81,9 +110,7 @@ class AccommodationController {
     try {
       const { accommodationId } = req.params;
       const exist = await AccommodationService.getAccommodationById(accommodationId);
-      if (!exist) {
-        return Response.errorResponse(res, 404, 'error', 'Accommodation not found');
-      }
+      if (!exist) return Response.errorResponse(res, 404, 'error', 'Accommodation not found');
       return Response.customResponse(res, 200, 'Accommodation fetched successfully', exist);
     } catch (error) {
       return Response.errorResponse(res, 500, 'something went wrong', 'internal error');

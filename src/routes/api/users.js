@@ -6,17 +6,33 @@ import '../../config/passport';
 import userValidator from '../../validation/userValidator';
 import verify from '../../middlewares/auth';
 import Access from '../../middlewares/userRoles';
+import method from '../../utils/method';
 
 const router = express.Router();
 
 router.use(passport.initialize());
 router.use(passport.session());
 
-router.post('/signup', userValidator.validateSignup, Users.createUser);
-router.post('/signin', userValidator.validateSignIn, Users.logIn);
-router.post('/createLink', userValidator.validateSendLink, Users.sendLink);
-router.patch('/verify/', userValidator.validateVerifyLink, Users.verify);
-router.post('/signout', verify, Users.logout);
+router
+  .route('/signup')
+  .post(userValidator.validateSignup, Users.createUser)
+  .all(method);
+router
+  .route('/signin')
+  .post(userValidator.validateSignIn, Users.logIn)
+  .all(method);
+router
+  .route('/createLink')
+  .post(userValidator.validateSendLink, Users.sendLink)
+  .all(method);
+router
+  .route('/verify')
+  .patch(userValidator.validateVerifyLink, Users.verify)
+  .all(method);
+router
+  .route('/signout')
+  .post(verify, Users.logout)
+  .all(method);
 
 router.get(
   '/google',
@@ -28,7 +44,11 @@ router.get(
   })
 );
 
-router.get('/google/redirect', passport.authenticate('google'), Users.socialLogin);
+router.get(
+  '/google/redirect',
+  passport.authenticate('google'),
+  Users.socialLogin
+);
 
 router.get(
   '/facebook',
@@ -37,17 +57,29 @@ router.get(
   })
 );
 
-router.get('/facebook/redirect', passport.authenticate('facebook'), Users.socialLogin);
-router.post('/requestPasswordReset', Users.requestPasswordReset);
-router.patch('/resetPassword/:userId/:token', userValidator.resetPassword, Users.resetPassword);
-router.post('/forgotPassword', Users.requestPasswordReset);
-router.put('/resetPassword/:userId/:token', userValidator.resetPassword, Users.resetPassword);
-router.put(
-  '/updateRole',
-  userValidator.validateUserRole,
-  verify,
-  Access.isAdmin,
-  Users.updateUserRole
-);
+router
+  .route('/updateRole')
+  .put(userValidator.validateUserRole,
+    verify,
+    Access.isAdmin,
+    Users.updateUserRole)
+  .all(method);
+
+router
+  .route('/facebook/redirect')
+  .get(passport.authenticate('facebook'), Users.socialLogin)
+  .all(method);
+router
+  .route('/requestPasswordReset')
+  .post(Users.requestPasswordReset)
+  .all(method);
+router
+  .route('/resetPassword/:userId/:token')
+  .put(userValidator.resetPassword, Users.resetPassword)
+  .all(method);
+router
+  .route('/forgotPassword')
+  .post(Users.requestPasswordReset)
+  .all(method);
 
 module.exports = router;

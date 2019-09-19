@@ -360,9 +360,6 @@ describe('Users Logout', () => {
       .send()
       .end((_err, res) => {
         if (_err) done(_err);
-
-        console.log(token);
-
         expect(res.body.message).to.eq('User logged out successfully');
         expect(res.status).to.eq(200);
         done();

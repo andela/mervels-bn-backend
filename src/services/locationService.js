@@ -13,5 +13,14 @@ class LocationService {
   static async getLocationById(id) {
     return await Locations.findOne({ where: [{ id }] });
   }
+
+  /**
+   * Returns all locations
+   * @returns {object} all locations.
+   */
+  static async all() {
+    const result = await Locations.findAll();
+    return result;
+  }
 }
 export default LocationService;

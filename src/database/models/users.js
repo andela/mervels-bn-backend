@@ -44,7 +44,7 @@ export default (sequelize, DataTypes) => {
       defaultValue: false
     }
   });
-  Users.associate = function (models) {
+  Users.associate = (models) => {
     Users.hasMany(models.Requests, {
       foreignKey: 'user'
     });
