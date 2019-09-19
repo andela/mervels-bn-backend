@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "rm -rf ./src/build && babel ./src/. --out-dir ./src/build --copy-files",
+    "db-seed:test": "sequelize db:seed:all",
     "db-migrate": "sequelize db:migrate --env production",
     "db-migrate:dev": "sequelize db:migrate --env development",
     "db-migrate:test": "sequelize db:migrate:undo:all --env test && sequelize db:migrate --env test",
@@ -13,7 +14,7 @@
     "start": "npm run db-migrate && npm run build && node ./src/build/index.js",
     "start:dev": "nodemon --exec babel-node src/index.js",
     "docker:start": "npm run db-migrate:dev && npm run start:dev",
-    "test": "export NODE_ENV=test && npm run db-migrate:test && nyc --reporter=html --reporter=text mocha --require @babel/register ./src/test/*.js --timeout 60000 --exit",
+    "test": "export NODE_ENV=test && npm run db-migrate:test && npm run db-seed:test && nyc --reporter=html --reporter=text mocha --require @babel/register ./src/test/*.js --timeout 60000 --exit",
     "cover": "nyc --reporter=html --reporter=text npm test",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
@@ -38,11 +39,13 @@
     "babel-watch": "^7.0.0",
     "bcrypt": "^3.0.6",
     "body-parser": "^1.18.3",
+    "cloudinary": "^1.15.0",
     "cors": "^2.8.4",
     "dotenv": "^6.2.0",
     "ejs": "^2.6.1",
     "errorhandler": "^1.5.0",
     "express": "^4.16.3",
+    "express-fileupload": "^1.1.6-alpha.4",
     "express-jwt": "^5.3.1",
     "jsonwebtoken": "^8.3.0",
     "method-override": "^2.3.10",
@@ -68,6 +71,7 @@
     "@babel/node": "^7.6.1",
     "@babel/preset-env": "^7.5.5",
     "@babel/register": "^7.5.5",
+    "babel-eslint": "^10.0.3",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
     "coveralls": "^3.0.6",
@@ -80,6 +84,7 @@
     "nodemon": "^1.19.2",
     "nyc": "^14.1.1",
     "prettier-eslint": "^9.0.0",
-    "prettier-eslint-cli": "^5.0.0"
+    "prettier-eslint-cli": "^5.0.0",
+    "sinon": "^7.4.2"
   }
 }
