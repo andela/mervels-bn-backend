@@ -42,7 +42,7 @@ class Location {
     req.body.accommodations = accArray;
     await Promise.all(
       accArray.map(async (elem) => {
-        const contents = await accommodations.getAccommodationById(elem);
+        const contents = await accommodations.getAccommodation({ id: elem });
         if (!contents) {
           return Response.customResponse(res, 404, 'accommodation doesnot exist');
         }

@@ -52,6 +52,20 @@ describe('Travel Administrator', () => {
         done();
       });
   });
+  it('should not create an accommodation if already existing in that location', (done) => {
+    chai
+      .request(server)
+      .post('/api/v1/accommodations')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .attach('image', 'src/test/testData/marvel.png', 'marvel.png')
+      .field('name', 'Muhabura')
+      .field('locationId', 1)
+      .end((_err, res) => {
+        expect(res.status).to.eq(409);
+        expect(res.body.message).to.eq('this accommodation already exist in this location');
+        done();
+      });
+  });
 
   it('should create a room with all properties', (done) => {
     chai
@@ -62,6 +76,18 @@ describe('Travel Administrator', () => {
       .end((_err, res) => {
         expect(res.status).to.eq(201);
         expect(res.body.message).to.eq('Room created successfully');
+        done();
+      });
+  });
+  it('should not create a room if the room alredy exist in that accommodation', (done) => {
+    chai
+      .request(server)
+      .post('/api/v1/accommodations/rooms')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ name: 'Ngorongoro', type: 'flat', accommodationId })
+      .end((_err, res) => {
+        expect(res.status).to.eq(409);
+        expect(res.body.message).to.eq('this room already exist in this accommodation');
         done();
       });
   });

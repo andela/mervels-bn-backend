@@ -75,9 +75,7 @@ describe('Reset new Password', () => {
         if (err) {
           return done(err);
         }
-        expect(res.body.message).to.eq(
-          'Password has been sucessfully changed. Proceed to login'
-        );
+        expect(res.body.message).to.eq('Password has been sucessfully changed. Proceed to login');
         expect(res.status).to.eq(200);
         done();
       });
