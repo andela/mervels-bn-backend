@@ -289,10 +289,10 @@ class Users {
       if (!details) {
         return Response.customResponse(res, 404, "user doesn't exist");
       }
-      if (rawData.userRole === 'Super Administrator') {
+      if (details.userRoles === 'Super Administrator') {
         return Response.customResponse(
           res,
-          404,
+          400,
           'What you are trying achieve can not be completed'
         );
       }
