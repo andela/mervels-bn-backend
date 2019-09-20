@@ -23,7 +23,6 @@ export default class accommodationValidator {
         .required()
         .error(() => 'name field is required and must be a string'),
       locationId: Joi.number()
-        .integer()
         .min(0)
         .required()
         .error(() => 'location is required and must be a number greater than zero')
@@ -53,7 +52,6 @@ export default class accommodationValidator {
         .required()
         .error(() => 'type is required and must be a string'),
       accommodationId: Joi.number()
-        .integer()
         .min(0)
         .required()
         .error(() => 'accommodationId is required and must be a number greater than zero')
@@ -73,8 +71,7 @@ export default class accommodationValidator {
   static async validateGetOneAccommodation(req, res, next) {
     const schema = Joi.object().keys({
       accommodationId: Joi.number()
-        .integer()
-        .min(0)
+        .min(1)
         .required()
         .error(() => 'accommodationId is required and must be a number greater than zero')
     });

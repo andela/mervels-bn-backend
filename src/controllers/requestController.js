@@ -12,14 +12,18 @@ class Requests {
    * @return {function} requests
    */
   async trip(req, res, next) {
-    const request = {
+    const oneway = {
       from: req.body.from,
       travelDate: req.body.travelDate,
       reason: req.body.reason,
       user: req.user.id
     };
+    const bothRequests = {
+      ...oneway,
+      returnDate: req.body.returnDate
+    };
     try {
-      const result = await requestService.addRequest(request, req.body.accommodations);
+      const result = await requestService.addRequest(bothRequests, req.body.accommodations);
       return Response.customResponse(
         res,
         200,
@@ -34,7 +38,6 @@ class Requests {
   /**
    * @param {object} req request
    * @param {object} res response
-   * @param {object} next middleware
    * @return {function} requests
    */
   async getMyRequests(req, res) {

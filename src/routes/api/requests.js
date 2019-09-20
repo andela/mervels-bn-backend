@@ -18,6 +18,17 @@ router
     Requests.trip
   )
   .all(method);
+
+router
+  .route('/returnTrip')
+  .post(
+    verify,
+    requestsValidator.returnTrip,
+    location.validLocation,
+    location.validAccomodation,
+    Requests.trip
+  )
+  .all(method);
 router
   .route('/my-requests')
   .get(verify, Requests.getMyRequests)

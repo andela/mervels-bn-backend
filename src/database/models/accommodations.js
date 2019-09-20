@@ -43,5 +43,4 @@ const accommodations = (sequelize, DataTypes) => {
   };
   return Accommodations;
 };
-
 export default accommodations;

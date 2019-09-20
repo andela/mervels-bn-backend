@@ -16,7 +16,7 @@
         "description": "User End Points"
       },
       {
-        "name": "accommodations",
+        "name": "accommodation",
         "description": "Travel admin creates accommodations"
       },
       {
@@ -820,7 +820,7 @@
             "message": "Your requests were retrieved successfully",
             "data": []
           }
-        }
+         }
       }
     },
   "/requests/oneWay":{
@@ -844,6 +844,46 @@
           "required": true,
           "schema": {
             "$ref": "#/definitions/oneWay"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Request sucessfully retrieved"
+        },
+        "422": {
+          "description": "Wrong Data format is entered"
+        },
+        "404": {
+          "description": "Accommodation or location not found"
+        },
+        "500": {
+          "description": "Server Error"
+        }
+      }
+    }
+  },
+  "/requests/returnTrip":{
+    "post": {
+      "tags": [
+        "requests"
+      ],
+      "summary": "create a return trip request",
+      "description": "this endpoint sends and creates a one way trip",
+      "consumes": [
+        "application/json"
+      ],
+      "produces": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "in": "body",
+          "name": "body",
+          "description": "Returb Trip request data entered by the user",
+          "required": true,
+          "schema": {
+            "$ref": "#/definitions/returnTrip"
           }
         }
       ],
@@ -900,18 +940,58 @@
           "summary": "this is the accommodationId"
         }
       }
+    },
+    "returnTrip": {
+      "required": [
+        "from",
+        "to",
+        "travelDate",
+        "returnDate",
+        "reason",
+        "accommodation"
+      ],
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string",
+          "example": "Kigali, Rwanda"
+        },
+        "to": {
+          "type": "integer",
+          "example": 1,
+          "summary": "this is the locationId"
+        },
+        "travelDate": {
+          "type": "date",
+          "example": "2020-01-01",
+          "summary": "this is the date of travel and should atleast today"
+        },
+        "returnDate": {
+          "type": "date",
+          "example": "2020-02-30",
+          "summary": "this is the date of return and should be greater tha travel date"
+        },
+        "reason": {
+          "type": "string",
+          "example": "this is my travel reason and it should be more than 30 characters",
+          "summary": "this is reason and should be more than 30 characters"
+        },
+        "accommodation": {
+          "type": "integer",
+          "example": 1,
+          "summary": "this is the accommodationId"
+        }
+      }
     }
   },
   "securityDefinitions": {
-    "Bearer": {
-      "type": "apiKey",
-      "name": "Authorization",
-      "in": "header"
-    }
+    "Bearer": { "type": "apiKey", "name": "Authorization", "in": "header" }
   },
-  "security": [{
+  "security": [
+  {
     "Bearer": []
-  }]
+  }
+  ]
 }
 
 
