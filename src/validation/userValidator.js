@@ -4,6 +4,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import Joi from '@hapi/joi';
+import { join } from 'path';
 import Response from '../utils/response';
 
 /**

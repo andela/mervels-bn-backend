@@ -45,7 +45,6 @@ describe('Reset new Password', () => {
       .post(signupUrl)
       .send(regData)
       .end((_err, res) => {
-        console.log(res);
         expect(res.body.message).to.eq('Account has been created successfully');
         expect(res.status).to.eq(201);
         done();
@@ -76,7 +75,9 @@ describe('Reset new Password', () => {
         if (err) {
           return done(err);
         }
-        expect(res.body.message).to.eq('Password has been sucessfully changed. Proceed to login');
+        expect(res.body.message).to.eq(
+          'Password has been sucessfully changed. Proceed to login'
+        );
         expect(res.status).to.eq(200);
         done();
       });
@@ -137,7 +138,7 @@ describe('Reset new Password', () => {
     chai
       .request(server)
       .put(`/api/v1/auth/resetPassword/1000/${token}`)
-      .send(nonMatchPassword)
+      .send(correctPassword)
       .end((err, res) => {
         if (err) {
           return done(err);

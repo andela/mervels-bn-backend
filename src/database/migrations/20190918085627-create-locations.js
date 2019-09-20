@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 export default {
   up: (queryInterface, Sequelize) => queryInterface.createTable('Locations', {
     id: {
@@ -22,5 +21,6 @@ export default {
       type: Sequelize.DATE
     }
   }),
+  // eslint-disable-next-line no-unused-vars
   down: (queryInterface, Sequelize) => queryInterface.dropTable('Locations')
 };

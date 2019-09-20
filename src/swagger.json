@@ -10,53 +10,60 @@
     }
   },
   "basePath": "/api/v1",
-  "tags": [{
-      "name": "user",
-      "description": "User End Points"
-    },
-    {
-      "name": "accommodations",
-      "description": "Travel admin creates accommodations"
-    }
-  ],
-  "schemes": [
-    "https",
-    "http"
-  ],
-  "paths": {
-    "/auth/signup": {
-      "post": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Add a new user",
-        "description": "End point for creating a new user",
-        "operationId": "addUser",
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
-        "produces": [
-          "application/xml",
-          "application/json"
-        ],
-        "parameters": [{
-          "in": "body",
-          "name": "body",
-          "description": "User object that needs to be added to the store",
-          "required": true,
-          "schema": {
-            "$ref": "#/definitions/User"
-          }
-        }],
-        "responses": {
-          "422": {
-            "description": "Invalid input"
+  "tags": [
+      {
+        "name": "user",
+        "description": "User End Points"
+      },
+      {
+        "name": "accommodations",
+        "description": "Travel admin creates accommodations"
+      },
+      {
+        "name": "requests",
+        "description": "Requests end points"
+      }
+    ],
+    "schemes": [
+      "https",
+      "http"
+    ],
+    "paths": {
+      "/auth/signup": {
+        "post": {
+          "tags": [
+            "user"
+          ],
+          "summary": "Add a new user",
+          "description": "End point for creating a new user",
+          "operationId": "addUser",
+          "consumes": [
+            "application/json",
+            "application/xml"
+          ],
+          "produces": [
+            "application/xml",
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "User object that needs to be added to the store",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          ],
+          "responses": {
+            "422": {
+              "description": "Invalid input"
+            }
           }
         }
-      }
-    },
-    "/auth/signin": {
+      },
+      "/auth/signin": {
       "post": {
         "tags": [
           "user"
@@ -86,7 +93,7 @@
           }
         }
       }
-    },
+      },
     "/auth/forgotPassword": {
       "post": {
         "tags": [
@@ -796,7 +803,7 @@
     "/requests/my-requests": {
       "get": {
         "tags": [
-          "request"
+          "requests"
         ],
         "summary": "View my requests",
         "description": "User can view all the request he/she has made",
@@ -815,6 +822,84 @@
           }
         }
       }
+    },
+  "/requests/oneWay":{
+    "post": {
+      "tags": [
+        "requests"
+      ],
+      "summary": "create a One way trip request",
+      "description": "this endpoint sends and creates a one way trip",
+      "consumes": [
+        "application/json"
+      ],
+      "produces": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "in": "body",
+          "name": "body",
+          "description": "One way request data entered by the user",
+          "required": true,
+          "schema": {
+            "$ref": "#/definitions/oneWay"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Request sucessfully retrieved"
+        },
+        "422": {
+          "description": "Wrong Data format is entered"
+        },
+        "404": {
+          "description": "Accommodation or location not found"
+        },
+        "500": {
+          "description": "Server Error"
+        }
+      }
+    }
+   }
+  },
+  "definitions":{
+    "oneWay": {
+      "required": [
+        "from",
+        "to",
+        "travelDate",
+        "reason",
+        "accommodation"
+      ],
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string",
+          "example": "Kigali, Rwanda"
+        },
+        "to": {
+          "type": "integer",
+          "example": 1,
+          "summary": "this is the locationId"
+        },
+        "travelDate": {
+          "type": "date",
+          "example": "2020-01-01",
+          "summary": "this is the date of travel and should atleast today"
+        },
+        "reason": {
+          "type": "string",
+          "example": "this is my travel reason and it should be more than 30 characters",
+          "summary": "this is reason and should be more than 30 characters"
+        },
+        "accommodation": {
+          "type": "integer",
+          "example": 1,
+          "summary": "this is the accommodationId"
+        }
+      }
     }
   },
   "securityDefinitions": {
@@ -828,3 +913,5 @@
     "Bearer": []
   }]
 }
+
+

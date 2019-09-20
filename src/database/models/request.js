@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
-export default (sequelize, DataTypes) => {
+/* eslint-disable func-names */
+module.exports = (sequelize, DataTypes) => {
   const Requests = sequelize.define(
     'Requests',
     {
