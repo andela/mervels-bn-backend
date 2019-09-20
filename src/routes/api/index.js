@@ -5,6 +5,10 @@ router.use('/auth', require('./users'));
 router.use('/requests', require('./requests'));
 router.use('/accommodations', require('./accommodations'));
 
+router.use('/auth', require('./users'));
+
+router.use('/profile', require('./userProfile'));
+
 router.use((err, req, res, next) => {
   if (err.name === 'ValidationError') {
     return res.status(422).json({

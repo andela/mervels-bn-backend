@@ -1,5 +1,6 @@
 /* eslint-disable no-useless-catch */
 import database from '../database/models';
+import UserProfile from './userProfileService';
 
 const { Users } = database;
 /** Class representing a User services. */
@@ -11,7 +12,12 @@ class UserService {
    */
   static async createUser(user) {
     try {
-      return await Users.create(user);
+      const createdUser = await Users.create(user);
+
+      // Create User Profile
+      await UserProfile.updateOrCreate(createdUser.id);
+
+      return createdUser;
     } catch (error) {
       throw error;
     }
