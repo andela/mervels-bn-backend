@@ -220,7 +220,7 @@ class Users {
         url
       );
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 
@@ -258,7 +258,7 @@ class Users {
         'Password has been sucessfully changed. Proceed to login'
       );
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 

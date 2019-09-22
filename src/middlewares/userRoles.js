@@ -1,4 +1,6 @@
 import Response from '../utils/response';
+import RequestService from '../services/requestService';
+import CommentService from '../services/commentService';
 /** Class representing a UserRole. */
 class Access {
   /**
@@ -34,5 +36,38 @@ class Access {
     }
     next();
   }
+
+  /**
+   * Checks if the user is the request owner or manager.
+   *@param {string} req  data.
+   * @param {string} res  data.
+   * @param {string} next data.
+   * @returns {string} object.
+   */
+  static async isOwnerOrManager(req, res, next) {
+    const request = await RequestService.findRequestByID(req.params.id);
+    if (!request) return Response.errorResponse(res, 404, 'Invalid request ID');
+    if (req.user.userRoles !== 'Manager' && req.user.id !== request.user) {
+      return Response.errorResponse(res, 403, "You don't have rights to complete this operation");
+    }
+    next();
+  }
+
+  /**
+   * Checks if the user is the request owner or manager.
+   *@param {string} req  data.
+   * @param {string} res  data.
+   * @param {string} next data.
+   * @returns {string} object.
+   */
+  static async isCommentOwner(req, res, next) {
+    const comment = await CommentService.getCommentById(req.params.id);
+    if (!comment) return Response.errorResponse(res, 404, 'Invalid comment ID');
+    if (req.user.id !== comment.user) {
+      return Response.errorResponse(res, 403, "You don't have rights to complete this operation");
+    }
+    next();
+  }
 }
+
 export default Access;

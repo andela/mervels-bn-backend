@@ -2,7 +2,6 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import server from '../index';
-import Requests from '../controllers/requestController';
 
 const { expect } = chai;
 chai.use(chaiHttp);
@@ -13,6 +12,12 @@ const signinUrl = '/api/v1/auth/signin';
 const getMyRequestUrl = '/api/v1/requests/my-requests';
 const oneway = '/api/v1/requests/oneWay';
 const returnTrip = '/api/v1/requests/returnTrip';
+const getRequestCommentsUrl = '/api/v1/requests/1/comments';
+const addRequestCommentUrl = '/api/v1/requests/1/comment';
+const invalidRequestIdUrl = '/api/v1/requests/a/comment';
+const invalidRequestIdUrlGet = '/api/v1/requests/a/comments';
+const updateComment = '/api/v1/requests/comments/1';
+const InvalidUpdateUrl = '/api/v1/requests/comments/a';
 
 const oneWay = {
   from: 'Kigali, Rwanda',
@@ -69,6 +74,12 @@ const WrongDescription = {
   reason: 'iam travelling cause',
   accommodation: 1
 };
+const comment = {
+  comment: 'This is a sample comment'
+};
+const invalidComment = {
+  comment: null
+};
 
 const returnTripData = {
   from: 'Kigali, Rwanda',
@@ -89,7 +100,7 @@ const wrongreturnDate = {
   accommodation: 1
 };
 
-describe('Get Requests', () => {
+describe('Travel Requests', () => {
   before('with correct credentials', (done) => {
     const user = {
       userEmail: 'jonashyaka2@gmail.com',
@@ -111,7 +122,7 @@ describe('Get Requests', () => {
         done();
       });
   });
-  it('when they are logged In', (done) => {
+  it('should retrieve requests', (done) => {
     chai
       .request(server)
       .get(getMyRequestUrl)
@@ -243,5 +254,103 @@ describe('Get Requests', () => {
         expect(res.status).to.eq(422);
         done();
       });
+  });
+  describe('Request Comments', () => {
+    it('should retrieve comments', (done) => {
+      chai
+        .request(server)
+        .get(getRequestCommentsUrl)
+        .set('Authorization', `Bearer ${token}`)
+        .send()
+        .end((_err, res) => {
+          if (_err) done(_err);
+          expect(res.status).to.eq(200);
+          done();
+        });
+    });
+    it('should have valid request url', (done) => {
+      chai
+        .request(server)
+        .get(invalidRequestIdUrlGet)
+        .set('Authorization', `Bearer ${token}`)
+        .send()
+        .end((_err, res) => {
+          if (_err) done(_err);
+          expect(res.status).to.eq(422);
+          done();
+        });
+    });
+    it('should add comment', (done) => {
+      chai
+        .request(server)
+        .post(addRequestCommentUrl)
+        .set('Authorization', `Bearer ${token}`)
+        .send(comment)
+        .end((_err, res) => {
+          if (_err) done(_err);
+          expect(res.status).to.eq(201);
+          done();
+        });
+    });
+    it('should have a valid comment', (done) => {
+      chai
+        .request(server)
+        .post(addRequestCommentUrl)
+        .set('Authorization', `Bearer ${token}`)
+        .send(invalidComment)
+        .end((_err, res) => {
+          if (_err) done(_err);
+          expect(res.status).to.eq(422);
+          done();
+        });
+    });
+    it('should have a valid request id', (done) => {
+      chai
+        .request(server)
+        .post(invalidRequestIdUrl)
+        .set('Authorization', `Bearer ${token}`)
+        .send(comment)
+        .end((_err, res) => {
+          if (_err) done(_err);
+          expect(res.status).to.eq(422);
+          done();
+        });
+    });
+    it('should update comment', (done) => {
+      chai
+        .request(server)
+        .put(updateComment)
+        .set('Authorization', `Bearer ${token}`)
+        .send(comment)
+        .end((_err, res) => {
+          if (_err) done(_err);
+          expect(res.status).to.eq(200);
+          done();
+        });
+    });
+    it('should have a valid comment id', (done) => {
+      chai
+        .request(server)
+        .put(InvalidUpdateUrl)
+        .set('Authorization', `Bearer ${token}`)
+        .send(comment)
+        .end((_err, res) => {
+          if (_err) done(_err);
+          expect(res.status).to.eq(422);
+          done();
+        });
+    });
+    it('should update comment', (done) => {
+      chai
+        .request(server)
+        .put(updateComment)
+        .set('Authorization', `Bearer ${token}`)
+        .send(invalidComment)
+        .end((_err, res) => {
+          if (_err) done(_err);
+          expect(res.status).to.eq(422);
+          done();
+        });
+    });
   });
 });

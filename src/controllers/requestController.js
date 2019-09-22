@@ -31,7 +31,7 @@ class Requests {
         result
       );
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 
