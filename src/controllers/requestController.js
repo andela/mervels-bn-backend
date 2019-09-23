@@ -2,6 +2,8 @@
 /* eslint-disable class-methods-use-this */
 import requestService from '../services/requestService';
 import Response from '../utils/response';
+import email from '../utils/email';
+import UserService from '../services/userService';
 
 /** Class representing a password util. */
 class Requests {
@@ -78,6 +80,73 @@ class Requests {
       const message = data.length > 0 ? 'Requests retrieved ' : 'No request pending approval';
 
       return Response.customResponse(res, 200, message, data);
+    } catch (error) {
+      return Response.errorResponse(res, 500, 'Something went wrong', error);
+    }
+  }
+
+  /**
+   * @param {object} req request
+   * @param {object} res response
+   * @return {function} requests
+   */
+  async rejectRequest(req, res) {
+    try {
+      const { reason } = req.body;
+      const manager = req.user;
+      const { requestId } = req.params;
+      const request = await requestService.getRequest({ id: requestId });
+      if (!request) {
+        return Response.errorResponse(res, 404, 'request not found', 'Not found');
+      }
+      const requesterId = request.user;
+      if (request.status === 'Approved') {
+        return Response.errorResponse(res, 409, 'Request already approved', 'conflict');
+      }
+      if (request.status === 'Rejected') {
+        return Response.errorResponse(res, 409, 'Request already rejected', 'conflict');
+      }
+      const requester = await UserService.findUserById(requesterId);
+      const data = await requestService.rejectUpdateRequest(requestId, 'Rejected');
+      const msg = email.rejectAcceptRequestTemplate(reason, manager, requester, 'Request rejected');
+      await email.sendmail(msg);
+      return Response.customResponse(res, 200, 'Request rejected successfully', { requestId });
+    } catch (error) {
+      return Response.errorResponse(res, 500, 'Something went wrong', error);
+    }
+  }
+
+  /**
+   * @param {object} req request
+   * @param {object} res response
+   * @return {function} requests
+   */
+  async acceptRequest(req, res) {
+    try {
+      const { reason } = req.body;
+      const manager = req.user;
+      const { requestId } = req.params;
+      const request = await requestService.getRequest({ id: requestId });
+      if (!request) {
+        return Response.errorResponse(res, 404, 'request not found', 'Not found');
+      }
+      const requesterId = request.user;
+      if (request.status === 'Approved') {
+        return Response.errorResponse(res, 409, 'Request already accepted', 'conflict');
+      }
+      if (request.status === 'Rejected') {
+        return Response.errorResponse(res, 409, 'Request already rejected', 'conflict');
+      }
+      const requester = await UserService.findUserById(requesterId);
+      const data = await requestService.rejectUpdateRequest(requestId, 'Approved');
+      const msg = email.rejectAcceptRequestTemplate(
+        'Your travel request has been approved. Have a good time',
+        manager,
+        requester,
+        'Request approved'
+      );
+      await email.sendmail(msg);
+      return Response.customResponse(res, 200, 'Request approved successfully', { requestId });
     } catch (error) {
       return Response.errorResponse(res, 500, 'Something went wrong', error);
     }

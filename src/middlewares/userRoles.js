@@ -93,6 +93,13 @@ class Access {
     next();
   }
 
+  /**
+   * Checks if the user is the request owner or manager.
+   *@param {string} req  data.
+   * @param {string} res  data.
+   * @param {string} next data.
+   * @returns {string} object.
+   */
   static managerRole(req, res, next) {
     if (req.user.userRoles !== 'Manager') {
       return Response.errorResponse(

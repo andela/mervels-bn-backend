@@ -402,7 +402,6 @@ describe('Get Requests', () => {
     });
   });
 });
-
 describe('Manager get Pending requests', () => {
   it('When user is manager', (done) => {
     chai
@@ -426,6 +425,232 @@ describe('Manager get Pending requests', () => {
       .end((_err, res) => {
         if (_err) done(_err);
 
+        expect(res.status).to.eq(403);
+        done();
+      });
+  });
+});
+describe('Reject request', () => {
+  // reject request tests
+  let requestId;
+  before('create a travel request', (done) => {
+    const request = {
+      from: 'Kigali, Rwanda',
+      to: 1,
+      travelDate: '2019-11-04',
+      reason:
+        'I am travelling cause the company allows us to, i mean the company finances everything so why not?',
+      accommodation: 'hotel'
+    };
+    chai
+      .request(server)
+      .post('/api/v1/requests/one-way')
+      .set('Authorization', `Bearer ${token}`)
+      .send(request)
+      .end((error, res) => {
+        if (error) done(error);
+        requestId = res.body.data.id;
+        done();
+      });
+  });
+  it('Manager should be able to reject a request', (done) => {
+    chai
+      .request(server)
+      .patch(`/api/v1/requests/reject/${requestId}`)
+      .set('Authorization', `Bearer ${managerToken}`)
+      .send({
+        reason:
+          'this is the reason why you can make this trip hence it is rejected. sorry for your loss'
+      })
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(200);
+        done();
+      });
+  });
+  it('Manager should be not be able to reject an already rejected request', (done) => {
+    chai
+      .request(server)
+      .patch(`/api/v1/requests/reject/${requestId}`)
+      .set('Authorization', `Bearer ${managerToken}`)
+      .send({
+        reason:
+          'this is the reason why you can make this trip hence it is rejected. sorry for your loss'
+      })
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(409);
+        done();
+      });
+  });
+  it('Manager should be not be able to reject a request that is not created', (done) => {
+    chai
+      .request(server)
+      .patch('/api/v1/requests/reject/1099')
+      .set('Authorization', `Bearer ${managerToken}`)
+      .send({
+        reason:
+          'this is the reason why you can make this trip hence it is rejected. sorry for your loss'
+      })
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(404);
+        done();
+      });
+  });
+  it('Manager should be not be able to reject a request if reason is not valid', (done) => {
+    chai
+      .request(server)
+      .patch('/api/v1/requests/reject/1099')
+      .set('Authorization', `Bearer ${managerToken}`)
+      .send({ reason: 'this i' })
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(422);
+        expect(res.body.message).to.eq('Validation failed');
+        done();
+      });
+  });
+  it('Manager should be not be able to reject a request if requestId an integer', (done) => {
+    chai
+      .request(server)
+      .patch('/api/v1/requests/reject/0.5')
+      .set('Authorization', `Bearer ${managerToken}`)
+      .send({
+        reason:
+          'this irequestId is required and requestId is required and must bmust be an integer greater than zero'
+      })
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(422);
+        expect(res.body.message).to.eq('Validation failed');
+        expect(res.body.error).to.eq(
+          'requestId is required and must be an integer greater than zero'
+        );
+        done();
+      });
+  });
+  it('should be not be able to reject a request if not manager', (done) => {
+    chai
+      .request(server)
+      .patch(`/api/v1/requests/reject/${requestId}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ reason: 'Manager should be not be able to reject a request if reason is not valid' })
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(403);
+        done();
+      });
+  });
+});
+describe('Accept request', () => {
+  // accept request tests
+  let requestId;
+  before('create a travel request', (done) => {
+    const request = {
+      from: 'Kigali, Rwanda',
+      to: 1,
+      travelDate: '2019-11-03',
+      reason:
+        'I am travelling cause the company allows us to, i mean the company finances everything so why not?',
+      accommodation: 'hotel'
+    };
+    chai
+      .request(server)
+      .post('/api/v1/requests/one-way')
+      .set('Authorization', `Bearer ${token}`)
+      .send(request)
+      .end((error, res) => {
+        if (error) done(error);
+        requestId = res.body.data.id;
+        done();
+      });
+  });
+  it('Manager should be able to accept a request', (done) => {
+    chai
+      .request(server)
+      .patch(`/api/v1/requests/approve/${requestId}`)
+      .set('Authorization', `Bearer ${managerToken}`)
+      .send({
+        reason:
+          'this is the reason why you can make this trip hence it is rejected. sorry for your loss'
+      })
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(200);
+        done();
+      });
+  });
+  it('Manager should be not be able to accept an already accepted request', (done) => {
+    chai
+      .request(server)
+      .patch(`/api/v1/requests/approve/${requestId}`)
+      .set('Authorization', `Bearer ${managerToken}`)
+      .send({
+        reason:
+          'your request have been accepted your request have been accepted your request have been accepted '
+      })
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(409);
+        done();
+      });
+  });
+  it('Manager should be not be able to accept a request that is not created', (done) => {
+    chai
+      .request(server)
+      .patch('/api/v1/requests/approve/1099')
+      .set('Authorization', `Bearer ${managerToken}`)
+      .send({
+        reason:
+          'your request have been accepted your request have been accepted your request have been accepted '
+      })
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(404);
+        done();
+      });
+  });
+  it('Manager should be not be able to accept a request if reason is not valid', (done) => {
+    chai
+      .request(server)
+      .patch('/api/v1/requests/approve/1099')
+      .set('Authorization', `Bearer ${managerToken}`)
+      .send({ reason: 'this i' })
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(422);
+        expect(res.body.message).to.eq('Validation failed');
+        done();
+      });
+  });
+  it('Manager should be not be able to accept a request if requestId an integer', (done) => {
+    chai
+      .request(server)
+      .patch('/api/v1/requests/approve/0.5')
+      .set('Authorization', `Bearer ${managerToken}`)
+      .send({
+        reason:
+          'this irequestId is required and requestId is required and must bmust be an integer greater than zero'
+      })
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(422);
+        expect(res.body.message).to.eq('Validation failed');
+        expect(res.body.error).to.eq(
+          'requestId is required and must be an integer greater than zero'
+        );
+        done();
+      });
+  });
+  it('should be not be able to accept a request if not manager', (done) => {
+    chai
+      .request(server)
+      .patch(`/api/v1/requests/approve/${requestId}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ reason: 'Manager should be not be able to accept a request if reason is not valid' })
+      .end((_err, res) => {
+        if (_err) done(_err);
         expect(res.status).to.eq(403);
         done();
       });

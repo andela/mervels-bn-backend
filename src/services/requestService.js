@@ -116,6 +116,35 @@ class RequestService {
       throw error;
     }
   }
+
+  /**
+   * Get requests by user
+   * @param {string} requestId to be rejected
+   * @param {string} status rejected or accepted
+   * @return {object} Oject of request if found
+   */
+  static async rejectUpdateRequest(requestId, status) {
+    try {
+      const request = await Requests.update({ status }, { where: { id: requestId } });
+      return request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get requests by user
+   * @param {string} params to be created
+   * @return {object} Oject of request if found
+   */
+  static async getRequest(params) {
+    try {
+      const request = await Requests.findOne({ where: { ...params } });
+      return request;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default RequestService;
