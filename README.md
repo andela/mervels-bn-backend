@@ -1,6 +1,7 @@
 [![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
 [![Build Status](https://travis-ci.org/andela/mervels-bn-backend.svg?branch=develop)](https://travis-ci.org/andela/mervels-bn-backend)
 [![Coverage Status](https://coveralls.io/repos/github/andela/mervels-bn-backend/badge.svg?branch=develop)](https://coveralls.io/github/andela/mervels-bn-backend?branch=develop)
+[![Maintainability](https://api.codeclimate.com/v1/badges/409de278c145e999c9a7/maintainability)](https://codeclimate.com/github/andela/mervels-bn-backend/maintainability)
 
 Barefoot Nomad - Making company travel and accomodation easy and convinient.
 =======
