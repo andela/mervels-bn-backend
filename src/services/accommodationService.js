@@ -7,7 +7,7 @@ const { Accommodations, Rooms } = database;
 class AccommodationService {
   /**
    * Creates a new accommodation.
-   * @param {object} accommodation The first number.
+   * @param {object} accommodation accommodation object.
    * @returns {object} The User object.
    */
   static async createAccommodation(accommodation) {
@@ -20,8 +20,8 @@ class AccommodationService {
 
   /**
    * Creates a new room.
-   * @param {object} room The first number.
-   * @returns {object} The User object.
+   * @param {object} room The room object.
+   * @returns {object} The room object.
    */
   static async createRoom(room) {
     try {
@@ -32,9 +32,8 @@ class AccommodationService {
   }
 
   /**
-   * Creates a new room.
-   * @param {object} room The first number.
-   * @returns {object} The User object.
+   * Creates get all acoommodations.
+   * @returns {object} The accommodation object.
    */
   static async getAllAccommodations() {
     try {
@@ -52,20 +51,35 @@ class AccommodationService {
   }
 
   /**
-   * Creates a new room.
-   * @param {object} id The first number.
+   * fetches accommodation.
+   * @param {object} params object of options to find.
    * @returns {object} The User object.
    */
-  static async getAccommodationById(id) {
+  static async getAccommodation(params) {
     try {
       return await Accommodations.findOne({
-        where: [{ id }],
+        where: [params],
         include: [
           {
             model: database.Rooms,
             as: 'Rooms'
           }
         ]
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * fetches a room.
+   * @param {object} params object of options to get.
+   * @returns {object} The User object.
+   */
+  static async getRoom(params) {
+    try {
+      return await Rooms.findOne({
+        where: [params]
       });
     } catch (error) {
       throw error;

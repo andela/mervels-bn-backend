@@ -44,11 +44,7 @@ router.get(
   })
 );
 
-router.get(
-  '/google/redirect',
-  passport.authenticate('google'),
-  Users.socialLogin
-);
+router.get('/google/redirect', passport.authenticate('google'), Users.socialLogin);
 
 router.get(
   '/facebook',
@@ -59,10 +55,7 @@ router.get(
 
 router
   .route('/updateRole')
-  .put(userValidator.validateUserRole,
-    verify,
-    Access.isAdmin,
-    Users.updateUserRole)
+  .put(userValidator.validateUserRole, verify, Access.isAdmin, Users.updateUserRole)
   .all(method);
 
 router

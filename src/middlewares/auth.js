@@ -17,12 +17,7 @@ const verify = async (req, res, next) => {
     req.user = payload;
     next();
   } catch (error) {
-    return Response.errorResponse(
-      res,
-      401,
-      'Invalid or expired token used',
-      error
-    );
+    return Response.errorResponse(res, 401, 'Invalid or expired token used', error);
   }
 };
 

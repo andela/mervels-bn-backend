@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 /* eslint-disable class-methods-use-this */
 import Response from '../utils/response';
 import AccommodationService from '../services/accommodationService';
@@ -24,22 +25,24 @@ class AccommodationController {
       if (!location) {
         return Response.errorResponse(res, 404, 'Location not found', 'error');
       }
-      const accommodation = await AccommodationService.createAccommodation(
-        req.body
-      );
-      return Response.customResponse(
-        res,
-        201,
-        'Accommodation created successfully',
-        accommodation
-      );
+      const { name, locationId } = req.body;
+      const accommodationExist = await AccommodationService.getAccommodation({
+        name: name.toUpperCase(),
+        locationId
+      });
+      if (accommodationExist) {
+        return Response.errorResponse(
+          res,
+          409,
+          'this accommodation already exist in this location',
+          'conflict'
+        );
+      }
+      req.body.name = req.body.name.toUpperCase();
+      const accommodation = await AccommodationService.createAccommodation(req.body);
+      return Response.customResponse(res, 201, 'Accommodation created successfully', accommodation);
     } catch (error) {
-      return Response.errorResponse(
-        res,
-        500,
-        'something went wrong',
-        'internal error'
-      );
+      return Response.errorResponse(res, 500, 'something went wrong', 'internal error');
     }
   }
 
@@ -51,32 +54,24 @@ class AccommodationController {
    */
   async createRoom(req, res) {
     try {
-      const { accommodationId } = req.body;
-      const exist = await AccommodationService.getAccommodationById(
-        accommodationId
-      );
+      const { accommodationId, name } = req.body;
+      const exist = await AccommodationService.getAccommodation({ id: accommodationId });
       if (!exist) {
+        return Response.errorResponse(res, 404, 'error', 'Accommodation not found');
+      }
+      const roomExist = await AccommodationService.getRoom({ name, accommodationId });
+      if (roomExist) {
         return Response.errorResponse(
           res,
-          404,
-          'error',
-          'Accommodation not found'
+          409,
+          'this room already exist in this accommodation',
+          'conflict'
         );
       }
       const room = await AccommodationService.createRoom(req.body);
-      return Response.customResponse(
-        res,
-        201,
-        'Room created successfully',
-        room
-      );
+      return Response.customResponse(res, 201, 'Room created successfully', room);
     } catch (error) {
-      return Response.errorResponse(
-        res,
-        500,
-        'something went wrong',
-        'internal error'
-      );
+      return Response.errorResponse(res, 500, 'something went wrong', 'internal error');
     }
   }
 
@@ -109,7 +104,7 @@ class AccommodationController {
   async getAccommodationById(req, res) {
     try {
       const { accommodationId } = req.params;
-      const exist = await AccommodationService.getAccommodationById(accommodationId);
+      const exist = await AccommodationService.getAccommodation({ id: accommodationId });
       if (!exist) return Response.errorResponse(res, 404, 'error', 'Accommodation not found');
       return Response.customResponse(res, 200, 'Accommodation fetched successfully', exist);
     } catch (error) {

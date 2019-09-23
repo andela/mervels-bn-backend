@@ -53,15 +53,10 @@ class Users {
       } catch (error) {
         verification = 'Verification link not sent';
       }
-      return Response.customResponse(
-        res,
-        201,
-        'Account has been created successfully',
-        {
-          ...dataResponse,
-          verification: { message: verification, link }
-        }
-      );
+      return Response.customResponse(res, 201, 'Account has been created successfully', {
+        ...dataResponse,
+        verification: { message: verification, link }
+      });
     } catch (error) {
       return next(error);
     }
@@ -101,12 +96,7 @@ class Users {
       userRoles: data.userRoles,
       userToken: data.token
     };
-    return Response.customResponse(
-      res,
-      200,
-      'Successfully logged in!',
-      dataResponse
-    );
+    return Response.customResponse(res, 200, 'Successfully logged in!', dataResponse);
   }
 
   /**
@@ -127,15 +117,10 @@ class Users {
     try {
       const msg = Emails.verificationLinkTemplate(link, user);
       const _ = await Emails.sendmail(msg);
-      return Response.customResponse(
-        res,
-        200,
-        'email sent with verification link',
-        {
-          userEmail,
-          link
-        }
-      );
+      return Response.customResponse(res, 200, 'email sent with verification link', {
+        userEmail,
+        link
+      });
     } catch (error) {
       return Response.errorResponse(res, 500, 'internal error', error);
     }
@@ -153,24 +138,14 @@ class Users {
       const { userEmail } = SessionManager.verify(token);
       const user = await userService.findUserByEmail(userEmail);
       if (user.accountVerified) {
-        return Response.errorResponse(
-          res,
-          409,
-          'Email already verified',
-          'conflicts'
-        );
+        return Response.errorResponse(res, 409, 'Email already verified', 'conflicts');
       }
       const result = userService.verifyEmail(userEmail);
       return Response.customResponse(res, 201, 'Email verified succesfully', {
         userEmail
       });
     } catch (error) {
-      return Response.errorResponse(
-        res,
-        401,
-        'The link is invalid or has expired',
-        'bad request'
-      );
+      return Response.errorResponse(res, 401, 'The link is invalid or has expired', 'bad request');
     }
   }
 
@@ -185,37 +160,22 @@ class Users {
       const userExists = await userService.findUserByEmail(userEmail);
 
       if (!userExists) {
-        return Response.errorResponse(
-          res,
-          401,
-          'Invalid email or password entered'
-        );
+        return Response.errorResponse(res, 401, 'Invalid email or password entered');
       }
       if (userExists.accountVerified === false) {
-        return res
-          .status(401)
-          .send({ status: res.statusCode, error: 'Email not verified' });
+        return res.status(401).send({ status: res.statusCode, error: 'Email not verified' });
       }
       const user = userExists.dataValues;
 
       const match = await Password.checkPasswordMatch(userPassword, user.userPassword);
       if (!match) {
-        return Response.errorResponse(
-          res,
-          401,
-          'Invalid email or password entered'
-        );
+        return Response.errorResponse(res, 401, 'Invalid email or password entered');
       }
 
       user.userToken = await SessionManager.createSession(user);
       delete user.userPassword;
 
-      return Response.customResponse(
-        res,
-        200,
-        'User signed In successfully',
-        user
-      );
+      return Response.customResponse(res, 200, 'User signed In successfully', user);
     } catch (error) {
       return Response.errorResponse(res, 500, 'Something went wrong', error);
     }
@@ -285,11 +245,7 @@ class Users {
         secret: `${userAccount.userPassword}-${userAccount.createdAt}`
       });
       if (password !== newPassword) {
-        return Response.customResponse(
-          res,
-          400,
-          'Passwords do not match re-type password'
-        );
+        return Response.customResponse(res, 400, 'Passwords do not match re-type password');
       }
       const pass = new Password({ userPassword: password });
       const userPassword = await pass.encryptPassword();
@@ -307,10 +263,10 @@ class Users {
   }
 
   /** logs out user
-  * @param {Object} req  request data.
-  * @param {Object} res  response data.
-  * @returns {Object}.
-  */
+   * @param {Object} req  request data.
+   * @param {Object} res  response data.
+   * @returns {Object}.
+   */
   async logout(req, res) {
     const deleted = await SessionManager.destroyToken(req.user);
 
