@@ -58,5 +58,9 @@ router.put(
   Access.isCommentOwner,
   Comments.updateComment
 );
+router
+  .route('/pending')
+  .get(verify, Access.managerRole, Requests.getPendingApprovals)
+  .all(method);
 
 module.exports = router;

@@ -11,63 +11,59 @@
   },
   "basePath": "/api/v1",
   "tags": [
-      {
-        "name": "user",
-        "description": "User End Points"
-      },
-      {
-        "name": "accommodation",
-        "description": "Travel admin creates accommodations"
-      },
-      {
-        "name": "requests",
-        "description": "Requests end points"
-      },
-      {
-        "name": "request comments",
-        "description": "Comments end points"
-      }
-    ],
-    "schemes": [
-      "https",
-      "http"
-    ],
-    "paths": {
-      "/auth/signup": {
-        "post": {
-          "tags": [
-            "user"
-          ],
-          "summary": "Add a new user",
-          "description": "End point for creating a new user",
-          "operationId": "addUser",
-          "consumes": [
-            "application/json",
-            "application/xml"
-          ],
-          "produces": [
-            "application/xml",
-            "application/json"
-          ],
-          "parameters": [
-            {
-              "in": "body",
-              "name": "body",
-              "description": "User object that needs to be added to the store",
-              "required": true,
-              "schema": {
-                "$ref": "#/definitions/User"
-              }
-            }
-          ],
-          "responses": {
-            "422": {
-              "description": "Invalid input"
+    {
+      "name": "user",
+      "description": "User End Points"
+    },
+    {
+      "name": "accommodation",
+      "description": "Travel admin creates accommodations"
+    },
+    {
+      "name": "requests",
+      "description": "Requests end points"
+    }
+  ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/auth/signup": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Add a new user",
+        "description": "End point for creating a new user",
+        "operationId": "addUser",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User object that needs to be added to the store",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
             }
           }
+        ],
+        "responses": {
+          "422": {
+            "description": "Invalid input"
+          }
         }
-      },
-      "/auth/signin": {
+      }
+    },
+    "/auth/signin": {
       "post": {
         "tags": [
           "user"
@@ -99,7 +95,7 @@
           }
         }
       }
-      },
+    },
     "/auth/forgotPassword": {
       "post": {
         "tags": [
@@ -848,45 +844,29 @@
             "message": "Your requests were retrieved successfully",
             "data": []
           }
-         }
+        }
       }
     },
-  "/requests/oneWay":{
-    "post": {
-      "tags": [
-        "requests"
-      ],
-      "summary": "create a One way trip request",
-      "description": "this endpoint sends and creates a one way trip",
-      "consumes": [
-        "application/json"
-      ],
-      "produces": [
-        "application/json"
-      ],
-      "parameters": [
-        {
-          "in": "body",
-          "name": "body",
-          "description": "One way request data entered by the user",
-          "required": true,
-          "schema": {
-            "$ref": "#/definitions/oneWay"
+    "/requests/pending": {
+      "get": {
+        "tags": [
+          "requests"
+        ],
+        "summary": "Manager view pending requests",
+        "description": "Manager can view all the request pending approval",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "401": {
+            "status": 401,
+            "message": "Invalid or expired token used"
+          },
+          "200": {
+            "status": 200,
+            "message": "Your requests were retrieved successfully",
+            "data": []
           }
-        }
-      ],
-      "responses": {
-        "200": {
-          "description": "Request sucessfully retrieved"
-        },
-        "422": {
-          "description": "Wrong Data format is entered"
-        },
-        "404": {
-          "description": "Accommodation or location not found"
-        },
-        "500": {
-          "description": "Server Error"
         }
       }
     },
@@ -926,6 +906,46 @@
           },
           "500": {
             "description": "Server Error"
+          }
+        }
+      },
+      "/requests/oneWay": {
+        "post": {
+          "tags": [
+            "requests"
+          ],
+          "summary": "create a One way trip request",
+          "description": "this endpoint sends and creates a one way trip",
+          "consumes": [
+            "application/json"
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "One way request data entered by the user",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/oneWay"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Request sucessfully retrieved"
+            },
+            "422": {
+              "description": "Wrong Data format is entered"
+            },
+            "404": {
+              "description": "Accommodation or location not found"
+            },
+            "500": {
+              "description": "Server Error"
+            }
           }
         }
       }
@@ -1014,132 +1034,173 @@
           }
         ]
       }
-    }
-   },
-   "/requests/{request}/comment":{
-    "post": {
-      "tags": [
-        "request comments"
-      ],
-      "summary": "Add a comment on the request",
-      "description": "This end points allows the manager or the request owner to comment on the request",
-      "consumes": [
-        "application/json"
-      ],
-      "produces": [
-        "application/json"
-      ],
-      "parameters": [
-        {
-          "name": "request",
-          "in": "path",
-          "description": "Request ID",
-          "required": true,
-          "type": "integer"
-        },
-        {
-          "in": "body",
-          "name": "body",
-          "description": "Payload to add comment",
-          "required": true,
-          "schema": {
-            "$ref": "#/definitions/comment"
+    },
+    "/requests/{request}/comment": {
+      "post": {
+        "tags": [
+          "request comments"
+        ],
+        "summary": "Add a comment on the request",
+        "description": "This end points allows the manager or the request owner to comment on the request",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "request",
+            "in": "path",
+            "description": "Request ID",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Payload to add comment",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/comment"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Comment successfully added"
+          },
+          "422": {
+            "description": "Wrong Data format is entered"
+          },
+          "403": {
+            "description": "Not allowed to comment on request"
+          },
+          "500": {
+            "description": "Server Error"
           }
         }
-      ],
-      "responses": {
-        "201": {
-          "description": "Comment successfully added"
-        },
-        "422": {
-          "description": "Wrong Data format is entered"
-        },
-        "403": {
-          "description": "Not allowed to comment on request"
-        },
-        "500": {
-          "description": "Server Error"
-        }
       }
-    }
-   },
-   "/requests/comments/{id}": {
-    "put": {
-      "tags": [
-        "request comments"
-      ],
-      "summary": "Update a comment",
-      "description": "This endpoint allows the request owner or the manager to update their comment on a request",
-      "produces": [
-        "application/json"
-      ],
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "description": "Comment ID",
-          "required": true,
-          "type": "integer"
-        },
-        {
-          "in": "body",
-          "name": "body",
-          "description": "Payload to update comment",
-          "required": true,
-          "schema": {
-            "$ref": "#/definitions/comment"
+    },
+    "/requests/comments/{id}": {
+      "put": {
+        "tags": [
+          "request comments"
+        ],
+        "summary": "Update a comment",
+        "description": "This endpoint allows the request owner or the manager to update their comment on a request",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Comment ID",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Payload to update comment",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/comment"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment successfully updated"
+          },
+          "422": {
+            "description": "Wrong Data format is entered"
+          },
+          "403": {
+            "description": "Not allowed to update comment on request"
+          },
+          "500": {
+            "description": "Server Error"
           }
         }
-      ],
-      "responses": {
-        "200": {
-          "description": "Comment successfully updated"
-        },
-        "422": {
-          "description": "Wrong Data format is entered"
-        },
-        "403": {
-          "description": "Not allowed to update comment on request"
-        },
-        "500": {
-          "description": "Server Error"
+      }
+    },
+    "/requests/{request}/comments": {
+      "get": {
+        "tags": [
+          "request comments"
+        ],
+        "summary": "View comments on a request",
+        "description": "On this endpoint, a request owner or manager can retrieve comments on the requests",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "request",
+            "in": "path",
+            "required": true,
+            "description": "Request ID",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comments successfully retrieved"
+          },
+          "404": {
+            "description": "Request not found"
+          },
+          "403": {
+            "description": "Not allowed to retrieve comments on request"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/requests/returnTrip": {
+      "post": {
+        "tags": [
+          "requests"
+        ],
+        "summary": "create a return trip request",
+        "description": "this endpoint sends and creates a one way trip",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Returb Trip request data entered by the user",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/returnTrip"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request sucessfully retrieved"
+          },
+          "422": {
+            "description": "Wrong Data format is entered"
+          },
+          "404": {
+            "description": "Accommodation or location not found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
         }
       }
     }
-  },
-  "/requests/{request}/comments": {
-    "get": {
-      "tags": [
-        "request comments"
-      ],
-      "summary": "View comments on a request",
-      "description": "On this endpoint, a request owner or manager can retrieve comments on the requests",
-      "produces": [
-        "application/json"
-      ],
-      "parameters": [{
-        "name": "request",
-        "in": "path",
-        "required": true,
-        "description": "Request ID",
-        "type": "string"
-      }],
-      "responses": {
-        "200": {
-          "description": "Comments successfully retrieved"
-        },
-        "404": {
-          "description": "Request not found"
-        },
-        "403": {
-          "description": "Not allowed to retrieve comments on request"
-        },
-        "500": {
-          "description": "Server Error"
-        }
-      }
-    }
-  }
   },
   "definitions": {
     "oneWay": {
@@ -1178,88 +1239,89 @@
         }
       }
     },
-    "UserProfile": {
-      "type": "object",
-      "properties": {
-        "firstName": {
-          "type": "string"
-        },
-        "lastName": {
-          "type": "string"
-        },
-        "language": {
-          "type": "string"
-        },
-        "gender": {
-          "type": "string"
-        },
-        "currency": {
-          "type": "string"
-        },
-        "location": {
-          "type": "string"
-        },
-        "phoneNumber": {
-          "type": "string"
-        },
-        "birthDate": {
-          "type": "string"
+    "definitions": {
+      "oneWay": {
+        "required": [
+          "from",
+          "to",
+          "travelDate",
+          "reason",
+          "accommodation"
+        ],
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "example": "Kigali, Rwanda"
+          },
+          "to": {
+            "type": "integer",
+            "example": 1,
+            "summary": "this is the locationId"
+          },
+          "travelDate": {
+            "type": "date",
+            "example": "2020-01-01",
+            "summary": "this is the date of travel and should atleast today"
+          },
+          "reason": {
+            "type": "string",
+            "example": "this is my travel reason and it should be more than 30 characters",
+            "summary": "this is reason and should be more than 30 characters"
+          },
+          "accommodation": {
+            "type": "integer",
+            "example": 1,
+            "summary": "this is the accommodationId"
+          }
         }
       },
       "xml": {
         "name": "User"
-      }
-    },
-    "comment": {
-      "required": [
-        "comment"
-      ],
-      "type": "object",
-      "properties": {
-        "comment": {
-          "type": "string",
-          "example": "Please clarify the travel reason",
-          "summary": "This is an updated comment on the request"
-        }
-      }
-    }
-  },
-  "/requests/returnTrip":{
-    "post": {
-      "tags": [
-        "requests"
-      ],
-      "summary": "create a return trip request",
-      "description": "this endpoint sends and creates a one way trip",
-      "consumes": [
-        "application/json"
-      ],
-      "produces": [
-        "application/json"
-      ],
-      "parameters": [
-        {
-          "in": "body",
-          "name": "body",
-          "description": "Returb Trip request data entered by the user",
-          "required": true,
-          "schema": {
-            "$ref": "#/definitions/returnTrip"
+      },
+      "UserProfile": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "birthDate": {
+            "type": "string"
           }
+        },
+        "xml": {
+          "name": "User"
         }
-      ],
-      "responses": {
-        "200": {
-          "description": "Request sucessfully retrieved"
-        },
-        "422": {
-          "description": "Wrong Data format is entered"
-        },
-        "404": {
-          "description": "Accommodation or location not found"
-        },
-        "500": {
-          "description": "Server Error"
+      },
+      "comment": {
+        "required": [
+          "comment"
+        ],
+        "type": "object",
+        "properties": {
+          "comment": {
+            "type": "string",
+            "example": "Please clarify the travel reason",
+            "summary": "This is an updated comment on the request"
+          }
         }
       }
     }

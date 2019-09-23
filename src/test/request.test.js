@@ -6,7 +6,7 @@ import server from '../index';
 const { expect } = chai;
 chai.use(chaiHttp);
 
-let token;
+let token, managerToken;
 
 const signinUrl = '/api/v1/auth/signin';
 const getMyRequestUrl = '/api/v1/requests/my-requests';
@@ -18,6 +18,7 @@ const invalidRequestIdUrl = '/api/v1/requests/a/comment';
 const invalidRequestIdUrlGet = '/api/v1/requests/a/comments';
 const updateComment = '/api/v1/requests/comments/1';
 const InvalidUpdateUrl = '/api/v1/requests/comments/a';
+const pendingApprovals = '/api/v1/requests/pending';
 
 const oneWay = {
   from: 'Kigali, Rwanda',
@@ -100,29 +101,52 @@ const wrongreturnDate = {
   accommodation: 1
 };
 
-describe('Travel Requests', () => {
-  before('with correct credentials', (done) => {
-    const user = {
-      userEmail: 'jonashyaka2@gmail.com',
-      userPassword: 'Root1234@'
-    };
-    chai
-      .request(server)
-      .post(signinUrl)
-      .send(user)
-      .end((err, res) => {
-        if (err) {
-          return done(err);
-        }
-        expect(res).to.have.status(200);
-        expect(res.body.data).to.have.property('userToken');
+before('Log In normal users correct credentials', (done) => {
+  const user = {
+    userEmail: 'jonashyaka2@gmail.com',
+    userPassword: 'Root1234@'
+  };
+  chai
+    .request(server)
+    .post(signinUrl)
+    .send(user)
+    .end((err, res) => {
+      if (err) {
+        return done(err);
+      }
+      expect(res).to.have.status(200);
+      expect(res.body.data).to.have.property('userToken');
 
-        token = res.body.data.userToken;
+      token = res.body.data.userToken;
 
-        done();
-      });
-  });
-  it('should retrieve requests', (done) => {
+      done();
+    });
+});
+
+before('Log In manager correct credentials', (done) => {
+  const user = {
+    userEmail: 'marveldev53@gmail.com',
+    userPassword: 'Root1123#'
+  };
+  chai
+    .request(server)
+    .post(signinUrl)
+    .send(user)
+    .end((err, res) => {
+      if (err) {
+        return done(err);
+      }
+      expect(res).to.have.status(200);
+      expect(res.body.data).to.have.property('userToken');
+
+      managerToken = res.body.data.userToken;
+
+      done();
+    });
+});
+
+describe('Get Requests', () => {
+  it('when they are logged In', (done) => {
     chai
       .request(server)
       .get(getMyRequestUrl)
@@ -352,5 +376,34 @@ describe('Travel Requests', () => {
           done();
         });
     });
+  });
+});
+
+describe('Manager get Pending requests', () => {
+  it('When user is manager', (done) => {
+    chai
+      .request(server)
+      .get(pendingApprovals)
+      .set('Authorization', `Bearer ${managerToken}`)
+      .end((_err, res) => {
+        if (_err) done(_err);
+
+        expect(res.status).to.eq(200);
+
+        done();
+      });
+  });
+
+  it('When user is requester', (done) => {
+    chai
+      .request(server)
+      .get(pendingApprovals)
+      .set('Authorization', `Bearer ${token}`)
+      .end((_err, res) => {
+        if (_err) done(_err);
+
+        expect(res.status).to.eq(403);
+        done();
+      });
   });
 });

@@ -51,6 +51,16 @@ export default {
         accountVerified: true,
         createdAt: new Date(),
         updatedAt: new Date()
+      },
+      {
+        firstName: 'Dean',
+        lastName: 'Winchester',
+        userEmail: 'marveldev53@gmail.com',
+        userPassword: '$2b$10$oUCucQnBRaYYcZS5kMy7o.ydnOHHA6k/w7sQ9r9L1STDnos6Fw1c2',
+        userRoles: 'Manager',
+        accountVerified: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ],
     {}

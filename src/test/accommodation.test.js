@@ -27,17 +27,18 @@ before((done) => {
     });
 });
 
+before((done) => {
+  chai
+    .request(server)
+    .post('/api/v1/auth/signin')
+    .send(travelAdmin)
+    .end((err, res) => {
+      adminToken = res.body.data.userToken;
+      done();
+    });
+});
+
 describe('Travel Administrator', () => {
-  before((done) => {
-    chai
-      .request(server)
-      .post('/api/v1/auth/signin')
-      .send(travelAdmin)
-      .end((err, res) => {
-        adminToken = res.body.data.userToken;
-        done();
-      });
-  });
   it('should create an accommodation with all properties', (done) => {
     chai
       .request(server)

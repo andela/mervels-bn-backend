@@ -55,11 +55,16 @@ class AccommodationController {
   async createRoom(req, res) {
     try {
       const { accommodationId, name } = req.body;
-      const exist = await AccommodationService.getAccommodation({ id: accommodationId });
+      const exist = await AccommodationService.getAccommodation({
+        id: accommodationId
+      });
       if (!exist) {
         return Response.errorResponse(res, 404, 'error', 'Accommodation not found');
       }
-      const roomExist = await AccommodationService.getRoom({ name, accommodationId });
+      const roomExist = await AccommodationService.getRoom({
+        name,
+        accommodationId
+      });
       if (roomExist) {
         return Response.errorResponse(
           res,
@@ -104,7 +109,9 @@ class AccommodationController {
   async getAccommodationById(req, res) {
     try {
       const { accommodationId } = req.params;
-      const exist = await AccommodationService.getAccommodation({ id: accommodationId });
+      const exist = await AccommodationService.getAccommodation({
+        id: accommodationId
+      });
       if (!exist) return Response.errorResponse(res, 404, 'error', 'Accommodation not found');
       return Response.customResponse(res, 200, 'Accommodation fetched successfully', exist);
     } catch (error) {
