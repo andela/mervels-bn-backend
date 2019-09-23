@@ -12,10 +12,11 @@ import Access from '../../middlewares/userRoles';
 const router = express.Router();
 
 router
-  .route('/oneWay')
+  .route('/one-way')
   .post(
     verify,
     requestsValidator.oneWay,
+    location.validDate,
     location.validLocation,
     location.validAccomodation,
     Requests.trip
@@ -23,15 +24,29 @@ router
   .all(method);
 
 router
-  .route('/returnTrip')
+  .route('/return-trip')
   .post(
     verify,
     requestsValidator.returnTrip,
+    location.validDate,
     location.validLocation,
     location.validAccomodation,
     Requests.trip
   )
   .all(method);
+
+router
+  .route('/multi-city')
+  .post(
+    verify,
+    requestsValidator.multiCity,
+    location.validDate,
+    location.validLocation,
+    location.validAccomodation,
+    Requests.trip
+  )
+  .all(method);
+
 router
   .route('/my-requests')
   .get(verify, Requests.getMyRequests)

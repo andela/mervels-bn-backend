@@ -4,20 +4,20 @@ export default {
     'Locations',
     [
       {
-        country: 'Rwanda',
-        city: 'Kigali',
+        country: 'RWANDA',
+        city: 'KIGALI',
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        country: 'Uganda',
-        city: 'Kampala',
+        country: 'UGANDA',
+        city: 'KAMPALA',
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        country: 'Nigeria',
-        city: 'Lagos',
+        country: 'NIGERIA',
+        city: 'LAGOS',
         createdAt: new Date(),
         updatedAt: new Date()
       }

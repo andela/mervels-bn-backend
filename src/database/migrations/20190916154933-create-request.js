@@ -11,7 +11,7 @@ export default {
       type: Sequelize.STRING
     },
     travelDate: {
-      type: Sequelize.DATEONLY
+      type: Sequelize.ARRAY(Sequelize.STRING)
     },
     returnDate: {
       type: Sequelize.DATEONLY

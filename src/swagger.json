@@ -870,13 +870,13 @@
         }
       }
     },
-    "/requests/oneWay": {
+    "/requests/return-trip":{
       "post": {
         "tags": [
           "requests"
         ],
-        "summary": "create a One way trip request",
-        "description": "this endpoint sends and creates a one way trip",
+        "summary": "create a return trip request",
+        "description": "this endpoint sends and creates a return trip",
         "consumes": [
           "application/json"
         ],
@@ -887,10 +887,10 @@
           {
             "in": "body",
             "name": "body",
-            "description": "One way request data entered by the user",
+            "description": "Return Trip request data entered by the user",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/oneWay"
+              "$ref": "#/definitions/returnTrip"
             }
           }
         ],
@@ -908,7 +908,8 @@
             "description": "Server Error"
           }
         }
-      },
+      }
+    },
       "/requests/oneWay": {
         "post": {
           "tags": [
@@ -948,8 +949,47 @@
             }
           }
         }
+      },	 
+     "/requests/multi-city":{
+      "post": {
+        "tags": [
+          "requests"
+        ],
+        "summary": "create a multi-city trip request",
+        "description": "this endpoint sends and creates a multi-city trip",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Returb Trip request data entered by the user",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/multiCity"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request sucessfully retrieved"
+          },
+          "422": {
+            "description": "Wrong Data format is entered"
+          },
+          "404": {
+            "description": "Accommodation or location not found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
       }
-    },
+     }, 
     "/profile": {
       "patch": {
         "path": "/profile",
@@ -1160,85 +1200,8 @@
           }
         }
       }
-    },
-    "/requests/returnTrip": {
-      "post": {
-        "tags": [
-          "requests"
-        ],
-        "summary": "create a return trip request",
-        "description": "this endpoint sends and creates a one way trip",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "Returb Trip request data entered by the user",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/returnTrip"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Request sucessfully retrieved"
-          },
-          "422": {
-            "description": "Wrong Data format is entered"
-          },
-          "404": {
-            "description": "Accommodation or location not found"
-          },
-          "500": {
-            "description": "Server Error"
-          }
-        }
-      }
     }
   },
-  "definitions": {
-    "oneWay": {
-      "required": [
-        "from",
-        "to",
-        "travelDate",
-        "reason",
-        "accommodation"
-      ],
-      "type": "object",
-      "properties": {
-        "from": {
-          "type": "string",
-          "example": "Kigali, Rwanda"
-        },
-        "to": {
-          "type": "integer",
-          "example": 1,
-          "summary": "this is the locationId"
-        },
-        "travelDate": {
-          "type": "date",
-          "example": "2020-01-01",
-          "summary": "this is the date of travel and should atleast today"
-        },
-        "reason": {
-          "type": "string",
-          "example": "this is my travel reason and it should be more than 30 characters",
-          "summary": "this is reason and should be more than 30 characters"
-        },
-        "accommodation": {
-          "type": "integer",
-          "example": 1,
-          "summary": "this is the accommodationId"
-        }
-      }
-    },
     "definitions": {
       "oneWay": {
         "required": [
@@ -1276,52 +1239,140 @@
           }
         }
       },
-      "xml": {
-        "name": "User"
-      },
-      "UserProfile": {
-        "type": "object",
-        "properties": {
-          "firstName": {
-            "type": "string"
-          },
-          "lastName": {
-            "type": "string"
-          },
-          "language": {
-            "type": "string"
-          },
-          "gender": {
-            "type": "string"
-          },
-          "currency": {
-            "type": "string"
-          },
-          "location": {
-            "type": "string"
-          },
-          "phoneNumber": {
-            "type": "string"
-          },
-          "birthDate": {
-            "type": "string"
-          }
+    "returnTrip": {
+      "required": [
+        "from",
+        "to",
+        "travelDate",
+        "returnDate",
+        "reason",
+        "accommodation"
+      ],
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string",
+          "example": "Kigali, Rwanda"
         },
-        "xml": {
-          "name": "User"
+        "to": {
+          "type": "integer",
+          "example": 1,
+          "summary": "this is the locationId"
+        },
+        "travelDate": {
+          "type": "date",
+          "example": "2020-01-01",
+          "summary": "this is the date of travel and should atleast today"
+        },
+        "returnDate": {
+          "type": "date",
+          "example": "2020-02-30",
+          "summary": "this is the date of return and should be greater tha travel date"
+        },
+        "reason": {
+          "type": "string",
+          "example": "this is my travel reason and it should be more than 30 characters",
+          "summary": "this is reason and should be more than 30 characters"
+        },
+        "accommodation": {
+          "type": "integer",
+          "example": 1,
+          "summary": "this is the accommodationId"
+        }
+      }
+    },
+    "multiCity": {
+      "required": [
+        "from",
+        "to",
+        "travelDate",
+        "reason",
+        "accommodation"
+      ],
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string",
+          "example": "Kigali, Rwanda"
+        },
+        "to": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "example": [1, 2],
+          "summary": "this is the locationId array"
+        },
+        "travelDate": {
+          "type": "array",
+          "items": {
+            "type": "date"
+          },
+          "example": ["2020-01-01", "2020-11-01"],
+          "summary": "this is the array of date of travel and should atleast today"
+        },
+        "returnDate": {
+          "type": "date",
+          "example": "2020-02-30",
+          "summary": "this is the date of return and should be greater tha travel date"
+        },
+        "reason": {
+          "type": "string",
+          "example": "this is my travel reason and it should be more than 30 characters",
+          "summary": "this is reason and should be more than 30 characters"
+        },
+        "accommodation": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "example": ["hotel", "sheraton"],
+          "summary": "this is the accommodationId"
+        }
+      }
+    },
+    "UserProfile": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "phoneNumber": {
+          "type": "string"
+        },
+        "birthDate": {
+          "type": "string"
         }
       },
-      "comment": {
-        "required": [
-          "comment"
-        ],
-        "type": "object",
-        "properties": {
-          "comment": {
-            "type": "string",
-            "example": "Please clarify the travel reason",
-            "summary": "This is an updated comment on the request"
-          }
+      "xml": {
+        "name": "User"
+      }
+    },
+    "comment": {
+      "required": [
+        "comment"
+      ],
+      "type": "object",
+      "properties": {
+        "comment": {
+          "type": "string",
+          "example": "Please clarify the travel reason",
+          "summary": "This is an updated comment on the request"
         }
       }
     }
@@ -1332,3 +1383,4 @@
     }
   ]
 }
+

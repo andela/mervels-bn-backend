@@ -13,8 +13,25 @@ class Requests {
    * @return {function} requests
    */
   async trip(req, res, next) {
+    const len = req.body.to.length;
+    if (len !== req.body.accommodations.length || len !== req.body.travelDate.length) {
+      return Response.errorResponse(
+        res,
+        400,
+        '',
+        'Book an accommodation for each location on a specific date'
+      );
+    }
+    const request = await requestService.findRequests({
+      from: req.body.from.toUpperCase(),
+      travelDate: req.body.travelDate,
+      user: req.user.id
+    });
+    if (request) {
+      return Response.errorResponse(res, 400, 'Duplicate', 'Request already exists');
+    }
     const oneway = {
-      from: req.body.from,
+      from: req.body.from.toUpperCase(),
       travelDate: req.body.travelDate,
       reason: req.body.reason,
       user: req.user.id
@@ -32,7 +49,7 @@ class Requests {
         result
       );
     } catch (error) {
-      return next(error);
+      next(error);
     }
   }
 
