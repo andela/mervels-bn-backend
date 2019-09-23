@@ -60,6 +60,9 @@ module.exports = (sequelize, DataTypes) => {
       as: 'accommodations',
       foreignKey: 'requestId'
     });
+    Requests.hasMany(models.Comment, {
+      foreignKey: 'request'
+    });
   };
   return Requests;
 };

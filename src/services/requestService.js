@@ -29,6 +29,29 @@ class RequestService {
 
   /**
    * Get requests by user
+   * @param {string} id to be checked against
+   * @return {object} Oject of request if found
+   */
+  static async findRequestByID(id) {
+    try {
+      const requests = await Requests.findOne({
+        where: { id },
+        include: [
+          {
+            model: database.Accommodations,
+            as: 'accommodations'
+          }
+        ]
+      });
+
+      return requests;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get requests by user
    * @param {string} request to be created
    * @param {string} acc to array of accomodations
    * @return {object} Oject of request if found

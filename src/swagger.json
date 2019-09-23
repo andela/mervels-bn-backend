@@ -22,6 +22,10 @@
       {
         "name": "requests",
         "description": "Requests end points"
+      },
+      {
+        "name": "request comments",
+        "description": "Comments end points"
       }
     ],
     "schemes": [
@@ -187,7 +191,7 @@
     "/auth/createLink": {
       "post": {
         "tags": [
-          "auth"
+          "user"
         ],
         "summary": "Verification link",
         "description": "Sends a verification link to email",
@@ -237,7 +241,7 @@
     "/auth/verify/?token={token}": {
       "patch": {
         "tags": [
-          "auth"
+          "user"
         ],
         "summary": "Verification link",
         "description": "Sends a verification link to email",
@@ -1011,6 +1015,131 @@
         ]
       }
     }
+   },
+   "/requests/{request}/comment":{
+    "post": {
+      "tags": [
+        "request comments"
+      ],
+      "summary": "Add a comment on the request",
+      "description": "This end points allows the manager or the request owner to comment on the request",
+      "consumes": [
+        "application/json"
+      ],
+      "produces": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "request",
+          "in": "path",
+          "description": "Request ID",
+          "required": true,
+          "type": "integer"
+        },
+        {
+          "in": "body",
+          "name": "body",
+          "description": "Payload to add comment",
+          "required": true,
+          "schema": {
+            "$ref": "#/definitions/comment"
+          }
+        }
+      ],
+      "responses": {
+        "201": {
+          "description": "Comment successfully added"
+        },
+        "422": {
+          "description": "Wrong Data format is entered"
+        },
+        "403": {
+          "description": "Not allowed to comment on request"
+        },
+        "500": {
+          "description": "Server Error"
+        }
+      }
+    }
+   },
+   "/requests/comments/{id}": {
+    "put": {
+      "tags": [
+        "request comments"
+      ],
+      "summary": "Update a comment",
+      "description": "This endpoint allows the request owner or the manager to update their comment on a request",
+      "produces": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "Comment ID",
+          "required": true,
+          "type": "integer"
+        },
+        {
+          "in": "body",
+          "name": "body",
+          "description": "Payload to update comment",
+          "required": true,
+          "schema": {
+            "$ref": "#/definitions/comment"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Comment successfully updated"
+        },
+        "422": {
+          "description": "Wrong Data format is entered"
+        },
+        "403": {
+          "description": "Not allowed to update comment on request"
+        },
+        "500": {
+          "description": "Server Error"
+        }
+      }
+    }
+  },
+  "/requests/{request}/comments": {
+    "get": {
+      "tags": [
+        "request comments"
+      ],
+      "summary": "View comments on a request",
+      "description": "On this endpoint, a request owner or manager can retrieve comments on the requests",
+      "produces": [
+        "application/json"
+      ],
+      "parameters": [{
+        "name": "request",
+        "in": "path",
+        "required": true,
+        "description": "Request ID",
+        "type": "string"
+      }],
+      "responses": {
+        "200": {
+          "description": "Comments successfully retrieved"
+        },
+        "404": {
+          "description": "Request not found"
+        },
+        "403": {
+          "description": "Not allowed to retrieve comments on request"
+        },
+        "500": {
+          "description": "Server Error"
+        }
+      }
+    }
+  }
   },
   "definitions": {
     "oneWay": {
@@ -1080,6 +1209,19 @@
       "xml": {
         "name": "User"
       }
+    },
+    "comment": {
+      "required": [
+        "comment"
+      ],
+      "type": "object",
+      "properties": {
+        "comment": {
+          "type": "string",
+          "example": "Please clarify the travel reason",
+          "summary": "This is an updated comment on the request"
+        }
+      }
     }
   },
   "/requests/returnTrip":{
@@ -1121,7 +1263,6 @@
         }
       }
     }
-   }
   },
   "security": [
     {
