@@ -1124,6 +1124,42 @@
             "description": "Server Error"
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "request comments"
+        ],
+        "summary": "Delete a comment",
+        "description": "This endpoint allows the request owner or the manager to delete their comment on a request",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Comment ID",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment successfully deleted"
+          },
+          "422": {
+            "description": "Wrong Data format is entered"
+          },
+          "403": {
+            "description": "Not allowed to delete comment on request"
+          },
+          "404": {
+            "description": "Comment not found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
       }
     },
     "/requests/{request}/comments": {

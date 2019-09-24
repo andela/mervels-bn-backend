@@ -85,4 +85,27 @@ export default class commentValidator {
       next();
     });
   }
+
+  /**
+   * @param {Object} req  request details.
+   * @param {Object} res  response details.
+   * @param {Object} next middleware details
+   * @returns {Object}.
+   */
+  static async deleteComment(req, res, next) {
+    const comment = { id: req.params.id };
+    const schema = Joi.object()
+      .keys({
+        id: Joi.number()
+          .integer()
+          .required()
+          .error(() => 'Enter a valid comment ID')
+      })
+      .options({ allowUnknown: false });
+
+    schema.validate(comment, (error) => {
+      if (error) return Response.errorResponse(res, 422, 'Validation failed', error.details[0].message);
+      next();
+    });
+  }
 }

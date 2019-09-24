@@ -62,5 +62,12 @@ router
   .route('/pending')
   .get(verify, Access.managerRole, Requests.getPendingApprovals)
   .all(method);
+router.delete(
+  '/comments/:id',
+  verify,
+  commentsValidator.deleteComment,
+  Access.isCommentOwner,
+  Comments.deleteComment
+);
 
 module.exports = router;

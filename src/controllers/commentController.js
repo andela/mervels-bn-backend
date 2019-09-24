@@ -15,6 +15,7 @@ class CommentController {
       const comment = req.body;
       comment.user = req.user.id;
       const addedComment = await CommentService.addComment(comment);
+      delete addedComment.dataValues.deleted;
       return Response.customResponse(res, 201, 'Comment added successfully', addedComment);
     } catch (error) {
       return Response.errorResponse(res, 500, 'Something went wrong', error);
@@ -54,6 +55,24 @@ class CommentController {
         'Comment updated successfully',
         updatedComment[1][0]
       );
+    } catch (error) {
+      return Response.errorResponse(res, 500, 'Something went wrong', error);
+    }
+  }
+
+  /**
+   * updates a comment
+   * @param {object} req request.
+   * @param {object} res response.
+   * @returns {object} response object.
+   */
+  async deleteComment(req, res) {
+    try {
+      const { id } = req.params;
+      const commentExists = await CommentService.getCommentById(id);
+      if (!commentExists) return Response.errorResponse(res, 404, 'Error', 'Comment not found');
+      await CommentService.deleteComment(id);
+      return Response.customResponse(res, 200, 'Comment deleted successfully', 'deleted');
     } catch (error) {
       return Response.errorResponse(res, 500, 'Something went wrong', error);
     }
