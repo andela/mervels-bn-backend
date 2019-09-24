@@ -74,6 +74,21 @@ class RequestService {
       throw error;
     }
   }
+
+  /**
+   * Get requests by field
+   * @param {object} field to be search with
+   * @return {object} Oject of request if found
+   */
+  static async findByField(field) {
+    try {
+      const result = await Requests.findAll({ where: field });
+
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default RequestService;

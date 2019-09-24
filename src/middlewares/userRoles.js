@@ -68,6 +68,18 @@ class Access {
     }
     next();
   }
+
+  static managerRole(req, res, next) {
+    if (req.user.userRoles !== 'Manager') {
+      return Response.errorResponse(
+        res,
+        403,
+        'You are not allowed to perform this task',
+        'Authorization error'
+      );
+    }
+    next();
+  }
 }
 
 export default Access;
