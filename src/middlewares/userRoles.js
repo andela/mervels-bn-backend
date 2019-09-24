@@ -46,9 +46,21 @@ class Access {
    */
   static async isOwnerOrManager(req, res, next) {
     const request = await RequestService.findRequestByID(req.params.id);
-    if (!request) return Response.errorResponse(res, 404, 'Invalid request ID');
+    if (!request) {
+      return Response.errorResponse(
+        res,
+        404,
+        'Please use a valid request ID',
+        'Invalid request ID'
+      );
+    }
     if (req.user.userRoles !== 'Manager' && req.user.id !== request.user) {
-      return Response.errorResponse(res, 403, "You don't have rights to complete this operation");
+      return Response.errorResponse(
+        res,
+        403,
+        "You don't have rights to complete this operation",
+        'Access Denied'
+      );
     }
     next();
   }
@@ -62,9 +74,21 @@ class Access {
    */
   static async isCommentOwner(req, res, next) {
     const comment = await CommentService.getCommentById(req.params.id);
-    if (!comment) return Response.errorResponse(res, 404, 'Invalid comment ID');
+    if (!comment) {
+      return Response.errorResponse(
+        res,
+        404,
+        'Please use a valid comment ID',
+        'Invalid comment ID'
+      );
+    }
     if (req.user.id !== comment.user) {
-      return Response.errorResponse(res, 403, "You don't have rights to complete this operation");
+      return Response.errorResponse(
+        res,
+        403,
+        "You don't have rights to complete this operation",
+        'Access Denied'
+      );
     }
     next();
   }

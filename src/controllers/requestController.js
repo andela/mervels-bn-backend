@@ -2,7 +2,6 @@
 /* eslint-disable class-methods-use-this */
 import requestService from '../services/requestService';
 import Response from '../utils/response';
-import RequestService from '../services/requestService';
 
 /** Class representing a password util. */
 class Requests {
@@ -75,7 +74,7 @@ class Requests {
   async getPendingApprovals(req, res) {
     try {
       const field = { status: 'Pending' };
-      const data = await RequestService.findByField(field);
+      const data = await requestService.findByField(field);
       const message = data.length > 0 ? 'Requests retrieved ' : 'No request pending approval';
 
       return Response.customResponse(res, 200, message, data);

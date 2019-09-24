@@ -26,7 +26,13 @@ class CommentService {
   static async getCommentById(id) {
     try {
       return await Comment.findOne({
-        where: [{ id }]
+        where: [
+          {
+            id,
+            deleted: false
+          }
+        ],
+        attributes: ['id', 'user', 'comment', 'createdAt', 'updatedAt']
       });
     } catch (error) {
       throw error;
@@ -41,9 +47,14 @@ class CommentService {
   static async getCommentsByRequest(request) {
     try {
       return await Comment.findAll({
-        where: [{ request }],
+        where: [
+          {
+            request,
+            deleted: false
+          }
+        ],
         order: [['createdAt', 'ASC']],
-        attributes: ['id', 'user', 'comment']
+        attributes: ['id', 'user', 'comment', 'createdAt', 'updatedAt']
       });
     } catch (error) {
       throw error;
@@ -62,6 +73,27 @@ class CommentService {
         returning: true,
         where: [{ id }]
       });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Gets comments by request.
+   * @param {object} id The id of the comment
+   * @param {object} comment The new comment
+   * @returns {object} The response object.
+   */
+  static async deleteComment(id) {
+    try {
+      return await Comment.update(
+        {
+          deleted: true
+        },
+        {
+          where: [{ id }]
+        }
+      );
     } catch (error) {
       throw error;
     }

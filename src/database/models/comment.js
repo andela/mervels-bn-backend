@@ -19,6 +19,11 @@ export default (sequelize, DataTypes) => {
         validate: {
           isNumeric: true
         }
+      },
+      deleted: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false
       }
     },
     {}

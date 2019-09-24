@@ -364,12 +364,36 @@ describe('Get Requests', () => {
           done();
         });
     });
-    it('should update comment', (done) => {
+    it('should be a valid comment', (done) => {
       chai
         .request(server)
         .put(updateComment)
         .set('Authorization', `Bearer ${token}`)
         .send(invalidComment)
+        .end((_err, res) => {
+          if (_err) done(_err);
+          expect(res.status).to.eq(422);
+          done();
+        });
+    });
+    it('should delete comment', (done) => {
+      chai
+        .request(server)
+        .delete(updateComment)
+        .set('Authorization', `Bearer ${token}`)
+        .send()
+        .end((_err, res) => {
+          if (_err) done(_err);
+          expect(res.status).to.eq(200);
+          done();
+        });
+    });
+    it('should have a valid comment id', (done) => {
+      chai
+        .request(server)
+        .delete(InvalidUpdateUrl)
+        .set('Authorization', `Bearer ${token}`)
+        .send()
         .end((_err, res) => {
           if (_err) done(_err);
           expect(res.status).to.eq(422);
