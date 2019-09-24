@@ -18,8 +18,16 @@ const commonFields = {
     .required()
     .max(1)
     .error(() => 'Enter a single id of destination'),
-  travelDate: Joi.date()
-    .min('now')
+  travelDate: Joi.array()
+    .items(
+      Joi.string()
+        .trim()
+        .regex(/^(20)\d\d[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$/)
+        .required()
+    )
+    .single()
+    .required()
+    .min(1)
     .error(() => 'Enter date of travel in yyyy-mm-dd format atleast today'),
   reason: Joi.string()
     .trim()
@@ -28,14 +36,14 @@ const commonFields = {
     .error(() => 'Enter a decription not less than 30 characters'),
   accommodation: Joi.array()
     .items(
-      Joi.number()
-        .integer()
+      Joi.string()
+        .trim()
         .required()
     )
     .single()
     .required()
     .max(1)
-    .error(() => 'Enter a single id of  Place of accomodation')
+    .error(() => 'Enter a Place of accomodation')
 };
 
 /**
@@ -73,9 +81,71 @@ export default class requestValidator {
     const schema = Joi.object().keys({
       ...commonFields,
       returnDate: Joi.date()
-        .greater(Joi.ref('travelDate'))
         .min('now')
         .error(() => 'Enter date of return in yyyy-mm-dd format greater than date of travel')
+    });
+    schema.validate(req.body, (err) => {
+      if (err) {
+        next(err);
+      }
+      next();
+    });
+  }
+
+  /**
+   * Validates return trip entries
+   * @param {Object} req  request details.
+   * @param {Object} res  response details.
+   * @param {Object} next middleware details
+   * @returns {Object}.
+   */
+  static async multiCity(req, res, next) {
+    const schema = Joi.object().keys({
+      from: Joi.string()
+        .trim()
+        .regex(/^[a-zA-Z]+,\s[a-zA-Z]+$/)
+        .required()
+        .min(2)
+        .error(() => 'Enter place of departure, "from" in City, Country format'),
+      to: Joi.array()
+        .items(
+          Joi.number()
+            .integer()
+            .required()
+        )
+        .single()
+        .required()
+        .min(1)
+        .error(() => 'Enter a single id of destination'),
+      travelDate: Joi.array()
+        .items(
+          Joi.string()
+            .trim()
+            .regex(/^(20)\d\d[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$/)
+            .required()
+        )
+        .single()
+        .required()
+        .min(1)
+        .error(() => 'Enter date of travel in yyyy-mm-dd format atleast today'),
+      returnDate: Joi.date()
+        .min('now')
+        .error(() => 'Enter date of return in yyyy-mm-dd format greater than date of travel'),
+      reason: Joi.string()
+        .trim()
+        .required()
+        .min(30)
+        .error(() => 'Enter a decription not less than 30 characters'),
+      accommodation: Joi.array()
+        .items(
+          Joi.string()
+            .trim()
+            .required()
+        )
+        .single()
+        .required()
+        .min(1)
+        .error(() => 'Enter a single id of  Place of accomodation')
     });
     schema.validate(req.body, (err) => {
       if (err) {

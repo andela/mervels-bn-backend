@@ -10,8 +10,8 @@ let token, managerToken;
 
 const signinUrl = '/api/v1/auth/signin';
 const getMyRequestUrl = '/api/v1/requests/my-requests';
-const oneway = '/api/v1/requests/oneWay';
-const returnTrip = '/api/v1/requests/returnTrip';
+const oneway = '/api/v1/requests/one-way';
+const returnTrip = '/api/v1/requests/return-trip';
 const getRequestCommentsUrl = '/api/v1/requests/1/comments';
 const addRequestCommentUrl = '/api/v1/requests/1/comment';
 const invalidRequestIdUrl = '/api/v1/requests/a/comment';
@@ -26,7 +26,7 @@ const oneWay = {
   travelDate: '2019-11-02',
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 1
+  accommodation: 'hotel'
 };
 const wrongLocation = {
   from: 'Kigali, Rwanda',
@@ -34,7 +34,7 @@ const wrongLocation = {
   travelDate: '2019-11-02',
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 1
+  accommodation: 'Hotel'
 };
 const WrongDate = {
   from: 'Kigali, Rwanda',
@@ -50,7 +50,7 @@ const WrongAccomodation = {
   travelDate: '2019-11-02',
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 'Serene'
+  accommodation: 2
 };
 const wrongTo = {
   from: 'Kigali, Rwanda',
@@ -83,22 +83,22 @@ const invalidComment = {
 };
 
 const returnTripData = {
-  from: 'Kigali, Rwanda',
+  from: 'North, Rwanda',
   to: 1,
-  travelDate: '2019-11-02',
+  travelDate: '2019-11-12',
   returnDate: '2019-11-20',
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 1
+  accommodation: 'hotel'
 };
 const wrongreturnDate = {
   from: 'Kigali, Rwanda',
   to: 1,
   travelDate: '2019-11-02',
-  returnDate: '2019-11-00',
+  returnDate: '2010-01-02',
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 1
+  accommodation: 'hotel'
 };
 
 before('Log In normal users correct credentials', (done) => {

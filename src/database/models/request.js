@@ -12,10 +12,18 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       travelDate: {
-        type: DataTypes.DATEONLY,
+        type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: false,
         validate: {
-          isDate: true
+          isValidDate(dates) {
+            const regexp = /^(20)\d\d[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$/;
+            dates.forEach((date) => {
+              if (!regexp.test(date)) {
+                throw new Error('Date of format YYYY-MM-DD allowed.');
+              }
+            });
+            return dates;
+          }
         }
       },
       returnDate: {

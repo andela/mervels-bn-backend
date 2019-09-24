@@ -16,9 +16,31 @@ class RequestService {
         include: [
           {
             model: database.Accommodations,
-            as: 'accommodations'
+            as: 'accommodations',
+            include: [
+              {
+                model: database.Locations
+              }
+            ]
           }
         ]
+      });
+
+      return requests;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get requests by object defined
+   * @param {object} request to be checked against
+   * @return {object} Oject of request if found
+   */
+  static async findRequests(request) {
+    try {
+      const requests = await Requests.findOne({
+        where: request
       });
 
       return requests;
@@ -66,7 +88,12 @@ class RequestService {
           {
             model: database.Accommodations,
             as: 'accommodations',
-            attributes: ['id', 'name', 'status', 'imageUrl', 'locationId']
+            attributes: ['id', 'name', 'status', 'imageUrl', 'locationId'],
+            include: [
+              {
+                model: database.Locations
+              }
+            ]
           }
         ]
       });

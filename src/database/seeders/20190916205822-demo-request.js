@@ -4,8 +4,8 @@ export default {
     'Requests',
     [
       {
-        from: 'Kigali, Rwanda',
-        travelDate: '2019-10-01',
+        from: 'KIGALI, RWANDA',
+        travelDate: ['2019-10-01'],
         returnDate: '2019-12-12',
         reason: 'Business Travel',
         status: 'Pending',
