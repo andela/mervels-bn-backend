@@ -27,6 +27,16 @@ class Location {
         );
       }
     }
+
+    const today = Date.now();
+    if (realDates[0] < today) {
+      return Response.errorResponse(
+        res,
+        400,
+        'You can not enter a date from the past',
+        'Data validation error'
+      );
+    }
     const returnDate = new Date(req.body.returnDate);
     if (realDates[realDates.length - 1] > returnDate) {
       return Response.errorResponse(

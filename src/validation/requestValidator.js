@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 /* eslint-disable no-unused-vars */
 import Joi from '@hapi/joi';
 import Response from '../utils/response';
@@ -54,7 +55,7 @@ export default class requestValidator {
   /**
    * resets new password
    * @param {Object} req  request details.
-   * @param {Object} res  response details.
+   * @param {Object} res  re sponse details.
    * @param {Object} next middleware details
    * @returns {Object}.
    */
@@ -208,6 +209,59 @@ export default class requestValidator {
       if (err) {
         return Response.errorResponse(res, 422, 'Validation failed', err.details[0].message);
       }
+      next();
+    });
+  }
+
+  /**
+   * Validates edit trip entries
+   * @param {Object} req  request details.
+   * @param {Object} res  response details.
+   * @param {Object} next middleware details
+   * @returns {Object}.
+   */
+  static async validateEditRequest(req, res, next) {
+    req.body.sm = req.body.travelDate[req.body.travelDate.length - 1];
+    const schema = Joi.object().keys({
+      from: Joi.string()
+        .trim()
+        .regex(/^[a-zA-Z]+,\s[a-zA-Z]+$/)
+        .min(2)
+        .error(() => 'Enter place of departure, "from" in City, Country format'),
+      to: Joi.array()
+        .items(Joi.number().integer())
+        .single()
+        .error(() => 'Enter a single id of destination'),
+      travelDate: Joi.array()
+        .items(
+          Joi.string()
+            .trim()
+            .regex(/^(20)\d\d[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$/)
+        )
+        .single()
+        .min(1)
+        .error(() => 'Enter date of travel in yyyy-mm-dd format atleast today'),
+      returnDate: Joi.date()
+        .greater(Joi.ref('sm'))
+        .min('now')
+        .error(() => 'Enter date of return in yyyy-mm-dd format greater than date of travel'),
+      reason: Joi.string()
+        .trim()
+        .min(30)
+        .error(() => 'Enter a decription not less than 30 characters'),
+      accommodations: Joi.array()
+        .items(Joi.number())
+        .single()
+        .max(1)
+        .error(() => 'Enter a Place of accomodation'),
+      accommodation: Joi.required(),
+      sm: Joi.required()
+    });
+    schema.validate(req.body, (err) => {
+      if (err) {
+        return Response.errorResponse(res, 422, 'Validation failed', err.details[0].message);
+      }
+      delete req.body.sm;
       next();
     });
   }

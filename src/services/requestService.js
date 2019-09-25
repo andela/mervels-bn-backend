@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-catch */
 import database from '../database/models';
 
-const { Requests } = database;
+const { Requests, AccommodationRequests } = database;
 /** Class representing a Request services. */
 class RequestService {
   /**
@@ -118,6 +118,23 @@ class RequestService {
   }
 
   /**
+   * Get requests by id
+   * @param {string} id to be created
+   * @return {object} Oject of request if found
+   */
+  static async findRequestsById(id) {
+    try {
+      const requests = await Requests.findOne({
+        where: { id }
+      });
+
+      return requests;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
    * Get requests by user
    * @param {string} requestId to be rejected
    * @param {string} status rejected or accepted
@@ -141,6 +158,54 @@ class RequestService {
     try {
       const request = await Requests.findOne({ where: { ...params } });
       return request;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * gets the Request by ID.
+   * @param {string} data The request object.
+   * @param {number} id The ID of the request.
+   * @returns {object} The  object.
+   */
+  static async updateRequest(data, id) {
+    try {
+      const result = await Requests.update(
+        { ...data },
+        {
+          where: { id },
+          returning: true
+        }
+      );
+      if ('accommodations' in data || 'to' in data) {
+        await AccommodationRequests.destroy({
+          where: [{ requestId: 1 }]
+        });
+        const accommodations = [];
+        data.accommodations.map(async (elem) => {
+          const accommodation = {
+            requestId: result[1][0].dataValues.id,
+            accommodationId: elem
+          };
+          accommodations.push(accommodation);
+        });
+        await AccommodationRequests.bulkCreate(accommodations);
+        return await Requests.findByPk(result[1][0].dataValues.id, {
+          include: [
+            {
+              model: database.Accommodations,
+              as: 'accommodations',
+              attributes: ['id', 'name', 'status', 'imageUrl', 'locationId'],
+              include: [
+                {
+                  model: database.Locations
+                }
+              ]
+            }
+          ]
+        });
+      }
     } catch (error) {
       throw error;
     }

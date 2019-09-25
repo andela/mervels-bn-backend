@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import Response from '../utils/response';
 import RequestService from '../services/requestService';
 import CommentService from '../services/commentService';
@@ -107,6 +108,48 @@ class Access {
         403,
         'You are not allowed to perform this task',
         'Authorization error'
+      );
+    }
+    next();
+  }
+
+  /**
+   * Checks if the user is the owner.
+   *@param {string} req  data.
+   * @param {string} res  data.
+   * @param {string} next data.
+   * @returns {string} object.
+   */
+  static async isOwner(req, res, next) {
+    const { id } = req.params;
+    // check id the id sent is not a number
+    if (isNaN(id)) {
+      return Response.errorResponse(res, 400, 'A bad request was sent', 'enter a valid request');
+    }
+    const data = await RequestService.findRequestsById(id);
+    if (data === null) {
+      return Response.errorResponse(
+        res,
+        404,
+        'Request not found',
+        'enter a valid request',
+        'enter a valid request'
+      );
+    }
+    const { user, status } = data.dataValues;
+    if (user !== req.user.id) {
+      return Response.errorResponse(
+        res,
+        403,
+        "You don't have rights to edit this request",
+        'Insufficient Privileges'
+      );
+    }
+    if (status !== 'Pending') {
+      return Response.errorResponse(
+        res,
+        403,
+        "You can't edit a request that has either been rejected or Approved"
       );
     }
     next();

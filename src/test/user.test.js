@@ -490,6 +490,17 @@ describe('Test Access', () => {
           done();
         });
     });
+    it("with valid properties while trying to update super admin's role", (done) => {
+      chai
+        .request(server)
+        .put(updateRole)
+        .set('Authorization', `Bearer ${superToken}`)
+        .send({ userEmail: 'johndoe@gmail.com', userRole: 'Manager' })
+        .end((_err, res) => {
+          expect(res.status).to.eq(400);
+          done();
+        });
+    });
   });
 });
 

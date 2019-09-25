@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable class-methods-use-this */
 import requestService from '../services/requestService';
+import userService from '../services/userService';
 import Response from '../utils/response';
 import email from '../utils/email';
 import UserService from '../services/userService';
@@ -147,6 +148,54 @@ class Requests {
       );
       await email.sendmail(msg);
       return Response.customResponse(res, 200, 'Request approved successfully', { requestId });
+    } catch (error) {
+      return Response.errorResponse(res, 500, 'Something went wrong', error);
+    }
+  }
+
+  /**
+   * @param {object} req request
+   * @param {object} res response
+   * @return {function} requests
+   */
+  async EditRequest(req, res) {
+    try {
+      const rawData = req.body;
+      const formatedData = {
+        ...rawData,
+        reason: rawData.reason.trim()
+      };
+      const { id } = req.params;
+      if (
+        formatedData.to.length !== formatedData.accommodations.length
+        || formatedData.travelDate.length !== formatedData.to.length
+      ) {
+        return Response.errorResponse(
+          res,
+          400,
+          'Unequal number of values in the request',
+          'Bad Request'
+        );
+      }
+      // update the object
+      let data = await requestService.updateRequest(formatedData, id);
+      const roleDetails = await userService.findUserByRole('Manager');
+      const {
+        from, travelDate, returnDate, reason, status, updatedAt
+      } = data.dataValues;
+      data = {
+        from,
+        travelDate,
+        returnDate,
+        reason,
+        status,
+        updatedAt,
+        manager: roleDetails.dataValues.userEmail,
+        user: req.user.firstName
+      };
+      const msg = email.updateTemplate(data);
+      const result = await email.sendmail(msg);
+      return Response.customResponse(res, 200, 'Update has been completed successfully', data);
     } catch (error) {
       return Response.errorResponse(res, 500, 'Something went wrong', error);
     }

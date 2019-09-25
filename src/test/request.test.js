@@ -19,6 +19,7 @@ const invalidRequestIdUrlGet = '/api/v1/requests/a/comments';
 const updateComment = '/api/v1/requests/comments/1';
 const InvalidUpdateUrl = '/api/v1/requests/comments/a';
 const pendingApprovals = '/api/v1/requests/pending';
+const updateResquest = '/api/v1/requests/1';
 
 const oneWay = {
   from: 'Kigali, Rwanda',
@@ -430,6 +431,7 @@ describe('Manager get Pending requests', () => {
       });
   });
 });
+
 describe('Reject request', () => {
   // reject request tests
   let requestId;
@@ -652,6 +654,141 @@ describe('Accept request', () => {
       .end((_err, res) => {
         if (_err) done(_err);
         expect(res.status).to.eq(403);
+        done();
+      });
+  });
+});
+describe('Update Requests', () => {
+  it('with all valid properties', (done) => {
+    chai
+      .request(server)
+      .put(updateResquest)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        from: 'Kigali, Rwanda',
+        to: 1,
+        travelDate: '2019-11-02',
+        returnDate: '2019-11-04',
+        reason: 'hey the nklnk;joihnbyugvytgtfredersg;lklmnjnbvytfyfjo',
+        accommodation: 'Hotel'
+      })
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(200);
+        done();
+      });
+  });
+  it('with invalid departure', (done) => {
+    chai
+      .request(server)
+      .put(updateResquest)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        from: 2,
+        to: 1,
+        travelDate: '2019-11-02',
+        returnDate: '2019-11-04',
+        reason: 'hey the nklnk;joihnbyugvytgtfredersg;lklmnjnbvytfyfjo',
+        accommodation: 'Hotel'
+      })
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(422);
+        done();
+      });
+  });
+  it('with invalid destination', (done) => {
+    chai
+      .request(server)
+      .put(updateResquest)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        from: 'Kigali, Rwanda',
+        to: 'r',
+        travelDate: '2019-11-02',
+        returnDate: '2019-11-04',
+        reason: 'hey the nklnk;joihnbyugvytgtfredersg;lklmnjnbvytfyfjo',
+        accommodation: 'Hotel'
+      })
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(422);
+        done();
+      });
+  });
+  it('with invalid travelDate', (done) => {
+    chai
+      .request(server)
+      .put(updateResquest)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        from: 'Kigali, Rwanda',
+        to: 1,
+        travelDate: '2019-11-2',
+        returnDate: '2019-11-04',
+        reason: 'hey the nklnk;joihnbyugvytgtfredersg;lklmnjnbvytfyfjo',
+        accommodation: 'Hotel'
+      })
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(422);
+        done();
+      });
+  });
+  it('with invalid returnDate', (done) => {
+    chai
+      .request(server)
+      .put(updateResquest)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        from: 'Kigali, Rwanda',
+        to: 1,
+        travelDate: '2019-11-02',
+        returnDate: '2002-11-04',
+        reason: 'hey the nklnk;joihnbyugvytgtfredersg;lklmnjnbvytfyfjo',
+        accommodation: 'Hotel'
+      })
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(422);
+        done();
+      });
+  });
+  it('with invalid reason', (done) => {
+    chai
+      .request(server)
+      .put(updateResquest)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        from: 'Kigali, Rwanda',
+        to: 1,
+        travelDate: '2019-11-02',
+        returnDate: '2019-11-04',
+        reason: 'hey the ',
+        accommodation: 'Hotel'
+      })
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(422);
+        done();
+      });
+  });
+  it('with invalid accommodation', (done) => {
+    chai
+      .request(server)
+      .put(updateResquest)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        from: 'Kigali, Rwanda',
+        to: 1,
+        travelDate: '2019-11-02',
+        returnDate: '2019-11-04',
+        reason: 'hey the nklnk;joihnbyugvytgtfredersg;lklmnjnbvytfyfjo',
+        accommodations: ' '
+      })
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(422);
         done();
       });
   });
