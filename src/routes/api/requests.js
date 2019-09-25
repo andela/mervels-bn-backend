@@ -92,5 +92,17 @@ router.delete(
   Access.isCommentOwner,
   Comments.deleteComment
 );
+router
+  .route('/:id')
+  .put(
+    verify,
+    Access.isOwner,
+    requestsValidator.validateEditRequest,
+    location.validLocation,
+    location.validAccomodation,
+    location.validDate,
+    Requests.EditRequest
+  )
+  .all(method);
 
 module.exports = router;

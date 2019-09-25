@@ -1236,7 +1236,7 @@
           }
         }
       }
-    },   
+    },
     "/requests/reject/{requestId}": {
       "patch": {
         "tags": [
@@ -1337,6 +1337,71 @@
           },
           "422": {
             "description": "validations failed"
+          }
+        }
+      }
+    },
+    "/requests/{requestID}": {
+      "put": {
+        "tags": [
+          "requests"
+        ],
+        "summary": "Edit a single request",
+        "description": "On this endpoint, a request owner can edit a request",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "One way request data entered by the user",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/oneWay"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update has been completed successfully",
+            "examples": {
+              "application/json": {
+                  "status": 200,
+                  "message": "Update has been completed successfully",
+                  "data": {
+                      "from": "Kigali, Rwanda",
+                      "travelDate": [
+                          "2019-11-02"
+                      ],
+                      "returnDate": "2019-11-04",
+                      "reason": "hey the nklnk;joihnbyugvytgtfredersg;lklmnjnbvytfyfjo",
+                      "status": "Pending",
+                      "updatedAt": "2019-09-25T05:39:12.841Z",
+                      "manager": "marveldev53@gmail.com",
+                      "user": "Jonathan",
+                      "userEmail": {
+                          "id": 5,
+                          "userEmail": "jonashyaka2@gmail.com",
+                          "firstName": "Jonathan",
+                          "lastName": "Shyaka",
+                          "accountVerified": true,
+                          "userRoles": "Requester",
+                          "iat": 1569389939,
+                          "exp": 1569393539
+                      }
+                  }
+              }
+            }
+          },
+          "400": {
+            "description": "Can't send an empty object"
+          },
+          "403": {
+            "description": "You don't have rights to edit this request"
+          },
+          "500": {
+            "description": "Server Error"
           }
         }
       }
