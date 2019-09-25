@@ -5,6 +5,7 @@ import Password from '../utils/generatePassword';
 import SessionManager from '../utils/sessionManager';
 import Response from '../utils/response';
 import Emails from '../utils/email';
+import supplierEmail from '../utils/mails/supplier.email';
 /** Class representing a password util. */
 class Users {
   /**
@@ -315,6 +316,43 @@ class Users {
       }
       message = 'The user already has the rights you are trying to assign';
       return Response.customResponse(res, 409, message);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  /**
+   * adds new user by super admin only
+   * @param {Object} req  request details.
+   * @param {Object} res  response details.
+   * @param {Object} next middleware details
+   * @returns {Object}.
+   */
+  async addSupplier(req, res, next) {
+    try {
+      const user = await userService.findUserByEmail(req.body.userEmail);
+      if (user) {
+        return Response.customResponse(res, 409, 'user already exists');
+      }
+      const userPassword = Password.randomPassword();
+      const obj = new Password({ userPassword });
+      const password = await obj.encryptPassword();
+      const supplier = {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        userEmail: req.body.userEmail,
+        userPassword: password,
+        userRoles: 'Accommodation Supplier',
+        accountVerified: true
+      };
+      const data = await userService.createUser(supplier);
+      const message = supplierEmail.supplierTemplate({
+        email: req.body.userEmail,
+        name: req.body.firstName,
+        password: userPassword
+      });
+      const result = await Emails.sendmail(message);
+      return Response.customResponse(res, 201, 'Account has been created successfully', data);
     } catch (error) {
       return next(error);
     }

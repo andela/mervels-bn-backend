@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable class-methods-use-this */
 import requestService from '../services/requestService';
-import userService from '../services/userService';
 import Response from '../utils/response';
 import email from '../utils/email';
 import UserService from '../services/userService';
@@ -35,7 +34,7 @@ class Requests {
     const oneway = {
       from: req.body.from.toUpperCase(),
       travelDate: req.body.travelDate,
-      reason: req.body.reason,
+      reason: req.body.reason.trim(),
       user: req.user.id
     };
     const bothRequests = {
@@ -179,7 +178,7 @@ class Requests {
       }
       // update the object
       let data = await requestService.updateRequest(formatedData, id);
-      const roleDetails = await userService.findUserByRole('Manager');
+      const roleDetails = await UserService.findUserByRole('Manager');
       const {
         from, travelDate, returnDate, reason, status, updatedAt
       } = data.dataValues;

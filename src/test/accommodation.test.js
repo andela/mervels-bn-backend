@@ -6,12 +6,57 @@ const { expect } = chai;
 chai.use(chaiHttp);
 chai.should();
 let adminToken;
+let supplierToken;
 let accommodationId;
 const travelAdmin = {
   userEmail: 'bahatiroben@gmail.com',
   userPassword: 'Root1123#'
 };
+
+const addUser = '/api/v1/auth/add-user';
 let requesterToken;
+let superToken;
+const superUser = {
+  userEmail: 'johndoe@gmail.com',
+  userPassword: 'Root1123#'
+};
+
+const supplier = {
+  firstName: 'Chill',
+  lastName: 'Hotel',
+  userEmail: 'test@gmail.com'
+};
+
+const wrongSupplier = {
+  firstName: 'Chill',
+  lastName: 'Hotel',
+  userEmail: 1
+};
+
+const wrongAmenities = {
+  name: 'Great',
+  locationId: 1,
+  amenities: [1, 2],
+  description: 'this is the best you can ever find in your lifetime trust me',
+  services: ['Breakfast', 'Free wifi']
+};
+
+const wrongServices = {
+  name: 'Best',
+  locationId: 1,
+  amenities: ['Breakfast', 'Free wifi'],
+  description: 'this is the best you can ever find in your lifetime trust me',
+  services: [1, 2]
+};
+
+const wrongImage = {
+  name: 'Best',
+  locationId: 1,
+  amenities: ['Breakfast', 'Free wifi'],
+  description: 'this is the best you can ever find in your lifetime trust me',
+  services: ['Breakfast', 'Free wifi'],
+  image: 12345
+};
 
 before((done) => {
   chai
@@ -39,6 +84,16 @@ before((done) => {
 });
 
 describe('Travel Administrator', () => {
+  before((done) => {
+    chai
+      .request(server)
+      .post('/api/v1/auth/signin')
+      .send(superUser)
+      .end((err, res) => {
+        superToken = res.body.data.userToken;
+        done();
+      });
+  });
   it('should create an accommodation with all properties', (done) => {
     chai
       .request(server)
@@ -47,9 +102,61 @@ describe('Travel Administrator', () => {
       .attach('image', 'src/test/testData/marvel.png', 'marvel.png')
       .field('name', 'Muhabura')
       .field('locationId', 1)
+      .field('amenities', ['GYM', 'SPA'])
+      .field('description', 'this is the best you can ever find in your lifetime trust me')
+      .field('services', ['Breakfast', 'Free wifi'])
       .end((_err, res) => {
         accommodationId = res.body.data.id;
         expect(res.status).to.eq(201);
+        done();
+      });
+  });
+  it('should not create an accommodation with wrong description', (done) => {
+    chai
+      .request(server)
+      .post('/api/v1/accommodations')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .attach('image', 'src/test/testData/marvel.png', 'marvel.png')
+      .field('name', 'Muhabura')
+      .field('locationId', 1)
+      .field('amenities', ['GYM', 'SPA'])
+      .field('description', 1)
+      .field('services', ['Breakfast', 'Free wifi'])
+      .end((_err, res) => {
+        expect(res.status).to.eq(422);
+        done();
+      });
+  });
+  it('should not create an accommodation with wrong amenities', (done) => {
+    chai
+      .request(server)
+      .post('/api/v1/accommodations')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send(wrongAmenities)
+      .end((_err, res) => {
+        expect(res.status).to.eq(422);
+        done();
+      });
+  });
+  it('should not create an accommodation with wrong services', (done) => {
+    chai
+      .request(server)
+      .post('/api/v1/accommodations')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send(wrongServices)
+      .end((_err, res) => {
+        expect(res.status).to.eq(422);
+        done();
+      });
+  });
+  it('should not create an accommodation with wrong image url', (done) => {
+    chai
+      .request(server)
+      .post('/api/v1/accommodations')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send(wrongImage)
+      .end((_err, res) => {
+        expect(res.status).to.eq(422);
         done();
       });
   });
@@ -73,10 +180,31 @@ describe('Travel Administrator', () => {
       .request(server)
       .post('/api/v1/accommodations/rooms')
       .set('Authorization', `Bearer ${adminToken}`)
-      .send({ name: 'Ngorongoro', type: 'flat', accommodationId })
+      .send({
+        name: 'Ngorongoro',
+        type: 'flat',
+        accommodationId,
+        price: 200
+      })
       .end((_err, res) => {
         expect(res.status).to.eq(201);
         expect(res.body.message).to.eq('Room created successfully');
+        done();
+      });
+  });
+  it('should create a room with wrong price format', (done) => {
+    chai
+      .request(server)
+      .post('/api/v1/accommodations/rooms')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        name: 'Ngorongoro',
+        type: 'flat',
+        accommodationId,
+        price: 'were'
+      })
+      .end((_err, res) => {
+        expect(res.status).to.eq(422);
         done();
       });
   });
@@ -85,7 +213,12 @@ describe('Travel Administrator', () => {
       .request(server)
       .post('/api/v1/accommodations/rooms')
       .set('Authorization', `Bearer ${adminToken}`)
-      .send({ name: 'Ngorongoro', type: 'flat', accommodationId })
+      .send({
+        name: 'Ngorongoro',
+        type: 'flat',
+        accommodationId,
+        price: 200
+      })
       .end((_err, res) => {
         expect(res.status).to.eq(409);
         expect(res.body.message).to.eq('this room already exist in this accommodation');
@@ -97,7 +230,12 @@ describe('Travel Administrator', () => {
       .request(server)
       .post('/api/v1/accommodations/rooms')
       .set('Authorization', `Bearer ${requesterToken}`)
-      .send({ name: 'Ngorongoro', type: 'flat', accommodationId })
+      .send({
+        name: 'Ngorongoro',
+        type: 'flat',
+        accommodationId,
+        price: 200
+      })
       .end((_err, res) => {
         expect(res.status).to.eq(403);
         expect(res.body.message).to.eq('You are not allowed to perform this task');
@@ -145,7 +283,12 @@ describe('Travel Administrator', () => {
       .request(server)
       .post('/api/v1/accommodations/rooms')
       .set('Authorization', `Bearer ${adminToken}`)
-      .send({ name: 'Ngorongoro', type: 'flat', accommodationId: 500 })
+      .send({
+        name: 'Ngorongoro',
+        type: 'flat',
+        accommodationId: 500,
+        price: 200
+      })
       .end((_err, res) => {
         expect(res.status).to.eq(404);
         expect(res.body.error).to.eq('Accommodation not found');
@@ -278,6 +421,60 @@ describe('Travel Administrator', () => {
       .set('Authorization', `Bearer ${requesterToken}`)
       .end((_err, res) => {
         expect(res.status).to.eq(422);
+        done();
+      });
+  });
+  it('SUPER ADMIN should be able to add new supplier account', (done) => {
+    chai
+      .request(server)
+      .post(addUser)
+      .set('Authorization', `Bearer ${superToken}`)
+      .send(supplier)
+      .end((err, res) => {
+        expect(res.body.status).to.eq(201);
+        done();
+      });
+  });
+  it('SUPER ADMIN should not be able to add new supplier with wrong values', (done) => {
+    chai
+      .request(server)
+      .post(addUser)
+      .set('Authorization', `Bearer ${superToken}`)
+      .send(wrongSupplier)
+      .end((err, res) => {
+        expect(res.body.status).to.eq(422);
+        done();
+      });
+  });
+});
+describe('Accommodation Supplier', () => {
+  before((done) => {
+    chai
+      .request(server)
+      .post('/api/v1/auth/signin')
+      .send({
+        userEmail: 'davis.kabiswa@andela.com',
+        userPassword: '792dmgT2W8_0'
+      })
+      .end((err, res) => {
+        supplierToken = res.body.data.userToken;
+        done();
+      });
+  });
+  it('should create an accommodation with all properties', (done) => {
+    chai
+      .request(server)
+      .post('/api/v1/accommodations')
+      .set('Authorization', `Bearer ${supplierToken}`)
+      .attach('image', 'src/test/testData/marvel.png', 'marvel.png')
+      .field('name', 'PARTY')
+      .field('locationId', 2)
+      .field('amenities', ['GYM', 'SPA'])
+      .field('description', 'this is the best you can ever find in your lifetime trust me')
+      .field('services', ['Breakfast', 'Free wifi'])
+      .end((_err, res) => {
+        accommodationId = res.body.data.id;
+        expect(res.status).to.eq(201);
         done();
       });
   });

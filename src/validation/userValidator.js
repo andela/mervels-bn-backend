@@ -7,25 +7,29 @@ import Joi from '@hapi/joi';
 import { join } from 'path';
 import Response from '../utils/response';
 
+const commonUser = {
+  userEmail: Joi.string()
+    .email()
+    .required(),
+  firstName: Joi.string()
+    .alphanum()
+    .min(3)
+    .max(30)
+    .required(),
+  lastName: Joi.string()
+    .alphanum()
+    .min(3)
+    .max(30)
+    .required()
+};
+
 /**
  * @class user
  */
 export default class userValidator {
   static async validateSignup(req, res, next) {
     const schema = Joi.object().keys({
-      userEmail: Joi.string()
-        .email()
-        .required(),
-      firstName: Joi.string()
-        .alphanum()
-        .min(3)
-        .max(30)
-        .required(),
-      lastName: Joi.string()
-        .alphanum()
-        .min(3)
-        .max(30)
-        .required(),
+      ...commonUser,
       userPassword: Joi.string()
         .required()
         .regex(
@@ -34,6 +38,18 @@ export default class userValidator {
         .error(
           () => 'Password should contain a minimum of 8 characters (upper and lowercase letters, numbers and at least one special character)'
         )
+    });
+    schema.validate(req.body, (err) => {
+      if (err) {
+        return Response.errorResponse(res, 422, 'Validation failed', err.details[0].message);
+      }
+      next();
+    });
+  }
+
+  static async userByAdmin(req, res, next) {
+    const schema = Joi.object().keys({
+      ...commonUser
     });
     schema.validate(req.body, (err) => {
       if (err) {

@@ -33,7 +33,15 @@ export default (sequelize, DataTypes) => {
       defaultValue: 'Requester',
       validate: {
         isIn: {
-          args: [['Travel Team Member', 'Travel Administrator', 'Manager', 'Requester']],
+          args: [
+            [
+              'Travel Team Member',
+              'Travel Administrator',
+              'Manager',
+              'Requester',
+              'Accommodation Supplier'
+            ]
+          ],
           msg:
             'User Roles must either be Travel Team Member, Travel Administrator, Manager or Requester'
         }

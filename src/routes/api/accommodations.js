@@ -15,14 +15,14 @@ router.use(
 router.post(
   '/rooms',
   verify,
-  Access.travelAdmin,
+  Access.isAllowedUser,
   accommodationValidator.validateCreateRoom,
   Accommodations.createRoom
 );
 router.post(
   '/',
   verify,
-  Access.travelAdmin,
+  Access.isAllowedUser,
   accommodationValidator.validateCreateAccommodation,
   Accommodations.createAccommodation
 );

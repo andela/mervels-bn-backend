@@ -478,6 +478,28 @@ describe('Test Access', () => {
           done();
         });
     });
+    it('remove manager right', (done) => {
+      chai
+        .request(server)
+        .put(updateRole)
+        .set('Authorization', `Bearer ${superToken}`)
+        .send({ userEmail: 'josephdoe@gmail.com', userRole: 'Requester' })
+        .end((_err, res) => {
+          expect(res.status).to.eq(404);
+          done();
+        });
+    });
+    it('create new manger', (done) => {
+      chai
+        .request(server)
+        .put(updateRole)
+        .set('Authorization', `Bearer ${superToken}`)
+        .send({ userEmail: 'jonathanaurugai@gmail.com', userRole: 'Manager' })
+        .end((_err, res) => {
+          expect(res.status).to.eq(200);
+          done();
+        });
+    });
     it('with wrong email', (done) => {
       chai
         .request(server)

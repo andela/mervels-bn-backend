@@ -142,7 +142,7 @@ describe('Reset new Password', () => {
         if (err) {
           return done(err);
         }
-        expect(res.status).to.eq(500);
+        expect(res.status).to.eq(400);
         done();
       });
   });

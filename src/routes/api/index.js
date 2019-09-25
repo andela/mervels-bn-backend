@@ -21,10 +21,10 @@ router.use((err, req, res, next) => {
   return next(err);
 });
 router.use((err, req, res, next) => {
-  if (err.name === 'SequelizeForeignKeyConstraintError') {
-    return res.status(404).json({
-      status: 404,
-      errors: err.parent.detail
+  if (err.name === 'JsonWebTokenError') {
+    return res.status(400).json({
+      status: 400,
+      errors: 'bad request'
     });
   }
 
