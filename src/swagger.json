@@ -187,7 +187,7 @@
     "/auth/createLink": {
       "post": {
         "tags": [
-          "user"
+          "auth"
         ],
         "summary": "Verification link",
         "description": "Sends a verification link to email",
@@ -237,7 +237,7 @@
     "/auth/verify/?token={token}": {
       "patch": {
         "tags": [
-          "user"
+          "auth"
         ],
         "summary": "Verification link",
         "description": "Sends a verification link to email",
@@ -1236,6 +1236,110 @@
           }
         }
       }
+    },   
+    "/requests/reject/{requestId}": {
+      "patch": {
+        "tags": [
+          "requests"
+        ],
+        "summary": "reject request",
+        "description": "managaer can reject pedning requests",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "an authorization header",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "requestId",
+            "in": "path",
+            "description": "request Id",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "reason",
+            "in": "formData",
+            "description": "reason for rejecting",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "request rejected successfully"
+          },
+          "401": {
+            "description": "invalid or expired token"
+          },
+          "403": {
+            "description": "not allowed to perform this task"
+          },
+          "404": {
+            "description": "request not found"
+          },
+          "422": {
+            "description": "validations failed"
+          }
+        }
+      }
+    },
+    "/requests/accept/{requestId}": {
+      "patch": {
+        "tags": [
+          "requests"
+        ],
+        "summary": "accept request",
+        "description": "managaer can reject pedning requests",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "an authorization header",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "requestId",
+            "in": "path",
+            "description": "request Id",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "reason",
+            "in": "formData",
+            "description": "reason for rejecting",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "request rejected successfully"
+          },
+          "401": {
+            "description": "invalid or expired token"
+          },
+          "403": {
+            "description": "not allowed to perform this task"
+          },
+          "404": {
+            "description": "request not found"
+          },
+          "422": {
+            "description": "validations failed"
+          }
+        }
+      }
     }
   },
     "definitions": {
@@ -1412,7 +1516,7 @@
         }
       }
     }
-  },
+   },
   "security": [
     {
       "Bearer": []

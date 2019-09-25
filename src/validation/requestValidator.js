@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import Joi from '@hapi/joi';
+import Response from '../utils/response';
 
 const commonFields = {
   from: Joi.string()
@@ -150,6 +151,62 @@ export default class requestValidator {
     schema.validate(req.body, (err) => {
       if (err) {
         next(err);
+      }
+      next();
+    });
+  }
+
+  /**
+   * Validates return trip entries
+   * @param {Object} req  request details.
+   * @param {Object} res  response details.
+   * @param {Object} next middleware details
+   * @returns {Object}.
+   */
+  static async rejectRequest(req, res, next) {
+    const schema = Joi.object().keys({
+      reason: Joi.string()
+        .min(20)
+        .trim()
+        .required()
+        .error(() => 'reason is required and must be a string with more than 20 characters'),
+      requestId: Joi.number()
+        .integer()
+        .min(0)
+        .required()
+        .error(() => 'requestId is required and must be an integer greater than zero')
+    });
+    schema.validate({ ...req.body, ...req.params }, (err) => {
+      if (err) {
+        return Response.errorResponse(res, 422, 'Validation failed', err.details[0].message);
+      }
+      next();
+    });
+  }
+
+  /**
+   * Validates return trip entries
+   * @param {Object} req  request details.
+   * @param {Object} res  response details.
+   * @param {Object} next middleware details
+   * @returns {Object}.
+   */
+  static async acceptRequest(req, res, next) {
+    const schema = Joi.object().keys({
+      reason: Joi.string()
+        .min(20)
+        .trim()
+        .optional()
+        .error(() => 'reason must be a string with more than 20 characters'),
+      requestId: Joi.number()
+        .integer()
+        .min(0)
+        .optional()
+        .error(() => 'requestId is required and must be an integer greater than zero')
+    });
+    schema.validate({ ...req.body, ...req.params }, (err) => {
+      if (err) {
+        return Response.errorResponse(res, 422, 'Validation failed', err.details[0].message);
       }
       next();
     });

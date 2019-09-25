@@ -60,9 +60,10 @@ describe('Reset new Password', () => {
         if (err) {
           return done(err);
         }
+
         Url = res.body.data;
         resetUrl = Url.slice(21);
-        token = resetUrl.slice(29);
+        token = Url.split('/')[-1];
         done();
       });
   });
@@ -124,19 +125,6 @@ describe('Reset new Password', () => {
       .request(server)
       .put(`/api/v1/auth/resetPassword/1000/${token}`)
       .send(nonMatchPassword)
-      .end((err, res) => {
-        if (err) {
-          return done(err);
-        }
-        expect(res.status).to.eq(403);
-        done();
-      });
-  });
-  it('Doesnot Change Password if userId is corrupted with an non userID', (done) => {
-    chai
-      .request(server)
-      .put(`/api/v1/auth/resetPassword/1000/${token}`)
-      .send(correctPassword)
       .end((err, res) => {
         if (err) {
           return done(err);

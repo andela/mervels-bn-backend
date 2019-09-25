@@ -51,6 +51,14 @@ router
   .route('/my-requests')
   .get(verify, Requests.getMyRequests)
   .all(method);
+router
+  .route('/reject/:requestId')
+  .patch(verify, Access.managerRole, requestsValidator.rejectRequest, Requests.rejectRequest)
+  .all(method);
+router
+  .route('/approve/:requestId')
+  .patch(verify, Access.managerRole, requestsValidator.acceptRequest, Requests.acceptRequest)
+  .all(method);
 
 router.get(
   '/:id/comments',
