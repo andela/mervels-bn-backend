@@ -239,4 +239,46 @@ describe('Travel Administrator', () => {
         done();
       });
   });
+  it('should like an accommodation', (done) => {
+    chai
+      .request(server)
+      .patch('/api/v1/accommodations/1/like')
+      .set('Authorization', `Bearer ${requesterToken}`)
+      .end((_err, res) => {
+        expect(res.status).to.eq(200);
+        expect(res.body.data).to.eq('liked');
+        done();
+      });
+  });
+  it('should unlike the liked accommodation', (done) => {
+    chai
+      .request(server)
+      .patch('/api/v1/accommodations/1/like')
+      .set('Authorization', `Bearer ${requesterToken}`)
+      .end((_err, res) => {
+        expect(res.status).to.eq(200);
+        expect(res.body.data).to.eq('unliked');
+        done();
+      });
+  });
+  it('should like or unlike an accommodation if it exists', (done) => {
+    chai
+      .request(server)
+      .patch('/api/v1/accommodations/124/like')
+      .set('Authorization', `Bearer ${requesterToken}`)
+      .end((_err, res) => {
+        expect(res.status).to.eq(404);
+        done();
+      });
+  });
+  it('should like or unlike an accommodation with a valid id', (done) => {
+    chai
+      .request(server)
+      .patch('/api/v1/accommodations/a/like')
+      .set('Authorization', `Bearer ${requesterToken}`)
+      .end((_err, res) => {
+        expect(res.status).to.eq(422);
+        done();
+      });
+  });
 });

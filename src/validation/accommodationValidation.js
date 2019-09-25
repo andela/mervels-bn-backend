@@ -71,6 +71,7 @@ export default class accommodationValidator {
   static async validateGetOneAccommodation(req, res, next) {
     const schema = Joi.object().keys({
       accommodationId: Joi.number()
+        .integer()
         .min(1)
         .required()
         .error(() => 'accommodationId is required and must be a number greater than zero')
