@@ -1,4 +1,5 @@
 /* eslint-disable no-useless-catch */
+import sequelize from 'sequelize';
 import database from '../database/models';
 
 const { Accommodations, Rooms } = database;
@@ -38,12 +39,32 @@ class AccommodationService {
   static async getAllAccommodations() {
     try {
       return await Accommodations.findAll({
+        subQuery: false,
+        group: ['Accommodations.id'],
+        attributes: [
+          'id',
+          'name',
+          'status',
+          'imageUrl',
+          'locationId',
+          [sequelize.fn('count', sequelize.col('Likes.accommodation')), 'likes'],
+          [sequelize.fn('count', sequelize.col('Rooms.accommodationId')), 'rooms']
+        ],
         include: [
           {
             model: database.Rooms,
-            as: 'Rooms'
+            as: 'Rooms',
+            attributes: [],
+            duplicating: false
+          },
+          {
+            model: database.Like,
+            as: 'Likes',
+            attributes: [],
+            duplicating: false
           }
-        ]
+        ],
+        raw: true
       });
     } catch (error) {
       throw error;
@@ -63,6 +84,9 @@ class AccommodationService {
           {
             model: database.Rooms,
             as: 'Rooms'
+          },
+          {
+            model: database.Like
           }
         ]
       });

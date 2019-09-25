@@ -32,15 +32,6 @@ const multi = {
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
   accommodation: ['hotel', 'Sheraton']
 };
-const nonMatch = {
-  from: 'Kigali, Rwanda',
-  to: [1, 2, 3],
-  travelDate: ['2040-11-02', '2040-11-12'],
-  returnDate: '2040-12-02',
-  reason:
-    'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: ['hotel', 'Sheraton']
-};
 const multiDate = {
   from: 'Kiigali, Rwanda',
   to: [1, 2],
@@ -134,18 +125,6 @@ describe('Multicity Request', () => {
       .post(multiCity)
       .set('Authorization', `Bearer ${token}`)
       .send(multi)
-      .end((_err, res) => {
-        if (_err) done(_err);
-        expect(res.status).to.eq(400);
-        done();
-      });
-  });
-  it('User shouldnot request for a non matching fields', (done) => {
-    chai
-      .request(server)
-      .post(multiCity)
-      .set('Authorization', `Bearer ${token}`)
-      .send(nonMatch)
       .end((_err, res) => {
         if (_err) done(_err);
         expect(res.status).to.eq(400);

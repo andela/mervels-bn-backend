@@ -40,6 +40,11 @@ const accommodations = (sequelize, DataTypes) => {
       as: 'requests',
       foreignKey: 'accommodationId'
     });
+    Accommodations.hasMany(models.Like, {
+      foreignKey: 'accommodation',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
+    });
   };
   return Accommodations;
 };

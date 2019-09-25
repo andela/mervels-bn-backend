@@ -278,13 +278,6 @@
             }
           }
         },
-        "securityDefinitions": {
-          "api_key": {
-            "type": "apiKey",
-            "name": "authorization",
-            "in": "header"
-          }
-        },
         "definitions": {
           "Request": {
             "required": [
@@ -820,6 +813,41 @@
             "status": 404,
             "message": "error",
             "error": "Accommodation not found"
+          }
+        }
+      }
+    },
+    "/accommodations/{id}/like": {
+      "patch": {
+        "tags": [
+          "accommodation"
+        ],
+        "summary": "Like or Unlike an accommodation",
+        "description": "This endpoint allows the user to like an accommodation or unlike it if already liked",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Accommodation ID",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully liked or unliked accommodation"
+          },
+          "422": {
+            "description": "Wrong Data format is entered"
+          },
+          "404": {
+            "description": "Accommodation not found"
+          },
+          "500": {
+            "description": "Server Error"
           }
         }
       }
@@ -1516,7 +1544,14 @@
         }
       }
     }
-   },
+  },
+  "securityDefinitions": {
+    "Bearer": { 
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
   "security": [
     {
       "Bearer": []

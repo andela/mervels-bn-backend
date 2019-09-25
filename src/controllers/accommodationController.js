@@ -2,6 +2,7 @@
 /* eslint-disable class-methods-use-this */
 import Response from '../utils/response';
 import AccommodationService from '../services/accommodationService';
+import LikeService from '../services/likeService';
 import LocationService from '../services/locationService';
 import uploader from '../utils/cloudinary';
 
@@ -113,9 +114,39 @@ class AccommodationController {
         id: accommodationId
       });
       if (!exist) return Response.errorResponse(res, 404, 'error', 'Accommodation not found');
+      exist.dataValues.likes = exist.Likes.length;
+      delete exist.dataValues.Likes;
       return Response.customResponse(res, 200, 'Accommodation fetched successfully', exist);
     } catch (error) {
       return Response.errorResponse(res, 500, 'something went wrong', 'internal error');
+    }
+  }
+
+  /**
+   * gets one accommodation
+   * @param {object} req request.
+   * @param {object} res response.
+   * @returns {object} accommodation.
+   */
+  async likeOrUnlike(req, res) {
+    try {
+      const exist = await AccommodationService.getAccommodation({
+        id: req.params.accommodationId
+      });
+      if (!exist) return Response.errorResponse(res, 404, 'Enter a valid accommodation ID', 'Not found');
+      const like = {
+        user: req.user.id,
+        accommodation: req.params.accommodationId
+      };
+      const alreadyLiked = await LikeService.checkLiked(like);
+      if (!alreadyLiked) {
+        await LikeService.like(like);
+        return Response.customResponse(res, 200, `Successfully liked ${exist.name}`, 'liked');
+      }
+      await LikeService.unlike(like);
+      return Response.customResponse(res, 200, `Successfully unliked ${exist.name}`, 'unliked');
+    } catch (error) {
+      return Response.errorResponse(res, 500, 'Something went wrong', 'Internal error');
     }
   }
 }
