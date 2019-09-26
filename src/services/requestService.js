@@ -109,7 +109,10 @@ class RequestService {
    */
   static async findByField(field) {
     try {
-      const result = await Requests.findAll({ where: field });
+      const result = await Requests.findAll({
+        where: field,
+        include: [{ model: database.Users, as: 'requester', attributes: ['firstName', 'lastName'] }]
+      });
 
       return result;
     } catch (error) {

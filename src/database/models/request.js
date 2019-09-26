@@ -61,6 +61,7 @@ module.exports = (sequelize, DataTypes) => {
   Requests.associate = (models) => {
     Requests.belongsTo(models.Users, {
       foreignKey: 'user',
+      as: 'requester',
       onDelete: 'CASCADE'
     });
     Requests.belongsToMany(models.Accommodations, {
