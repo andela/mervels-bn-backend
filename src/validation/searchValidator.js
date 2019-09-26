@@ -11,7 +11,8 @@ class SearchValidator {
       'reason',
       'status',
       'user',
-      'createdAt'
+      'accommodation',
+      'destination'
     ];
     const fields = req.query;
     const fieldKeys = Object.keys(fields);

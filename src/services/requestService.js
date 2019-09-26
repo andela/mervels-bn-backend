@@ -111,7 +111,19 @@ class RequestService {
     try {
       const result = await Requests.findAll({
         where: field,
-        include: [{ model: database.Users, as: 'requester', attributes: ['firstName', 'lastName'] }]
+        include: [
+          { model: database.Users, as: 'requester', attributes: ['firstName', 'lastName'] },
+          {
+            model: database.Accommodations,
+            as: 'accommodations',
+            attributes: ['id', 'name', 'status', 'imageUrl', 'locationId'],
+            include: [
+              {
+                model: database.Locations
+              }
+            ]
+          }
+        ]
       });
 
       return result;

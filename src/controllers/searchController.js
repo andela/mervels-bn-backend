@@ -8,32 +8,37 @@ const { Op } = Sequelize;
 class SearchController {
   async searchRequests(req, res, next) {
     try {
+      // object that will be passed to the db where clause
       const searchDb = {};
+      // objec passed to search class
       const filters = {};
       const field = req.query;
+
       const fieldKeys = Object.keys(field);
+
+      const keysToSkip = ['requester', 'travelDate', 'returnDate', 'accommodation', 'destination'];
 
       fieldKeys.forEach((key) => {
         if (key === 'id' || key === 'user') {
           searchDb[key] = { [Op.eq]: field[key] };
-        } else if (key !== 'requester' && key !== 'travelDate') {
-          searchDb[key] = { [Op.iLike]: `%${field[key]}%` };
+        } else if (!keysToSkip.includes(key)) {
+          searchDb[key] = { [Op.iLike]: `%${field[key].trim()}%` };
         } else {
-          filters[key] = field[key];
+          filters[key] = field[key].trim();
         }
       });
 
+      // Making the user only get their requests
+      if (req.user.userRoles !== 'Manager') searchDb.user = { [Op.eq]: req.user.id };
+
       const data = await RequestService.findByField(searchDb);
-
-      if (data.length < 0) {
-        return Response.customResponse(res, 404, 'Not Found', 'Search Error');
-      }
-
       const results = Search.searchData(data, filters);
+
+      if (results.length === 0) return Response.customResponse(res, 404, 'Request not found', 'Search Error');
 
       return Response.customResponse(res, 200, 'Request Found', results);
     } catch (error) {
-      return Response.errorResponse(res, 500, 'Something went wrong', error);
+      return next(error);
     }
   }
 }

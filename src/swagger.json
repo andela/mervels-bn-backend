@@ -418,8 +418,8 @@
         }
       }
     },
-    "/auth/add-user":{
-      "post":{
+    "/auth/add-user": {
+      "post": {
         "tags": [
           "user"
         ],
@@ -937,7 +937,7 @@
         }
       }
     },
-    "/requests/return-trip":{
+    "/requests/return-trip": {
       "post": {
         "tags": [
           "requests"
@@ -977,47 +977,47 @@
         }
       }
     },
-      "/requests/oneWay": {
-        "post": {
-          "tags": [
-            "requests"
-          ],
-          "summary": "create a One way trip request",
-          "description": "this endpoint sends and creates a one way trip",
-          "consumes": [
-            "application/json"
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "parameters": [
-            {
-              "in": "body",
-              "name": "body",
-              "description": "One way request data entered by the user",
-              "required": true,
-              "schema": {
-                "$ref": "#/definitions/oneWay"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Request sucessfully retrieved"
-            },
-            "422": {
-              "description": "Wrong Data format is entered"
-            },
-            "404": {
-              "description": "Accommodation or location not found"
-            },
-            "500": {
-              "description": "Server Error"
+    "/requests/oneWay": {
+      "post": {
+        "tags": [
+          "requests"
+        ],
+        "summary": "create a One way trip request",
+        "description": "this endpoint sends and creates a one way trip",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "One way request data entered by the user",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/oneWay"
             }
           }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request sucessfully retrieved"
+          },
+          "422": {
+            "description": "Wrong Data format is entered"
+          },
+          "404": {
+            "description": "Accommodation or location not found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
         }
-      },	 
-     "/requests/multi-city":{
+      }
+    },
+    "/requests/multi-city": {
       "post": {
         "tags": [
           "requests"
@@ -1056,7 +1056,7 @@
           }
         }
       }
-     }, 
+    },
     "/profile": {
       "patch": {
         "path": "/profile",
@@ -1434,30 +1434,30 @@
             "description": "Update has been completed successfully",
             "examples": {
               "application/json": {
-                  "status": 200,
-                  "message": "Update has been completed successfully",
-                  "data": {
-                      "from": "Kigali, Rwanda",
-                      "travelDate": [
-                          "2019-11-02"
-                      ],
-                      "returnDate": "2019-11-04",
-                      "reason": "hey the nklnk;joihnbyugvytgtfredersg;lklmnjnbvytfyfjo",
-                      "status": "Pending",
-                      "updatedAt": "2019-09-25T05:39:12.841Z",
-                      "manager": "marveldev53@gmail.com",
-                      "user": "Jonathan",
-                      "userEmail": {
-                          "id": 5,
-                          "userEmail": "jonashyaka2@gmail.com",
-                          "firstName": "Jonathan",
-                          "lastName": "Shyaka",
-                          "accountVerified": true,
-                          "userRoles": "Requester",
-                          "iat": 1569389939,
-                          "exp": 1569393539
-                      }
+                "status": 200,
+                "message": "Update has been completed successfully",
+                "data": {
+                  "from": "Kigali, Rwanda",
+                  "travelDate": [
+                    "2019-11-02"
+                  ],
+                  "returnDate": "2019-11-04",
+                  "reason": "hey the nklnk;joihnbyugvytgtfredersg;lklmnjnbvytfyfjo",
+                  "status": "Pending",
+                  "updatedAt": "2019-09-25T05:39:12.841Z",
+                  "manager": "marveldev53@gmail.com",
+                  "user": "Jonathan",
+                  "userEmail": {
+                    "id": 5,
+                    "userEmail": "jonashyaka2@gmail.com",
+                    "firstName": "Jonathan",
+                    "lastName": "Shyaka",
+                    "accountVerified": true,
+                    "userRoles": "Requester",
+                    "iat": 1569389939,
+                    "exp": 1569393539
                   }
+                }
               }
             }
           },
@@ -1472,45 +1472,135 @@
           }
         }
       }
+    },
+    "/search/requests":{
+      "get": {
+        "tags": [
+          "requests"
+        ],
+        "summary": "Search requests",
+        "description": "End point for searching requests",
+        "operationId": "searchRequests",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name" : "status",
+            "in" : "query",
+            "description" : "pending, approved, rejected",
+            "required" : false,
+            "type" : "string"
+          },
+          {
+            "name" : "id",
+            "in" : "query",
+            "description" : "Request Id",
+            "required" : false,
+            "type" : "string"
+          },
+          {
+            "name" : "travelDate",
+            "in" : "query",
+            "description" : "TravelDate Format yyyy-mm-dd",
+            "required" : false,
+            "type" : "date"
+          },
+          {
+            "name" : "returnDate",
+            "in" : "query",
+            "description" : "returnDate Format yyyy-mm-dd",
+            "required" : false,
+            "type" : "date"
+          },
+          {
+            "name" : "accommodation",
+            "in" : "query",
+            "description" : "pass a name of accommodation",
+            "required" : false,
+            "type" : "string"
+          },
+          {
+            "name" : "requester",
+            "in" : "query",
+            "description" : "firstName , lastName of requester",
+            "required" : false,
+            "type" : "string"
+          },
+          {
+            "name" : "user",
+            "in" : "query",
+            "description" : "userId of requester",
+            "required" : false,
+            "type" : "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Requests retrieved successfully"
+          },
+          "401": {
+            "description": "Invalid or Expired token used"
+          },
+          "422": {
+            "description": "Invalid query parameters passed"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "barefoot_auth": [
+              "read:requests"
+            ]
+          }
+        ]
+      }
     }
   },
-    "definitions": {
-      "oneWay": {
-        "required": [
-          "from",
-          "to",
-          "travelDate",
-          "reason",
-          "accommodation"
-        ],
-        "type": "object",
-        "properties": {
-          "from": {
-            "type": "string",
-            "example": "Kigali, Rwanda"
-          },
-          "to": {
-            "type": "integer",
-            "example": 1,
-            "summary": "this is the locationId"
-          },
-          "travelDate": {
-            "type": "date",
-            "example": "2020-01-01",
-            "summary": "this is the date of travel and should atleast today"
-          },
-          "reason": {
-            "type": "string",
-            "example": "this is my travel reason and it should be more than 30 characters",
-            "summary": "this is reason and should be more than 30 characters"
-          },
-          "accommodation": {
-            "type": "integer",
-            "example": 1,
-            "summary": "this is the accommodationId"
-          }
+  "definitions": {
+    "oneWay": {
+      "required": [
+        "from",
+        "to",
+        "travelDate",
+        "reason",
+        "accommodation"
+      ],
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string",
+          "example": "Kigali, Rwanda"
+        },
+        "to": {
+          "type": "integer",
+          "example": 1,
+          "summary": "this is the locationId"
+        },
+        "travelDate": {
+          "type": "date",
+          "example": "2020-01-01",
+          "summary": "this is the date of travel and should atleast today"
+        },
+        "reason": {
+          "type": "string",
+          "example": "this is my travel reason and it should be more than 30 characters",
+          "summary": "this is reason and should be more than 30 characters"
+        },
+        "accommodation": {
+          "type": "integer",
+          "example": 1,
+          "summary": "this is the accommodationId"
         }
-      },
+      }
+    },
     "returnTrip": {
       "required": [
         "from",
@@ -1572,7 +1662,10 @@
           "items": {
             "type": "integer"
           },
-          "example": [1, 2],
+          "example": [
+            1,
+            2
+          ],
           "summary": "this is the locationId array"
         },
         "travelDate": {
@@ -1580,7 +1673,10 @@
           "items": {
             "type": "date"
           },
-          "example": ["2020-01-01", "2020-11-01"],
+          "example": [
+            "2020-01-01",
+            "2020-11-01"
+          ],
           "summary": "this is the array of date of travel and should atleast today"
         },
         "returnDate": {
@@ -1598,7 +1694,10 @@
           "items": {
             "type": "string"
           },
-          "example": ["hotel", "sheraton"],
+          "example": [
+            "hotel",
+            "sheraton"
+          ],
           "summary": "this is the accommodationId"
         }
       }
@@ -1686,16 +1785,10 @@
     }
   },
   "securityDefinitions": {
-    "Bearer": { 
+    "Bearer": {
       "type": "apiKey",
       "name": "Authorization",
       "in": "header"
     }
-  },
-  "security": [
-    {
-      "Bearer": []
-    }
-  ]
+  }
 }
-
