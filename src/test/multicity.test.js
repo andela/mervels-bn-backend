@@ -44,6 +44,7 @@ const wrongAcc = {
   from: 'Kiigali, Rwanda',
   to: [1, 2],
   travelDate: ['2040-11-02', '2040-11-12'],
+  returnDate: '2040-12-02',
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
   accommodation: ['hotel', 'excess']
@@ -116,18 +117,6 @@ describe('Multicity Request', () => {
       .end((_err, res) => {
         if (_err) done(_err);
         expect(res.status).to.eq(200);
-        done();
-      });
-  });
-  it('User shouldnot request for a duplicate multiCity trip', (done) => {
-    chai
-      .request(server)
-      .post(multiCity)
-      .set('Authorization', `Bearer ${token}`)
-      .send(multi)
-      .end((_err, res) => {
-        if (_err) done(_err);
-        expect(res.status).to.eq(400);
         done();
       });
   });

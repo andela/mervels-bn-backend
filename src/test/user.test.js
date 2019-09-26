@@ -66,7 +66,7 @@ describe('create an account', () => {
   it('should not login if the email is not verified', (done) => {
     const user = {
       userEmail: 'jonathanaurugai@gmail.com',
-      userPassword: 'Root1234'
+      userPassword: 'Root1234@'
     };
     chai
       .request(server)
@@ -107,7 +107,7 @@ describe('create an account', () => {
       .post(sendLinkUrl)
       .send({})
       .end((_err, res) => {
-        expect(res.status).to.eq(400);
+        expect(res.status).to.eq(422);
         done();
       });
   });
@@ -117,7 +117,7 @@ describe('create an account', () => {
       .post(sendLinkUrl)
       .send({ userEmail: 'bahat.ghassd.com' })
       .end((_err, res) => {
-        expect(res.status).to.eq(400);
+        expect(res.status).to.eq(422);
         done();
       });
   });
@@ -127,7 +127,7 @@ describe('create an account', () => {
       .post(sendLinkUrl)
       .send({ userEmail: ' ' })
       .end((_err, res) => {
-        expect(res.status).to.eq(400);
+        expect(res.status).to.eq(422);
         done();
       });
   });
@@ -154,7 +154,7 @@ describe('create an account', () => {
       .request(server)
       .patch('/api/v1/auth/verify/?token=')
       .end((_err, res) => {
-        expect(res.status).to.eq(400);
+        expect(res.status).to.eq(422);
         done();
       });
   });
@@ -226,7 +226,7 @@ describe('User Login', () => {
   it('with wrong email', (done) => {
     const user = {
       userEmail: 'whjghj@stations.com',
-      userPassword: '123123'
+      userPassword: 'Root1234@'
     };
     chai
       .request(server)
@@ -244,7 +244,7 @@ describe('User Login', () => {
   it('with wrong password', (done) => {
     const user = {
       userEmail: 'wi@stations.com',
-      userPassword: '123123sajhgsd'
+      userPassword: 'R@123123sajhgsd'
     };
     chai
       .request(server)

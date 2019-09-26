@@ -12,17 +12,6 @@ router.use('/profile', require('./userProfile'));
 router.use('/search', require('./search'));
 
 router.use((err, req, res, next) => {
-  if (err.name === 'ValidationError') {
-    return res.status(422).json({
-      message: 'Validation Failed',
-      status: 422,
-      errors: Object.keys(err.details).reduce((errors, key) => err.details[key].message, {})
-    });
-  }
-
-  return next(err);
-});
-router.use((err, req, res, next) => {
   if (err.name === 'JsonWebTokenError') {
     return res.status(400).json({
       status: 400,

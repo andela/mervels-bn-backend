@@ -4,24 +4,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import Joi from '@hapi/joi';
-import { join } from 'path';
+import Schema from './schema';
 import Response from '../utils/response';
-
-const commonUser = {
-  userEmail: Joi.string()
-    .email()
-    .required(),
-  firstName: Joi.string()
-    .alphanum()
-    .min(3)
-    .max(30)
-    .required(),
-  lastName: Joi.string()
-    .alphanum()
-    .min(3)
-    .max(30)
-    .required()
-};
+import validator from '../utils/validator';
 
 /**
  * @class user
@@ -29,27 +14,19 @@ const commonUser = {
 export default class userValidator {
   static async validateSignup(req, res, next) {
     const schema = Joi.object().keys({
-      ...commonUser,
-      userPassword: Joi.string()
-        .required()
-        .regex(
-          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+=<>|.-])[0-9a-zA-Z!@#$%^&*()_+=<>|.-]{8,}$/
-        )
-        .error(
-          () => 'Password should contain a minimum of 8 characters (upper and lowercase letters, numbers and at least one special character)'
-        )
+      userEmail: Schema.email,
+      firstName: Schema.name,
+      lastName: Schema.name,
+      userPassword: Schema.password
     });
-    schema.validate(req.body, (err) => {
-      if (err) {
-        return Response.errorResponse(res, 422, 'Validation failed', err.details[0].message);
-      }
-      next();
-    });
+    validator(schema, req.body, res, next);
   }
 
   static async userByAdmin(req, res, next) {
     const schema = Joi.object().keys({
-      ...commonUser
+      userEmail: Schema.email,
+      firstName: Schema.name,
+      lastName: Schema.name
     });
     schema.validate(req.body, (err) => {
       if (err) {
@@ -68,25 +45,10 @@ export default class userValidator {
    */
   static async validateSignIn(req, res, next) {
     const schema = Joi.object().keys({
-      userEmail: Joi.string()
-        .email()
-        .trim()
-        .required()
-        .min(5)
-        .error(() => 'userEmail field is required and must be an email'),
-      userPassword: Joi.string()
-        .trim()
-        .required()
-        .min(1)
-        .error(() => 'userPassword field is required and must be a string and not empty')
+      userEmail: Schema.email,
+      userPassword: Schema.password
     });
-
-    schema.validate(req.body, (err) => {
-      if (err) {
-        next(err);
-      }
-      next();
-    });
+    validator(schema, req.body, res, next);
   }
 
   /**
@@ -98,34 +60,10 @@ export default class userValidator {
    */
   static async resetPassword(req, res, next) {
     const schema = Joi.object().keys({
-      password: Joi.string()
-        .regex(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!_`,/@#\-"=:;~<>'\$%\^&\*\?\|\+\(\)\[\]\{}\.])(?=.{8,})/
-        )
-        .trim()
-        .required()
-        .min(1)
-        .error(
-          () => 'Enter a Password string with atleast 1 number, 1 uppercase, 1 lowercase and 1 special Charcter'
-        ),
-      newPassword: Joi.string()
-        .regex(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!_`,/@#\-"=:;~<>'\$%\^&\*\?\|\+\(\)\[\]\{}\.])(?=.{8,})/
-        )
-        .trim()
-        .required()
-        .min(1)
-        .error(
-          () => 'Enter a Password string with atleast 1 number, 1 uppercase, 1 lowercase and 1 special Charcter'
-        )
+      password: Schema.password,
+      newPassword: Schema.password
     });
-
-    schema.validate(req.body, (err) => {
-      if (err) {
-        next(err);
-      }
-      next();
-    });
+    validator(schema, req.body, res, next);
   }
 
   /**
@@ -136,18 +74,9 @@ export default class userValidator {
    */
   static async validateSendLink(req, res, next) {
     const schema = Joi.object().keys({
-      userEmail: Joi.string()
-        .email()
-        .trim()
-        .required()
-        .error(() => 'userEmail field is required and must be an email')
+      userEmail: Schema.email
     });
-    schema.validate(req.body, (error) => {
-      if (error) {
-        return Response.errorResponse(res, 400, 'validations failed', error.details);
-      }
-      next();
-    });
+    validator(schema, req.body, res, next);
   }
 
   /**
@@ -158,16 +87,9 @@ export default class userValidator {
    */
   static async validateVerifyLink(req, res, next) {
     const schema = Joi.object().keys({
-      token: Joi.string()
-        .required()
-        .error(() => 'token  is required and must be a string')
+      token: Schema.link
     });
-    schema.validate(req.query, (error) => {
-      if (error) {
-        return Response.errorResponse(res, 400, 'validations failed', error.details);
-      }
-      next();
-    });
+    validator(schema, req.query, res, next);
   }
 
   /**
@@ -178,16 +100,9 @@ export default class userValidator {
    */
   static async validateUserRole(req, res, next) {
     const schema = Joi.object().keys({
-      userEmail: Joi.string()
-        .email()
-        .required(),
-      userRole: Joi.string()
-        .valid('Travel Team Member', 'Travel Administrator', 'Manager', 'Requester')
-        .required()
+      userEmail: Schema.email,
+      userRole: Schema.role
     });
-    schema.validate(req.body, (err) => {
-      if (err) return Response.errorResponse(res, 422, 'Validation failed', err.details[0].message);
-      next();
-    });
+    validator(schema, req.body, res, next);
   }
 }

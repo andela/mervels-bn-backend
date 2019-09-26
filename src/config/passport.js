@@ -15,6 +15,18 @@ if (process.env.NODE_ENV !== 'test') {
 
 const passport = require('passport');
 
+const getProfile = (accessToken, refreshToken, profile, done) => {
+  try {
+    const firstName = profile._json.first_name || profile._json.given_name;
+    const lastName = profile._json.last_name || profile._json.family_name;
+    const email = profile.emails[0].value;
+    const user = { firstName, lastName, email };
+    done(null, user);
+  } catch (error) {
+    done(error);
+  }
+};
+
 dotenv.config();
 
 passport.serializeUser((user, done) => {
@@ -29,17 +41,7 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: '/api/v1/auth/google/redirect'
     },
-    (accessToken, refreshToken, profile, done) => {
-      try {
-        const firstName = profile._json.given_name;
-        const lastName = profile._json.family_name;
-        const email = profile.emails[0].value;
-        const user = { firstName, lastName, email };
-        done(null, user);
-      } catch (error) {
-        done(error);
-      }
-    }
+    getProfile
   )
 );
 
@@ -52,16 +54,6 @@ passport.use(
       callbackURL: '/api/v1/auth/facebook/redirect',
       profileFields: ['emails', 'name']
     },
-    (accessToken, refreshToken, profile, done) => {
-      try {
-        const firstName = profile._json.first_name;
-        const lastName = profile._json.last_name;
-        const email = profile.emails[0].value;
-        const user = { firstName, lastName, email };
-        done(null, user);
-      } catch (error) {
-        done(error);
-      }
-    }
+    getProfile
   )
 );

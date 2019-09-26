@@ -31,7 +31,7 @@ class SearchController {
       // Making the user only get their requests
       if (req.user.userRoles !== 'Manager') searchDb.user = { [Op.eq]: req.user.id };
 
-      const data = await RequestService.findByField(searchDb);
+      const data = await RequestService.search(searchDb);
       const results = Search.searchData(data, filters);
 
       if (results.length === 0) return Response.customResponse(res, 404, 'Request not found', 'Search Error');

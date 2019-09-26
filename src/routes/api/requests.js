@@ -53,11 +53,11 @@ router
   .all(method);
 router
   .route('/reject/:requestId')
-  .patch(verify, Access.managerRole, requestsValidator.rejectRequest, Requests.rejectRequest)
+  .patch(verify, Access.managerRole, requestsValidator.requestApproval, Requests.rejectRequest)
   .all(method);
 router
   .route('/approve/:requestId')
-  .patch(verify, Access.managerRole, requestsValidator.acceptRequest, Requests.acceptRequest)
+  .patch(verify, Access.managerRole, requestsValidator.requestApproval, Requests.acceptRequest)
   .all(method);
 
 router.get(

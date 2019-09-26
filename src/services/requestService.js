@@ -6,13 +6,13 @@ const { Requests, AccommodationRequests } = database;
 class RequestService {
   /**
    * Get requests by user
-   * @param {string} user to be checked against
+   * @param {string} params to be checked against
    * @return {object} Oject of request if found
    */
-  static async findRequestsByUser(user) {
+  static async findRequests(params) {
     try {
       const requests = await Requests.findAll({
-        where: { user },
+        where: params,
         include: [
           {
             model: database.Accommodations,
@@ -33,31 +33,14 @@ class RequestService {
   }
 
   /**
-   * Get requests by object defined
-   * @param {object} request to be checked against
-   * @return {object} Oject of request if found
-   */
-  static async findRequests(request) {
-    try {
-      const requests = await Requests.findOne({
-        where: request
-      });
-
-      return requests;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  /**
    * Get requests by user
-   * @param {string} id to be checked against
+   * @param {string}  params be checked against
    * @return {object} Oject of request if found
    */
-  static async findRequestByID(id) {
+  static async findRequest(params) {
     try {
       const requests = await Requests.findOne({
-        where: { id },
+        where: params,
         include: [
           {
             model: database.Accommodations,
@@ -107,7 +90,7 @@ class RequestService {
    * @param {object} field to be search with
    * @return {object} Oject of request if found
    */
-  static async findByField(field) {
+  static async search(field) {
     try {
       const result = await Requests.findAll({
         where: field,
@@ -133,23 +116,6 @@ class RequestService {
   }
 
   /**
-   * Get requests by id
-   * @param {string} id to be created
-   * @return {object} Oject of request if found
-   */
-  static async findRequestsById(id) {
-    try {
-      const requests = await Requests.findOne({
-        where: { id }
-      });
-
-      return requests;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  /**
    * Get requests by user
    * @param {string} requestId to be rejected
    * @param {string} status rejected or accepted
@@ -158,20 +124,6 @@ class RequestService {
   static async rejectUpdateRequest(requestId, status) {
     try {
       const request = await Requests.update({ status }, { where: { id: requestId } });
-      return request;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  /**
-   * Get requests by user
-   * @param {string} params to be created
-   * @return {object} Oject of request if found
-   */
-  static async getRequest(params) {
-    try {
-      const request = await Requests.findOne({ where: { ...params } });
       return request;
     } catch (error) {
       throw error;

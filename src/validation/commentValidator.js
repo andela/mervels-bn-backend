@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import Joi from '@hapi/joi';
-import Response from '../utils/response';
+import Schema from './schema';
+import validator from '../utils/validator';
 
 /**
  * @class commentValidation
@@ -13,21 +14,12 @@ export default class commentValidator {
    * @returns {Object}.
    */
   static async getComments(req, res, next) {
-    const comment = req.body;
-    comment.request = req.params.id;
     const schema = Joi.object()
       .keys({
-        request: Joi.number()
-          .integer()
-          .required()
-          .error(() => 'Enter a valid comment ID')
+        id: Schema.id
       })
       .options({ allowUnknown: false });
-
-    schema.validate(comment, (error) => {
-      if (error) return Response.errorResponse(res, 422, 'Validation failed', error.details[0].message);
-      next();
-    });
+    validator(schema, req.params, res, next);
   }
 
   /**
@@ -37,25 +29,13 @@ export default class commentValidator {
    * @returns {Object}.
    */
   static async addComment(req, res, next) {
-    const comment = req.body;
-    comment.request = req.params.id;
     const schema = Joi.object()
       .keys({
-        comment: Joi.string()
-          .trim()
-          .required()
-          .error(() => 'Enter a valid comment'),
-        request: Joi.number()
-          .integer()
-          .required()
-          .error(() => 'Enter a valid request ID')
+        comment: Schema.string,
+        id: Schema.id
       })
       .options({ allowUnknown: false });
-
-    schema.validate(comment, (error) => {
-      if (error) return Response.errorResponse(res, 422, 'Validation failed', error.details[0].message);
-      next();
-    });
+    validator(schema, { ...req.body, ...req.params }, res, next);
   }
 
   /**
@@ -65,25 +45,13 @@ export default class commentValidator {
    * @returns {Object}.
    */
   static async updateComment(req, res, next) {
-    const comment = req.body;
-    comment.id = req.params.id;
     const schema = Joi.object()
       .keys({
-        comment: Joi.string()
-          .trim()
-          .required()
-          .error(() => 'Enter a valid comment'),
-        id: Joi.number()
-          .integer()
-          .required()
-          .error(() => 'Enter a valid comment ID')
+        comment: Schema.string,
+        id: Schema.id
       })
       .options({ allowUnknown: false });
-
-    schema.validate(comment, (error) => {
-      if (error) return Response.errorResponse(res, 422, 'Validation failed', error.details[0].message);
-      next();
-    });
+    validator(schema, { ...req.body, ...req.params }, res, next);
   }
 
   /**
@@ -93,19 +61,11 @@ export default class commentValidator {
    * @returns {Object}.
    */
   static async deleteComment(req, res, next) {
-    const comment = { id: req.params.id };
     const schema = Joi.object()
       .keys({
-        id: Joi.number()
-          .integer()
-          .required()
-          .error(() => 'Enter a valid comment ID')
+        id: Schema.id
       })
       .options({ allowUnknown: false });
-
-    schema.validate(comment, (error) => {
-      if (error) return Response.errorResponse(res, 422, 'Validation failed', error.details[0].message);
-      next();
-    });
+    validator(schema, req.params, res, next);
   }
 }
