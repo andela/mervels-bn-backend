@@ -418,6 +418,45 @@
         }
       }
     },
+    "/auth/add-user":{
+      "post":{
+        "tags": [
+          "user"
+        ],
+        "summary": "Super Admin can add a user",
+        "description": "person with a super admin role can add a user account and send am email with login credentials",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User object that needs to be added",
+            "schema": {
+              "$ref": "#/definitions/userByAdmin"
+            }
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "Invalid input"
+          },
+          "201": {
+            "description": "user account added sucessfully"
+          },
+          "409": {
+            "description": "User already exists"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
     "/accommodations": {
       "get": {
         "tags": [
@@ -1606,6 +1645,42 @@
           "type": "string",
           "example": "Please clarify the travel reason",
           "summary": "This is an updated comment on the request"
+        }
+      }
+    },
+    "userByAdmin": {
+      "required": [
+        "userEmail",
+        "lastName",
+        "firstName",
+        "userPassword",
+        "role"
+      ],
+      "type": "object",
+      "properties": {
+        "userEmail": {
+          "type": "string",
+          "example": "test@gmail.com"
+        },
+        "lastName": {
+          "type": "string",
+          "example": "test",
+          "summary": "this is the last name of user"
+        },
+        "firstName": {
+          "type": "string",
+          "example": "test",
+          "summary": "this is first name of user"
+        },
+        "userPassword": {
+          "type": "string",
+          "example": "Password@1",
+          "summary": "password must have atleast 1 special character, 1 uppercase, 1 lowercase and more than 8 characters"
+        },
+        "role": {
+          "type": "string",
+          "example": "Accommodation Supplier",
+          "summary": "this is user role "
         }
       }
     }

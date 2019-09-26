@@ -25,7 +25,22 @@ export default class accommodationValidator {
       locationId: Joi.number()
         .min(0)
         .required()
-        .error(() => 'location is required and must be a number greater than zero')
+        .error(() => 'location is required and must be a number greater than zero'),
+      services: Joi.array()
+        .items(Joi.string().trim())
+        .single()
+        .error(() => 'pass in an array of services must be strings'),
+      amenities: Joi.array()
+        .items(Joi.string().trim())
+        .single()
+        .error(() => 'pass in an array of amenities must be strings'),
+      description: Joi.string()
+        .min(20)
+        .trim()
+        .error(() => 'Description should be a sentnce of not less than 20 characters'),
+      image: Joi.string()
+        .trim()
+        .error(() => 'image url should be type string')
     });
     schema.validate(req.body, (error) => {
       if (error) return Response.errorResponse(res, 422, 'validations failed', error.details);
@@ -54,7 +69,11 @@ export default class accommodationValidator {
       accommodationId: Joi.number()
         .min(0)
         .required()
-        .error(() => 'accommodationId is required and must be a number greater than zero')
+        .error(() => 'accommodationId is required and must be a number greater than zero'),
+      price: Joi.number()
+        .min(1)
+        .required()
+        .error(() => 'price is required and must be a number')
     });
     schema.validate(req.body, (error) => {
       if (error) return Response.errorResponse(res, 422, 'validations failed', error.details);

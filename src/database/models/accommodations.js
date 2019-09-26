@@ -21,7 +21,19 @@ const accommodations = (sequelize, DataTypes) => {
         allowNull: true,
         type: DataTypes.STRING
       },
-      locationId: { type: DataTypes.INTEGER, allowNull: false }
+      amenities: {
+        allowNull: true,
+        type: DataTypes.ARRAY(DataTypes.STRING)
+      },
+      locationId: { type: DataTypes.INTEGER, allowNull: false },
+      description: {
+        allowNull: true,
+        type: DataTypes.STRING
+      },
+      services: {
+        allowNull: true,
+        type: DataTypes.ARRAY(DataTypes.STRING)
+      }
     },
     {}
   );

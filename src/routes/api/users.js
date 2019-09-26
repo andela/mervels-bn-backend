@@ -74,5 +74,8 @@ router
   .route('/forgotPassword')
   .post(Users.requestPasswordReset)
   .all(method);
-
+router
+  .route('/add-user')
+  .post(verify, userValidator.userByAdmin, Access.isAdmin, Users.addSupplier)
+  .all(method);
 module.exports = router;

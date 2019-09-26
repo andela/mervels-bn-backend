@@ -15,7 +15,8 @@ const rooms = (sequelize, DataTypes) => {
             msg: 'Status can only be Available or Unavailable'
           }
         }
-      }
+      },
+      price: { type: DataTypes.FLOAT, allowNull: false }
     },
     {}
   );

@@ -11,9 +11,10 @@ class Access {
    * @param {object} next next task.
    * @returns {object} The User object.
    */
-  static async travelAdmin(req, res, next) {
+  static async isAllowedUser(req, res, next) {
     const { userRoles } = req.user;
-    if (userRoles !== 'Travel Administrator') {
+    const allowedUsers = ['Travel Administrator', 'Accommodation Supplier'];
+    if (allowedUsers.includes(userRoles) === false) {
       return Response.errorResponse(
         res,
         403,

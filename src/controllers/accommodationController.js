@@ -40,7 +40,8 @@ class AccommodationController {
           'conflict'
         );
       }
-      req.body.name = req.body.name.toUpperCase();
+      req.body.name = req.body.name.toUpperCase().trim();
+      req.body.description = req.body.description.trim();
       const accommodation = await AccommodationService.createAccommodation(req.body);
       return Response.customResponse(res, 201, 'Accommodation created successfully', accommodation);
     } catch (error) {

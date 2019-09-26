@@ -30,5 +30,23 @@ class Password {
   static async checkPasswordMatch(password, hashedPassword) {
     return compareSync(password, hashedPassword);
   }
+
+  /**
+   * radomn password generator.
+   * @returns {function} newPassword.
+   */
+  static randomPassword() {
+    const special = '!@#$%^&*()_+=<>';
+    const rnum = Math.floor(Math.random() * special.length);
+    const alphaNumeric = Math.random()
+      .toString(36)
+      .substring(2, 8)
+      + Math.random()
+        .toString(36)
+        .substring(2, 8)
+        .toUpperCase();
+    const password = alphaNumeric.replace(alphaNumeric[rnum], special[rnum]);
+    return password;
+  }
 }
 export default Password;
