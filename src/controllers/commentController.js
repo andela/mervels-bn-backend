@@ -8,9 +8,10 @@ class CommentController {
    * Creates a new comment.
    * @param {object} req request
    * @param {object} res response
+   * @param {object} next next
    * @returns {object} response object
    */
-  async addComment(req, res) {
+  async addComment(req, res, next) {
     try {
       const comment = req.body;
       comment.user = req.user.id;
@@ -18,7 +19,7 @@ class CommentController {
       delete addedComment.dataValues.deleted;
       return Response.customResponse(res, 201, 'Comment added successfully', addedComment);
     } catch (error) {
-      return Response.errorResponse(res, 500, 'Something went wrong', error);
+      return next(error);
     }
   }
 
@@ -26,14 +27,15 @@ class CommentController {
    * gets all comments by request
    * @param {object} req request
    * @param {object} res response
+   * @param {object} next next
    * @returns {object} response
    */
-  async getCommentsByRequest(req, res) {
+  async getCommentsByRequest(req, res, next) {
     try {
       const comments = await CommentService.getCommentsByRequest(req.params.id);
       return Response.customResponse(res, 200, 'Comments fetched successfully', comments);
     } catch (error) {
-      return Response.errorResponse(res, 500, 'Something went wrong', error);
+      return next(error);
     }
   }
 
@@ -41,9 +43,10 @@ class CommentController {
    * updates a comment
    * @param {object} req request.
    * @param {object} res response.
+   * @param {object} next next
    * @returns {object} response object.
    */
-  async updateComment(req, res) {
+  async updateComment(req, res, next) {
     try {
       const { id } = req.params;
       const commentExists = await CommentService.getCommentById(id);
@@ -56,7 +59,7 @@ class CommentController {
         updatedComment[1][0]
       );
     } catch (error) {
-      return Response.errorResponse(res, 500, 'Something went wrong', error);
+      return next(error);
     }
   }
 
@@ -64,9 +67,10 @@ class CommentController {
    * updates a comment
    * @param {object} req request.
    * @param {object} res response.
+   * @param {object} next
    * @returns {object} response object.
    */
-  async deleteComment(req, res) {
+  async deleteComment(req, res, next) {
     try {
       const { id } = req.params;
       const commentExists = await CommentService.getCommentById(id);
@@ -74,7 +78,7 @@ class CommentController {
       await CommentService.deleteComment(id);
       return Response.customResponse(res, 200, 'Comment deleted successfully', 'deleted');
     } catch (error) {
-      return Response.errorResponse(res, 500, 'Something went wrong', error);
+      return next(error);
     }
   }
 }

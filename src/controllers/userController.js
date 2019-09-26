@@ -103,9 +103,10 @@ class Users {
    * Generates a new password.
    * @param {object} req  details.
    * @param {object} res  details.
+   * @param {object} next next task
    * @returns {object}.
    */
-  async sendLink(req, res) {
+  async sendLink(req, res, next) {
     const { userEmail } = req.body;
     const user = await userService.findUserByEmail(userEmail);
     if (!user) {
@@ -122,7 +123,7 @@ class Users {
         link
       });
     } catch (error) {
-      return Response.errorResponse(res, 500, 'internal error', error);
+      return next({ message: 'error.message', stack: error.stack, status: 401 });
     }
   }
 
@@ -130,9 +131,10 @@ class Users {
    * Generates a new password.
    * @param {object} req  details.
    * @param {object} res  details.
+   * @param {object} next nest task
    * @returns {object}.
    */
-  async verify(req, res) {
+  async verify(req, res, next) {
     const { token } = req.query;
     try {
       const { userEmail } = SessionManager.verify(token);
@@ -145,16 +147,17 @@ class Users {
         userEmail
       });
     } catch (error) {
-      return Response.errorResponse(res, 401, 'The link is invalid or has expired', 'bad request');
+      return next({ message: 'error.message', stack: error.stack, status: 401 });
     }
   }
 
   /**
    * @param {object} req request
    * @param {object} res response
+   * @param {object} next next
    * @return {function} logIn
    */
-  async logIn(req, res) {
+  async logIn(req, res, next) {
     try {
       const { userEmail, userPassword } = req.body;
       const userExists = await userService.findUserByEmail(userEmail);
@@ -177,7 +180,7 @@ class Users {
 
       return Response.customResponse(res, 200, 'User signed In successfully', user);
     } catch (error) {
-      return Response.errorResponse(res, 500, 'Something went wrong', error);
+      return next(error);
     }
   }
 

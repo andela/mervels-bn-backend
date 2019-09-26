@@ -12,9 +12,10 @@ class AccommodationController {
    * Creates a new accommodation.
    * @param {object} req request
    * @param {object} res response
+   * @param {object} next next
    * @returns {object} accommodation object
    */
-  async createAccommodation(req, res) {
+  async createAccommodation(req, res, next) {
     if (req.files) {
       const { image } = req.files;
       const cloudFile = await uploader(image.tempFilePath);
@@ -43,7 +44,7 @@ class AccommodationController {
       const accommodation = await AccommodationService.createAccommodation(req.body);
       return Response.customResponse(res, 201, 'Accommodation created successfully', accommodation);
     } catch (error) {
-      return Response.errorResponse(res, 500, 'something went wrong', 'internal error');
+      return next(error);
     }
   }
 
@@ -51,9 +52,10 @@ class AccommodationController {
    * Creates a new room.
    * @param {object} req request
    * @param {object} res response
+   * @param {object} next next
    * @returns {object} accommodation object
    */
-  async createRoom(req, res) {
+  async createRoom(req, res, next) {
     try {
       const { accommodationId, name } = req.body;
       const exist = await AccommodationService.getAccommodation({
@@ -77,7 +79,7 @@ class AccommodationController {
       const room = await AccommodationService.createRoom(req.body);
       return Response.customResponse(res, 201, 'Room created successfully', room);
     } catch (error) {
-      return Response.errorResponse(res, 500, 'something went wrong', 'internal error');
+      return next(error);
     }
   }
 
@@ -85,9 +87,10 @@ class AccommodationController {
    * gets all accommodations
    * @param {object} _req request
    * @param {object} res response
+   * @param {object} next next
    * @returns {object} accommodation
    */
-  async getAllAccommodations(_req, res) {
+  async getAllAccommodations(_req, res, next) {
     try {
       const accommodations = await AccommodationService.getAllAccommodations();
       return Response.customResponse(
@@ -97,7 +100,7 @@ class AccommodationController {
         accommodations
       );
     } catch (error) {
-      return Response.errorResponse(res, 500, 'something went wrong', 'internal error');
+      return next(error);
     }
   }
 
@@ -105,9 +108,10 @@ class AccommodationController {
    * gets one accommodation
    * @param {object} req request.
    * @param {object} res response.
+   * @param {object} next next
    * @returns {object} accommodation.
    */
-  async getAccommodationById(req, res) {
+  async getAccommodationById(req, res, next) {
     try {
       const { accommodationId } = req.params;
       const exist = await AccommodationService.getAccommodation({
@@ -118,7 +122,35 @@ class AccommodationController {
       delete exist.dataValues.Likes;
       return Response.customResponse(res, 200, 'Accommodation fetched successfully', exist);
     } catch (error) {
-      return Response.errorResponse(res, 500, 'something went wrong', 'internal error');
+      return next(error);
+    }
+  }
+
+  /**
+   * gets one accommodation
+   * @param {object} req request.
+   * @param {object} res response.
+   * @returns {object} accommodation.
+   */
+  async likeOrUnlike(req, res) {
+    try {
+      const exist = await AccommodationService.getAccommodation({
+        id: req.params.accommodationId
+      });
+      if (!exist) return Response.errorResponse(res, 404, 'Enter a valid accommodation ID', 'Not found');
+      const like = {
+        user: req.user.id,
+        accommodation: req.params.accommodationId
+      };
+      const alreadyLiked = await LikeService.checkLiked(like);
+      if (!alreadyLiked) {
+        await LikeService.like(like);
+        return Response.customResponse(res, 200, `Successfully liked ${exist.name}`, 'liked');
+      }
+      await LikeService.unlike(like);
+      return Response.customResponse(res, 200, `Successfully unliked ${exist.name}`, 'unliked');
+    } catch (error) {
+      return Response.errorResponse(res, 500, 'Something went wrong', 'Internal error');
     }
   }
 

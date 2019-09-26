@@ -58,23 +58,25 @@ class Requests {
   /**
    * @param {object} req request
    * @param {object} res response
+   * @param {object} next next
    * @return {function} requests
    */
-  async getMyRequests(req, res) {
+  async getMyRequests(req, res, next) {
     try {
       const data = await requestService.findRequestsByUser(req.user.id);
       return Response.customResponse(res, 200, 'Your requests were retrieved successfully', data);
     } catch (error) {
-      return Response.errorResponse(res, 500, 'Something went wrong', error);
+      return next(error);
     }
   }
 
   /**
    * @param {object} req request
    * @param {object} res response
+   * @param {object} next next
    * @return {function} Get requests with pending status
    */
-  async getPendingApprovals(req, res) {
+  async getPendingApprovals(req, res, next) {
     try {
       const field = { status: 'Pending' };
       const data = await requestService.findByField(field);
@@ -82,7 +84,76 @@ class Requests {
 
       return Response.customResponse(res, 200, message, data);
     } catch (error) {
-      return Response.errorResponse(res, 500, 'Something went wrong', error);
+      return next(error);
+    }
+  }
+
+  /**
+   * @param {object} req request
+   * @param {object} res response
+   * @param {object} next next
+   * @return {function} requests
+   */
+  async rejectRequest(req, res, next) {
+    try {
+      const { reason } = req.body;
+      const manager = req.user;
+      const { requestId } = req.params;
+      const request = await requestService.getRequest({ id: requestId });
+      if (!request) {
+        return Response.errorResponse(res, 404, 'request not found', 'Not found');
+      }
+      const requesterId = request.user;
+      if (request.status === 'Approved') {
+        return Response.errorResponse(res, 409, 'Request already approved', 'conflict');
+      }
+      if (request.status === 'Rejected') {
+        return Response.errorResponse(res, 409, 'Request already rejected', 'conflict');
+      }
+      const requester = await UserService.findUserById(requesterId);
+      const data = await requestService.rejectUpdateRequest(requestId, 'Rejected');
+      const msg = email.rejectAcceptRequestTemplate(reason, manager, requester, 'Request rejected');
+      await email.sendmail(msg);
+      return Response.customResponse(res, 200, 'Request rejected successfully', { requestId });
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  /**
+   * @param {object} req request
+   * @param {object} res response
+   * @param {object} next next
+   * @return {function} requests
+   */
+  async acceptRequest(req, res, next) {
+    try {
+      const { reason } = req.body;
+      const manager = req.user;
+      const { requestId } = req.params;
+      const request = await requestService.getRequest({ id: requestId });
+      if (!request) {
+        return Response.errorResponse(res, 404, 'request not found', 'Not found');
+      }
+      const requesterId = request.user;
+      if (request.status === 'Approved') {
+        return Response.errorResponse(res, 409, 'Request already accepted', 'conflict');
+      }
+      if (request.status === 'Rejected') {
+        return Response.errorResponse(res, 409, 'Request already rejected', 'conflict');
+      }
+      const requester = await UserService.findUserById(requesterId);
+      const data = await requestService.rejectUpdateRequest(requestId, 'Approved');
+      const msg = email.rejectAcceptRequestTemplate(
+        'Your travel request has been approved. Have a good time',
+        manager,
+        requester,
+        'Request approved'
+      );
+      await email.sendmail(msg);
+      return Response.customResponse(res, 200, 'Request approved successfully', { requestId });
+    } catch (error) {
+      return next(error);
     }
   }
 
