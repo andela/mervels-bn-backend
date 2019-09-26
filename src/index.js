@@ -11,18 +11,19 @@ const fs = require('fs'),
   bodyParser = require('body-parser'),
   cors = require('cors'),
   passport = require('passport'),
-  errorhandler = require('errorhandler');
+  errorhandler = require('errorhandler'),
+  Sentry = require('@sentry/node'),
+  logger = require('./utils/logger/logger');
 
 dotenv.config();
 const isProduction = process.env.NODE_ENV === 'production';
 
 // Create global app object
 const app = express();
-
+Sentry.init({ dsn: process.env.SENTRY_DSN });
+app.use(Sentry.Handlers.requestHandler());
 app.enable('trust proxy');
-
 app.use(cors());
-
 // Normal express config defaults
 app.use(require('morgan')('dev'));
 
@@ -61,9 +62,8 @@ app.use((req, res, next) => {
 if (!isProduction) {
   app.use((err, req, res, next) => {
     console.log(err.stack);
-
+    logger.error(err.stack);
     res.status(err.status || 500);
-
     res.json({
       errors: {
         message: err.message,
@@ -72,10 +72,11 @@ if (!isProduction) {
     });
   });
 }
-
+app.use(Sentry.Handlers.errorHandler());
 // production error handler
 // no stacktraces leaked to user
 app.use((err, req, res, next) => {
+  logger.error(err.stack);
   res.status(err.status || 500);
   res.json({
     errors: {

@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable require-jsdoc */
 import UserProfileService from '../services/userProfileService';
 import UserService from '../services/userService';
@@ -14,12 +15,7 @@ class userProfileController {
       const profile = await UserProfileService.getProfile(userId);
       return Response.customResponse(res, 200, 'User Profile Updated', profile);
     } catch (error) {
-      return Response.errorResponse(
-        res,
-        500,
-        'Something went wrong when updating userProfile',
-        error
-      );
+      return next(error);
     }
   }
 
@@ -30,12 +26,7 @@ class userProfileController {
 
       return Response.customResponse(res, 200, 'User Profile Updated', profile);
     } catch (error) {
-      return Response.errorResponse(
-        res,
-        500,
-        'Something went wrong when getting userProfile',
-        error
-      );
+      return next(error);
     }
   }
 }

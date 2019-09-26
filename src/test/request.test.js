@@ -431,7 +431,6 @@ describe('Manager get Pending requests', () => {
       });
   });
 });
-
 describe('Reject request', () => {
   // reject request tests
   let requestId;

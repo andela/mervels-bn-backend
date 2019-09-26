@@ -33,5 +33,11 @@ router.get(
   accommodationValidator.validateGetOneAccommodation,
   Accommodations.getAccommodationById
 );
+router.patch(
+  '/:accommodationId/like',
+  verify,
+  accommodationValidator.validateGetOneAccommodation,
+  Accommodations.likeOrUnlike
+);
 
 module.exports = router;
