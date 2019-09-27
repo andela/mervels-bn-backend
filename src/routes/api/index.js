@@ -9,6 +9,8 @@ router.use('/auth', require('./users'));
 
 router.use('/profile', require('./userProfile'));
 
+router.use('/search', require('./search'));
+
 router.use((err, req, res, next) => {
   if (err.name === 'ValidationError') {
     return res.status(422).json({
