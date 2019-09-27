@@ -16,6 +16,7 @@ const travelAdmin = {
 const addUser = '/api/v1/auth/add-user';
 let requesterToken;
 let superToken;
+let token;
 const superUser = {
   userEmail: 'johndoe@gmail.com',
   userPassword: 'Root1123#'
@@ -474,6 +475,77 @@ describe('Accommodation Supplier', () => {
       .end((_err, res) => {
         accommodationId = res.body.data.id;
         expect(res.status).to.eq(201);
+        done();
+      });
+  });
+});
+describe('Accommodation feedback', () => {
+  before((done) => {
+    chai
+      .request(server)
+      .post('/api/v1/auth/signin')
+      .send({
+        userEmail: 'requester@gmail.com',
+        userPassword: 'Root1123#'
+      })
+      .end((err, res) => {
+        token = res.body.data.userToken;
+        done();
+      });
+  });
+  it('should add feedback to accommodation', (done) => {
+    chai
+      .request(server)
+      .post('/api/v1/accommodations/1/feedback')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        feedback: 'Please clarify the travel reason'
+      })
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(201);
+        done();
+      });
+  });
+  it(' with no feedback', (done) => {
+    chai
+      .request(server)
+      .post('/api/v1/accommodations/1/feedback')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        feedback: ''
+      })
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(422);
+        done();
+      });
+  });
+  it('with in valid id', (done) => {
+    chai
+      .request(server)
+      .post('/api/v1/accommodations/sadf/feedback')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        feedback: 'Please clarify the travel reason'
+      })
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(422);
+        done();
+      });
+  });
+  it("with an accomodation that doesn't exist", (done) => {
+    chai
+      .request(server)
+      .post('/api/v1/accommodations/400/feedback')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        feedback: 'Please clarify the travel reason'
+      })
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(404);
         done();
       });
   });

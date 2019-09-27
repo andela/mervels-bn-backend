@@ -1562,6 +1562,46 @@
           }
         ]
       }
+    },
+    "/accommodations/{accommodation}/feedback": {
+      "put": {
+        "tags": [
+          "accommodation"
+        ],
+        "summary": "Add feedback on the accommodation",
+        "description": "This end points allows the users to feedback on the accommodation",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "feedback",
+            "description": "Payload to add feedback",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/feedbacks"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Feedback added successfully"
+          },
+          "422": {
+            "description": "Wrong Data format is entered"
+          },
+          "403": {
+            "description": "Not allowed to the accommodation"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -1744,6 +1784,19 @@
           "type": "string",
           "example": "Please clarify the travel reason",
           "summary": "This is an updated comment on the request"
+        }
+      }
+    },
+    "feedbacks": {
+      "required": [
+        "feedback"
+      ],
+      "type": "object",
+      "properties": {
+        "feedback": {
+          "type": "string",
+          "example": "Please clarify the travel reason",
+          "summary": "This is to add feedback to an accommodation"
         }
       }
     },

@@ -87,6 +87,9 @@ class AccommodationService {
           },
           {
             model: database.Like
+          },
+          {
+            model: database.Feedbacks
           }
         ]
       });
