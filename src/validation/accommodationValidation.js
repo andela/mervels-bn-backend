@@ -56,4 +56,17 @@ export default class accommodationValidator {
     });
     validator(schema, req.params, res, next);
   }
+
+  static async validateFeedback(req, res, next) {
+    const feedback = req.body;
+    feedback.accommodation = parseInt(req.params.id, 10);
+    const schema = Joi.object()
+      .keys({
+        feedback: Schema.string,
+        accommodation: Schema.id
+      })
+      .options({ allowUnknown: false });
+
+    validator(schema, feedback, res, next);
+  }
 }
