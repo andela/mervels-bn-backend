@@ -30,6 +30,7 @@ class SessionManager {
         firstName: data.firstName,
         lastName: data.lastName,
         accountVerified: data.accountVerified,
+        emailAllowed: data.emailAllowed,
         userRoles: data.userRoles
       },
       data.secret || process.env.TOKEN,

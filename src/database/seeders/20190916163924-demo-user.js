@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 export default {
   up: (queryInterface, Sequelize) => queryInterface.bulkInsert(
     'Users',
@@ -9,6 +10,7 @@ export default {
         userPassword: '$2b$10$oUCucQnBRaYYcZS5kMy7o.ydnOHHA6k/w7sQ9r9L1STDnos6Fw1c2',
         userRoles: 'Super Administrator',
         accountVerified: 'True',
+        emailAllowed: true,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -19,6 +21,7 @@ export default {
         userPassword: '$2b$10$oUCucQnBRaYYcZS5kMy7o.ydnOHHA6k/w7sQ9r9L1STDnos6Fw1c2',
         userRoles: 'Travel Administrator',
         accountVerified: 'True',
+        emailAllowed: true,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -29,6 +32,7 @@ export default {
         userPassword: '$2b$10$oUCucQnBRaYYcZS5kMy7o.ydnOHHA6k/w7sQ9r9L1STDnos6Fw1c2',
         userRoles: 'Requester',
         accountVerified: 'True',
+        emailAllowed: true,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -39,6 +43,7 @@ export default {
         userPassword: '$2b$10$oUCucQnBRaYYcZS5kMy7o.ydnOHHA6k/w7sQ9r9L1STDnos6Fw1c2',
         userRoles: 'Requester',
         accountVerified: 'True',
+        emailAllowed: true,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -49,6 +54,7 @@ export default {
         userPassword: '$2b$10$JX.ayT7zWc8UKNA3sY8TS.mGOGHLgaO/CQ3rkQhRNeBAprewjaGhe',
         userRoles: 'Requester',
         accountVerified: true,
+        emailAllowed: true,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -59,6 +65,7 @@ export default {
         userPassword: '$2b$10$oUCucQnBRaYYcZS5kMy7o.ydnOHHA6k/w7sQ9r9L1STDnos6Fw1c2',
         userRoles: 'Manager',
         accountVerified: true,
+        emailAllowed: true,
         createdAt: new Date(),
         updatedAt: new Date()
       }

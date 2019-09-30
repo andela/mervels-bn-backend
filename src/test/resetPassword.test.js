@@ -1,7 +1,9 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import { before } from 'mocha';
-import server from '../index';
+import index from '../index';
+
+const server = index.app;
 
 const { expect } = chai;
 

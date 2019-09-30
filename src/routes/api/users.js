@@ -78,4 +78,10 @@ router
   .route('/add-user')
   .post(verify, userValidator.userByAdmin, Access.isAdmin, Users.addSupplier)
   .all(method);
+
+router
+  .route('/email-preferences')
+  .patch(verify, Users.emailPreferences)
+  .all(method);
+
 module.exports = router;

@@ -50,6 +50,11 @@ export default (sequelize, DataTypes) => {
     accountVerified: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
+    },
+    emailAllowed: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+      allowNull: false
     }
   });
 
@@ -71,6 +76,11 @@ export default (sequelize, DataTypes) => {
     });
     Users.hasMany(models.Feedbacks, {
       foreignKey: 'user'
+    });
+    Users.hasMany(models.Notifications, {
+      foreignKey: 'userId',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
     });
   };
   return Users;
