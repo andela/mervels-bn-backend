@@ -11,34 +11,24 @@ class Search {
       for (const key of filterKeys) {
         switch (key) {
           case 'requester':
-            match = data[count].dataValues.requester.firstName.toLowerCase()
-                === filters[key].toLowerCase()
+            match = data[count].requester.firstName.toLowerCase() === filters[key].toLowerCase()
               || data[count].requester.lastName.toLowerCase() === filters[key].toLowerCase();
             break;
           case 'travelDate':
             const travelDate = this.formatDate(filters[key]);
-            match = data[count].dataValues.travelDate.includes(travelDate);
+            match = data[count].travelDate.includes(travelDate);
             break;
           case 'returnDate':
             const returnDate = this.formatDate(filters[key]);
-            match = data[count].dataValues.returnDate === returnDate;
+            match = data[count].returnDate === returnDate;
             break;
           case 'accommodation':
-            match = this.searchObjectArray(
-              data[count].dataValues.accommodations,
-              filters[key],
-              key
-            );
+            match = this.searchObjectArray(data[count].accommodations, filters[key], key);
             break;
           case 'destination':
-            match = this.searchObjectArray(
-              data[count].dataValues.accommodations,
-              filters[key],
-              key
-            );
+            match = this.searchObjectArray(data[count].accommodations, filters[key], key);
             break;
           default:
-            break;
         }
         if (match) results.push(data[count]);
       }
@@ -74,20 +64,3 @@ class Search {
 }
 
 export default new Search();
-
-// if (key === 'requester') {
-//   match = data[count].dataValues.requester.firstName.toLowerCase()
-//       === filters[key].toLowerCase()
-//     || data[count].requester.lastName.toLowerCase() === filters[key].toLowerCase();
-// } else if (key === 'travelDate') {
-//   const travelDate = this.formatDate(filters[key]);
-//   match = data[count].dataValues.travelDate.includes(travelDate);
-// } else if (key === 'returnDate') {
-//   const returnDate = this.formatDate(filters[key]);
-//   match = data[count].dataValues.returnDate === returnDate;
-// } else if (key === 'accommodation' || key === 'destination') {
-//   match = this.searchObjectArray(data[count].dataValues.accommodations, filters[key], key);
-// }
-// if (!match) break;
-// }
-// if (match) results.push(data[count]);
