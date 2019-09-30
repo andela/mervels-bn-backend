@@ -9,22 +9,39 @@ class Search {
     for (let count = 0; count < data.length; count++) {
       let match = false;
       for (const key of filterKeys) {
-        if (key === 'requester') {
-          match = data[count].dataValues.requester.firstName.toLowerCase()
-              === filters[key].toLowerCase()
-            || data[count].requester.lastName.toLowerCase() === filters[key].toLowerCase();
-        } else if (key === 'travelDate') {
-          const travelDate = this.formatDate(filters[key]);
-          match = data[count].dataValues.travelDate.includes(travelDate);
-        } else if (key === 'returnDate') {
-          const returnDate = this.formatDate(filters[key]);
-          match = data[count].dataValues.returnDate === returnDate;
-        } else if (key === 'accommodation' || key === 'destination') {
-          match = this.searchObjectArray(data[count].dataValues.accommodations, filters[key], key);
+        switch (key) {
+          case 'requester':
+            match = data[count].dataValues.requester.firstName.toLowerCase()
+                === filters[key].toLowerCase()
+              || data[count].requester.lastName.toLowerCase() === filters[key].toLowerCase();
+            break;
+          case 'travelDate':
+            const travelDate = this.formatDate(filters[key]);
+            match = data[count].dataValues.travelDate.includes(travelDate);
+            break;
+          case 'returnDate':
+            const returnDate = this.formatDate(filters[key]);
+            match = data[count].dataValues.returnDate === returnDate;
+            break;
+          case 'accommodation':
+            match = this.searchObjectArray(
+              data[count].dataValues.accommodations,
+              filters[key],
+              key
+            );
+            break;
+          case 'destination':
+            match = this.searchObjectArray(
+              data[count].dataValues.accommodations,
+              filters[key],
+              key
+            );
+            break;
+          default:
+            break;
         }
-        if (!match) break;
+        if (match) results.push(data[count]);
       }
-      if (match) results.push(data[count]);
     }
     return results;
   }
@@ -57,3 +74,20 @@ class Search {
 }
 
 export default new Search();
+
+// if (key === 'requester') {
+//   match = data[count].dataValues.requester.firstName.toLowerCase()
+//       === filters[key].toLowerCase()
+//     || data[count].requester.lastName.toLowerCase() === filters[key].toLowerCase();
+// } else if (key === 'travelDate') {
+//   const travelDate = this.formatDate(filters[key]);
+//   match = data[count].dataValues.travelDate.includes(travelDate);
+// } else if (key === 'returnDate') {
+//   const returnDate = this.formatDate(filters[key]);
+//   match = data[count].dataValues.returnDate === returnDate;
+// } else if (key === 'accommodation' || key === 'destination') {
+//   match = this.searchObjectArray(data[count].dataValues.accommodations, filters[key], key);
+// }
+// if (!match) break;
+// }
+// if (match) results.push(data[count]);
