@@ -40,8 +40,7 @@ class AccommodationController {
           'conflict'
         );
       }
-      req.body.name = req.body.name.toUpperCase().trim();
-      req.body.description = req.body.description.trim();
+      req.body.name = req.body.name.toUpperCase();
       const accommodation = await AccommodationService.createAccommodation(req.body);
       return Response.customResponse(res, 201, 'Accommodation created successfully', accommodation);
     } catch (error) {
@@ -143,43 +142,20 @@ class AccommodationController {
         user: req.user.id,
         accommodation: req.params.accommodationId
       };
-      const alreadyLiked = await LikeService.checkLiked(like);
+      const alreadyLiked = await LikeService.countLikes(like);
+      const likes = await LikeService.countLikes({ accommodation: req.params.accommodationId });
       if (!alreadyLiked) {
         await LikeService.like(like);
-        return Response.customResponse(res, 200, `Successfully liked ${exist.name}`, 'liked');
+        return Response.customResponse(res, 200, `Successfully liked ${exist.name}`, {
+          likes: likes + 1
+        });
       }
       await LikeService.unlike(like);
-      return Response.customResponse(res, 200, `Successfully unliked ${exist.name}`, 'unliked');
-    } catch (error) {
-      return Response.errorResponse(res, 500, 'Something went wrong', 'Internal error');
-    }
-  }
-
-  /**
-   * gets one accommodation
-   * @param {object} req request.
-   * @param {object} res response.
-   * @returns {object} accommodation.
-   */
-  async likeOrUnlike(req, res) {
-    try {
-      const exist = await AccommodationService.getAccommodation({
-        id: req.params.accommodationId
+      return Response.customResponse(res, 200, `Successfully unliked ${exist.name}`, {
+        likes: likes - 1
       });
-      if (!exist) return Response.errorResponse(res, 404, 'Enter a valid accommodation ID', 'Not found');
-      const like = {
-        user: req.user.id,
-        accommodation: req.params.accommodationId
-      };
-      const alreadyLiked = await LikeService.checkLiked(like);
-      if (!alreadyLiked) {
-        await LikeService.like(like);
-        return Response.customResponse(res, 200, `Successfully liked ${exist.name}`, 'liked');
-      }
-      await LikeService.unlike(like);
-      return Response.customResponse(res, 200, `Successfully unliked ${exist.name}`, 'unliked');
     } catch (error) {
-      return Response.errorResponse(res, 500, 'Something went wrong', 'Internal error');
+      return Response.errorResponse(res, 500, 'Something went wrong', error);
     }
   }
 }

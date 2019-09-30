@@ -2,9 +2,10 @@
 /* eslint-disable class-methods-use-this */
 import requestService from '../services/requestService';
 import Response from '../utils/response';
-import email from '../utils/email';
+import email from '../utils/mails/email';
 import UserService from '../services/userService';
-
+import UpdateEmail from '../utils/mails/update.email';
+import ApprovalEmail from '../utils/mails/approval.email';
 /** Class representing a password util. */
 class Requests {
   /**
@@ -23,7 +24,7 @@ class Requests {
         'Book an accommodation for each location on a specific date'
       );
     }
-    const request = await requestService.findRequests({
+    const request = await requestService.findRequest({
       from: req.body.from.toUpperCase(),
       travelDate: req.body.travelDate,
       user: req.user.id
@@ -62,7 +63,7 @@ class Requests {
    */
   async getMyRequests(req, res, next) {
     try {
-      const data = await requestService.findRequestsByUser(req.user.id);
+      const data = await requestService.findRequests({ user: req.user.id });
       return Response.customResponse(res, 200, 'Your requests were retrieved successfully', data);
     } catch (error) {
       return next(error);
@@ -78,9 +79,9 @@ class Requests {
   async getPendingApprovals(req, res, next) {
     try {
       const field = { status: 'Pending' };
-      const data = await requestService.findByField(field);
+      const data = await requestService.findRequests(field);
       const message = data.length > 0 ? 'Requests retrieved ' : 'No request pending approval';
-
+      delete data.accommodations;
       return Response.customResponse(res, 200, message, data);
     } catch (error) {
       return next(error);
@@ -98,7 +99,7 @@ class Requests {
       const { reason } = req.body;
       const manager = req.user;
       const { requestId } = req.params;
-      const request = await requestService.getRequest({ id: requestId });
+      const request = await requestService.findRequest({ id: requestId });
       if (!request) {
         return Response.errorResponse(res, 404, 'request not found', 'Not found');
       }
@@ -109,10 +110,15 @@ class Requests {
       if (request.status === 'Rejected') {
         return Response.errorResponse(res, 409, 'Request already rejected', 'conflict');
       }
-      const requester = await UserService.findUserById(requesterId);
+      const requester = await UserService.findUser({ id: requesterId });
       const data = await requestService.rejectUpdateRequest(requestId, 'Rejected');
-      const msg = email.rejectAcceptRequestTemplate(reason, manager, requester, 'Request rejected');
-      await email.sendmail(msg);
+      const header = email.header({
+        from: manager.userEmail,
+        to: requester.userEmail,
+        subject: 'Request rejected'
+      });
+      const msg = ApprovalEmail.rejectAcceptRequestTemplate(reason, requester);
+      await email.sendmail({ ...header, ...msg });
       return Response.customResponse(res, 200, 'Request rejected successfully', { requestId });
     } catch (error) {
       return next(error);
@@ -130,7 +136,7 @@ class Requests {
       const { reason } = req.body;
       const manager = req.user;
       const { requestId } = req.params;
-      const request = await requestService.getRequest({ id: requestId });
+      const request = await requestService.findRequest({ id: requestId });
       if (!request) {
         return Response.errorResponse(res, 404, 'request not found', 'Not found');
       }
@@ -141,15 +147,18 @@ class Requests {
       if (request.status === 'Rejected') {
         return Response.errorResponse(res, 409, 'Request already rejected', 'conflict');
       }
-      const requester = await UserService.findUserById(requesterId);
+      const requester = await UserService.findUser({ id: requesterId });
       const data = await requestService.rejectUpdateRequest(requestId, 'Approved');
-      const msg = email.rejectAcceptRequestTemplate(
+      const header = email.header({
+        from: manager.userEmail,
+        to: requester.userEmail,
+        subject: 'Request approved'
+      });
+      const msg = ApprovalEmail.rejectAcceptRequestTemplate(
         'Your travel request has been approved. Have a good time',
-        manager,
-        requester,
-        'Request approved'
+        requester
       );
-      await email.sendmail(msg);
+      await email.sendmail({ ...header, ...msg });
       return Response.customResponse(res, 200, 'Request approved successfully', { requestId });
     } catch (error) {
       return next(error);
@@ -161,79 +170,11 @@ class Requests {
    * @param {object} res response
    * @return {function} requests
    */
-  async rejectRequest(req, res) {
-    try {
-      const { reason } = req.body;
-      const manager = req.user;
-      const { requestId } = req.params;
-      const request = await requestService.getRequest({ id: requestId });
-      if (!request) {
-        return Response.errorResponse(res, 404, 'request not found', 'Not found');
-      }
-      const requesterId = request.user;
-      if (request.status === 'Approved') {
-        return Response.errorResponse(res, 409, 'Request already approved', 'conflict');
-      }
-      if (request.status === 'Rejected') {
-        return Response.errorResponse(res, 409, 'Request already rejected', 'conflict');
-      }
-      const requester = await UserService.findUserById(requesterId);
-      const data = await requestService.rejectUpdateRequest(requestId, 'Rejected');
-      const msg = email.rejectAcceptRequestTemplate(reason, manager, requester, 'Request rejected');
-      await email.sendmail(msg);
-      return Response.customResponse(res, 200, 'Request rejected successfully', { requestId });
-    } catch (error) {
-      return Response.errorResponse(res, 500, 'Something went wrong', error);
-    }
-  }
-
-  /**
-   * @param {object} req request
-   * @param {object} res response
-   * @return {function} requests
-   */
-  async acceptRequest(req, res) {
-    try {
-      const { reason } = req.body;
-      const manager = req.user;
-      const { requestId } = req.params;
-      const request = await requestService.getRequest({ id: requestId });
-      if (!request) {
-        return Response.errorResponse(res, 404, 'request not found', 'Not found');
-      }
-      const requesterId = request.user;
-      if (request.status === 'Approved') {
-        return Response.errorResponse(res, 409, 'Request already accepted', 'conflict');
-      }
-      if (request.status === 'Rejected') {
-        return Response.errorResponse(res, 409, 'Request already rejected', 'conflict');
-      }
-      const requester = await UserService.findUserById(requesterId);
-      const data = await requestService.rejectUpdateRequest(requestId, 'Approved');
-      const msg = email.rejectAcceptRequestTemplate(
-        'Your travel request has been approved. Have a good time',
-        manager,
-        requester,
-        'Request approved'
-      );
-      await email.sendmail(msg);
-      return Response.customResponse(res, 200, 'Request approved successfully', { requestId });
-    } catch (error) {
-      return Response.errorResponse(res, 500, 'Something went wrong', error);
-    }
-  }
-
-  /**
-   * @param {object} req request
-   * @param {object} res response
-   * @return {function} requests
-   */
   async EditRequest(req, res) {
     try {
-      const rawData = req.body;
       const formatedData = {
-        ...rawData,
-        reason: rawData.reason.trim()
+        ...req.body,
+        reason: req.body.reason.trim()
       };
       const { id } = req.params;
       if (
@@ -249,22 +190,16 @@ class Requests {
       }
       // update the object
       let data = await requestService.updateRequest(formatedData, id);
-      const roleDetails = await UserService.findUserByRole('Manager');
-      const {
-        from, travelDate, returnDate, reason, status, updatedAt
-      } = data.dataValues;
-      data = {
-        from,
-        travelDate,
-        returnDate,
-        reason,
-        status,
-        updatedAt,
-        manager: roleDetails.dataValues.userEmail,
-        user: req.user.firstName
-      };
-      const msg = email.updateTemplate(data);
-      const result = await email.sendmail(msg);
+      const roleDetails = await UserService.findUser({ userRoles: 'Manager' });
+      data = data.dataValues;
+      data.manager = roleDetails.dataValues.userEmail;
+      data.user = req.user.firstName;
+      const header = email.header({
+        to: roleDetails.dataValues.userEmail,
+        subject: ' BareFoot Update Notification '
+      });
+      const msg = UpdateEmail.updateTemplate(data);
+      const result = await email.sendmail({ ...header, ...msg });
       return Response.customResponse(res, 200, 'Update has been completed successfully', data);
     } catch (error) {
       return Response.errorResponse(res, 500, 'Something went wrong', error);

@@ -4,8 +4,10 @@ import userService from '../services/userService';
 import Password from '../utils/generatePassword';
 import SessionManager from '../utils/sessionManager';
 import Response from '../utils/response';
-import Emails from '../utils/email';
+import Emails from '../utils/mails/email';
 import supplierEmail from '../utils/mails/supplier.email';
+import ResetPasswordEmail from '../utils/mails/resetPassord.email';
+import VerifyEmail from '../utils/mails/verify.email';
 /** Class representing a password util. */
 class Users {
   /**
@@ -18,7 +20,7 @@ class Users {
   async createUser(req, res, next) {
     const rawData = req.body;
     try {
-      const details = await userService.findUserByEmail(rawData.userEmail);
+      const details = await userService.findUser({ userEmail: rawData.userEmail });
       if (details) {
         return Response.customResponse(res, 409, 'user already exists');
       }
@@ -37,25 +39,26 @@ class Users {
         userRoles: rawData.userRoles,
         accountVerified: data.accountVerified
       });
-      data.token = token;
-      const dataResponse = {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        userEmail: data.userEmail,
-        userRoles: data.userRoles,
-        userToken: data.token
-      };
+      data.dataValues.userToken = token;
+      delete data.userPassword;
+      delete data.accountVerified;
+      delete data.createdAt;
+      delete data.updatedAt;
       const link = `${req.protocol}://${process.env.baseUrl}/api/v1/auth/verify/?token=${token}`;
       let verification;
       try {
-        const msg = Emails.verificationLinkTemplate(link, dataResponse);
-        const result = await Emails.sendmail(msg);
+        const header = Emails.header({
+          to: data.dataValues.userEmail,
+          subject: ' BareFoot email verification link '
+        });
+        const msg = VerifyEmail.verificationLinkTemplate(link, data.dataValues);
+        const result = await Emails.sendmail({ ...header, ...msg });
         verification = 'Verification link sent';
       } catch (error) {
         verification = 'Verification link not sent';
       }
       return Response.customResponse(res, 201, 'Account has been created successfully', {
-        ...dataResponse,
+        ...data.dataValues,
         verification: { message: verification, link }
       });
     } catch (error) {
@@ -74,7 +77,7 @@ class Users {
     const { firstName, lastName } = req.user;
     const userRoles = 'Requester';
     let data;
-    data = await userService.findUserByEmail(userEmail);
+    data = await userService.findUser({ userEmail });
     if (!data) {
       data = await userService.createUser({
         userEmail,
@@ -89,15 +92,12 @@ class Users {
       lastName: data.lastName,
       userRoles: data.userRoles
     });
-    data.token = token;
-    const dataResponse = {
-      firstName: data.firstName,
-      lastName: data.lastName,
-      userEmail: data.userEmail,
-      userRoles: data.userRoles,
-      userToken: data.token
-    };
-    return Response.customResponse(res, 200, 'Successfully logged in!', dataResponse);
+    data.dataValues.userToken = token;
+    delete data.userPassword;
+    delete data.accountVerified;
+    delete data.createdAt;
+    delete data.updatedAt;
+    return Response.customResponse(res, 200, 'Successfully logged in!', data.dataValues);
   }
 
   /**
@@ -109,7 +109,7 @@ class Users {
    */
   async sendLink(req, res, next) {
     const { userEmail } = req.body;
-    const user = await userService.findUserByEmail(userEmail);
+    const user = await userService.findUser({ userEmail });
     if (!user) {
       return Response.errorResponse(res, 404, 'this email is not registered');
     }
@@ -117,8 +117,12 @@ class Users {
     const token = await SessionManager.generateToken(user);
     const link = `${req.protocol}://${process.env.baseUrl}/api/v1/auth/verify/?token=${token}`;
     try {
-      const msg = Emails.verificationLinkTemplate(link, user);
-      const _ = await Emails.sendmail(msg);
+      const header = Emails.header({
+        to: userEmail,
+        subject: ' BareFoot email verification link '
+      });
+      const msg = VerifyEmail.verificationLinkTemplate(link, user);
+      const _ = await Emails.sendmail({ ...header, ...msg });
       return Response.customResponse(res, 200, 'email sent with verification link', {
         userEmail,
         link
@@ -139,11 +143,11 @@ class Users {
     const { token } = req.query;
     try {
       const { userEmail } = SessionManager.verify(token);
-      const user = await userService.findUserByEmail(userEmail);
+      const user = await userService.findUser({ userEmail });
       if (user.accountVerified) {
         return Response.errorResponse(res, 409, 'Email already verified', 'conflicts');
       }
-      const result = userService.verifyEmail(userEmail);
+      const result = userService.updateUser({ userEmail }, { accountVerified: true });
       return Response.customResponse(res, 201, 'Email verified succesfully', {
         userEmail
       });
@@ -161,7 +165,7 @@ class Users {
   async logIn(req, res, next) {
     try {
       const { userEmail, userPassword } = req.body;
-      const userExists = await userService.findUserByEmail(userEmail);
+      const userExists = await userService.findUser({ userEmail });
 
       if (!userExists) {
         return Response.errorResponse(res, 401, 'Invalid email or password entered');
@@ -178,6 +182,9 @@ class Users {
 
       user.userToken = await SessionManager.createSession(user);
       delete user.userPassword;
+      delete user.accountVerified;
+      delete user.createdAt;
+      delete user.updatedAt;
 
       return Response.customResponse(res, 200, 'User signed In successfully', user);
     } catch (error) {
@@ -195,7 +202,7 @@ class Users {
   async requestPasswordReset(req, res, next) {
     const { email } = req.body;
     try {
-      const userAccount = await userService.findUserByEmail(email);
+      const userAccount = await userService.findUser({ userEmail: email });
       if (!userAccount) {
         return Response.customResponse(
           res,
@@ -212,11 +219,12 @@ class Users {
         userId: userAccount.id,
         token: oneTimeToken
       });
-      const message = Emails.resetPasswordTemplate(url, {
-        email: userAccount.userEmail,
-        name: userAccount.firstName
+      const header = Emails.header({
+        to: userAccount.userEmail,
+        subject: ' BareFoot Password Reset '
       });
-      const result = await Emails.sendmail(message);
+      const message = ResetPasswordEmail.resetPasswordTemplate(url, userAccount.firstName);
+      const result = await Emails.sendmail({ ...header, ...message });
       return Response.customResponse(
         res,
         200,
@@ -240,7 +248,7 @@ class Users {
     const { userId, token } = req.params;
     const id = parseInt(userId, 10);
     try {
-      const userAccount = await userService.findUserById(id);
+      const userAccount = await userService.findUser({ id });
       if (!userAccount) {
         return Response.customResponse(res, 403, 'Forbidden Request');
       }
@@ -253,9 +261,12 @@ class Users {
       }
       const pass = new Password({ userPassword: password });
       const userPassword = await pass.encryptPassword();
-      const updatedUser = await userService.updateUser(userDetails.id, {
-        userPassword
-      });
+      const updatedUser = await userService.updateUser(
+        { id: userDetails.id },
+        {
+          userPassword
+        }
+      );
       return Response.customResponse(
         res,
         200,
@@ -289,7 +300,7 @@ class Users {
     let message, data, updateData;
 
     try {
-      const details = await userService.findUserByEmail(rawData.userEmail);
+      const details = await userService.findUser({ userEmail: rawData.userEmail });
       if (!details) {
         return Response.customResponse(res, 404, "user doesn't exist");
       }
@@ -302,19 +313,31 @@ class Users {
       }
       if (rawData.userRole !== details.userRoles) {
         if (rawData.userRole === 'Manager') {
-          const roleDetails = await userService.findUserByRole(rawData.userRole);
+          const roleDetails = await userService.findUser({ userRoles: rawData.userRole });
           if (!roleDetails) {
             message = 'User Role has been successfully updated';
-            data = await userService.updateRole(rawData.userEmail, rawData.userRole);
+            data = await userService.updateUser(
+              { userEmail: rawData.userEmail },
+              { userRoles: rawData.userRole }
+            );
             return Response.customResponse(res, 200, message);
           }
-          data = await userService.updateRole(roleDetails.userEmail, 'Requester');
-          updateData = await userService.updateRole(rawData.userEmail, rawData.userRole);
+          data = await userService.updateUser(
+            { userEmail: roleDetails.userEmail },
+            { userRoles: 'Requester' }
+          );
+          updateData = await userService.updateUser(
+            { userEmail: rawData.userEmail },
+            { userRoles: rawData.userRole }
+          );
           message = `${roleDetails.firstName} ${roleDetails.lastName}'s role has been\
  updated to Requester and the new manager role has been assigned to ${rawData.userEmail}`;
           return Response.customResponse(res, 200, message);
         }
-        data = await userService.updateRole(rawData.userEmail, rawData.userRole);
+        data = await userService.updateUser(
+          { userEmail: rawData.userEmail },
+          { userRoles: rawData.userRole }
+        );
         return Response.customResponse(res, 404, message);
       }
       message = 'The user already has the rights you are trying to assign';
@@ -333,7 +356,7 @@ class Users {
    */
   async addSupplier(req, res, next) {
     try {
-      const user = await userService.findUserByEmail(req.body.userEmail);
+      const user = await userService.findUser({ userEmail: req.body.userEmail });
       if (user) {
         return Response.customResponse(res, 409, 'user already exists');
       }
@@ -349,12 +372,13 @@ class Users {
         accountVerified: true
       };
       const data = await userService.createUser(supplier);
+      const header = Emails.header({ to: req.body.userEmail, subject: 'BareFoot Accomodations' });
       const message = supplierEmail.supplierTemplate({
         email: req.body.userEmail,
         name: req.body.firstName,
         password: userPassword
       });
-      const result = await Emails.sendmail(message);
+      const result = await Emails.sendmail({ ...header, ...message });
       return Response.customResponse(res, 201, 'Account has been created successfully', data);
     } catch (error) {
       return next(error);

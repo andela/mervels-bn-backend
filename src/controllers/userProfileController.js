@@ -8,7 +8,7 @@ class userProfileController {
   async updateProfile(req, res, next) {
     try {
       const userId = req.user.id;
-      await UserService.updateUser(userId, req.body);
+      await UserService.updateUser({ id: userId }, req.body);
 
       await UserProfileService.updateOrCreate(userId, req.body);
 

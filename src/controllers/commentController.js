@@ -14,6 +14,7 @@ class CommentController {
   async addComment(req, res, next) {
     try {
       const comment = req.body;
+      comment.request = req.params.id;
       comment.user = req.user.id;
       const addedComment = await CommentService.addComment(comment);
       delete addedComment.dataValues.deleted;

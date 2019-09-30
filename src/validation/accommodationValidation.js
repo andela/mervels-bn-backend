@@ -3,7 +3,8 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import Joi from '@hapi/joi';
-import Response from '../utils/response';
+import Schema from './schema';
+import validator from '../utils/validator';
 
 /**
  * @class accommodationValidator
@@ -17,35 +18,14 @@ export default class accommodationValidator {
    */
   static async validateCreateAccommodation(req, res, next) {
     const schema = Joi.object().keys({
-      name: Joi.string()
-        .min(2)
-        .trim()
-        .required()
-        .error(() => 'name field is required and must be a string'),
-      locationId: Joi.number()
-        .min(0)
-        .required()
-        .error(() => 'location is required and must be a number greater than zero'),
-      services: Joi.array()
-        .items(Joi.string().trim())
-        .single()
-        .error(() => 'pass in an array of services must be strings'),
-      amenities: Joi.array()
-        .items(Joi.string().trim())
-        .single()
-        .error(() => 'pass in an array of amenities must be strings'),
-      description: Joi.string()
-        .min(20)
-        .trim()
-        .error(() => 'Description should be a sentnce of not less than 20 characters'),
-      image: Joi.string()
-        .trim()
-        .error(() => 'image url should be type string')
+      name: Schema.name,
+      locationId: Schema.id,
+      services: Schema.listArray,
+      amenities: Schema.listArray,
+      description: Schema.stringLongOptional,
+      image: Schema.stringOptional
     });
-    schema.validate(req.body, (error) => {
-      if (error) return Response.errorResponse(res, 422, 'validations failed', error.details);
-      next();
-    });
+    validator(schema, req.body, res, next);
   }
 
   /**
@@ -56,29 +36,12 @@ export default class accommodationValidator {
    */
   static async validateCreateRoom(req, res, next) {
     const schema = Joi.object().keys({
-      name: Joi.string()
-        .min(2)
-        .trim()
-        .required()
-        .error(() => 'name field is required and must be a string'),
-      type: Joi.string()
-        .min(2)
-        .trim()
-        .required()
-        .error(() => 'type is required and must be a string'),
-      accommodationId: Joi.number()
-        .min(0)
-        .required()
-        .error(() => 'accommodationId is required and must be a number greater than zero'),
-      price: Joi.number()
-        .min(1)
-        .required()
-        .error(() => 'price is required and must be a number')
+      name: Schema.name,
+      type: Schema.name,
+      accommodationId: Schema.id,
+      price: Schema.number
     });
-    schema.validate(req.body, (error) => {
-      if (error) return Response.errorResponse(res, 422, 'validations failed', error.details);
-      next();
-    });
+    validator(schema, req.body, res, next);
   }
 
   /**
@@ -89,15 +52,8 @@ export default class accommodationValidator {
    */
   static async validateGetOneAccommodation(req, res, next) {
     const schema = Joi.object().keys({
-      accommodationId: Joi.number()
-        .integer()
-        .min(1)
-        .required()
-        .error(() => 'accommodationId is required and must be a number greater than zero')
+      accommodationId: Schema.id
     });
-    schema.validate(req.params, (error) => {
-      if (error) return Response.errorResponse(res, 422, 'validations failed', error.details);
-      next();
-    });
+    validator(schema, req.params, res, next);
   }
 }

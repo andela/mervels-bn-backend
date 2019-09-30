@@ -10,7 +10,7 @@ class LikeService {
    * @param {object} like The id would be easier..
    * @returns {object} The comment object.
    */
-  static async checkLiked(like) {
+  static async countLikes(like) {
     try {
       return await Like.count({
         where: [like]

@@ -99,7 +99,6 @@ describe('Travel Administrator', () => {
       .request(server)
       .post('/api/v1/accommodations')
       .set('Authorization', `Bearer ${adminToken}`)
-      .attach('image', 'src/test/testData/marvel.png', 'marvel.png')
       .field('name', 'Muhabura')
       .field('locationId', 1)
       .field('amenities', ['GYM', 'SPA'])
@@ -250,7 +249,7 @@ describe('Travel Administrator', () => {
       .send({ name: 'Ngorongoro', type: 'flat' })
       .end((_err, res) => {
         expect(res.status).to.eq(422);
-        expect(res.body.message).to.eq('validations failed');
+        expect(res.body.message).to.eq('Validation failed');
         done();
       });
   });
@@ -262,7 +261,7 @@ describe('Travel Administrator', () => {
       .send({ type: 'flat', accommodationId: 1 })
       .end((_err, res) => {
         expect(res.status).to.eq(422);
-        expect(res.body.message).to.eq('validations failed');
+        expect(res.body.message).to.eq('Validation failed');
         done();
       });
   });
@@ -274,7 +273,7 @@ describe('Travel Administrator', () => {
       .send({ name: 'flat', accommodationId: 1 })
       .end((_err, res) => {
         expect(res.status).to.eq(422);
-        expect(res.body.message).to.eq('validations failed');
+        expect(res.body.message).to.eq('Validation failed');
         done();
       });
   });
@@ -305,7 +304,7 @@ describe('Travel Administrator', () => {
       })
       .end((_err, res) => {
         expect(res.status).to.eq(422);
-        expect(res.body.message).to.eq('validations failed');
+        expect(res.body.message).to.eq('Validation failed');
         done();
       });
   });
@@ -319,7 +318,7 @@ describe('Travel Administrator', () => {
       })
       .end((_err, res) => {
         expect(res.status).to.eq(422);
-        expect(res.body.message).to.eq('validations failed');
+        expect(res.body.message).to.eq('Validation failed');
         done();
       });
   });
@@ -367,7 +366,7 @@ describe('Travel Administrator', () => {
       .set('Authorization', `Bearer ${adminToken}`)
       .end((_err, res) => {
         expect(res.status).to.eq(422);
-        expect(res.body.message).to.eq('validations failed');
+        expect(res.body.message).to.eq('Validation failed');
         done();
       });
   });
@@ -389,7 +388,7 @@ describe('Travel Administrator', () => {
       .set('Authorization', `Bearer ${requesterToken}`)
       .end((_err, res) => {
         expect(res.status).to.eq(200);
-        expect(res.body.data).to.eq('liked');
+        expect(res.body.data.likes).to.eq(1);
         done();
       });
   });
@@ -400,7 +399,7 @@ describe('Travel Administrator', () => {
       .set('Authorization', `Bearer ${requesterToken}`)
       .end((_err, res) => {
         expect(res.status).to.eq(200);
-        expect(res.body.data).to.eq('unliked');
+        expect(res.body.data.likes).to.eq(0);
         done();
       });
   });
@@ -432,7 +431,7 @@ describe('Travel Administrator', () => {
       .send(supplier)
       .end((err, res) => {
         expect(res.body.status).to.eq(201);
-        done();
+        done(err);
       });
   });
   it('SUPER ADMIN should not be able to add new supplier with wrong values', (done) => {
@@ -443,7 +442,7 @@ describe('Travel Administrator', () => {
       .send(wrongSupplier)
       .end((err, res) => {
         expect(res.body.status).to.eq(422);
-        done();
+        done(err);
       });
   });
 });

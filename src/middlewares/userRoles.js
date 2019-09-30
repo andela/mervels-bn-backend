@@ -47,7 +47,7 @@ class Access {
    * @returns {string} object.
    */
   static async isOwnerOrManager(req, res, next) {
-    const request = await RequestService.findRequestByID(req.params.id);
+    const request = await RequestService.findRequest({ id: req.params.id });
     if (!request) {
       return Response.errorResponse(
         res,
@@ -127,7 +127,7 @@ class Access {
     if (isNaN(id)) {
       return Response.errorResponse(res, 400, 'A bad request was sent', 'enter a valid request');
     }
-    const data = await RequestService.findRequestsById(id);
+    const data = await RequestService.findRequest({ id });
     if (data === null) {
       return Response.errorResponse(
         res,
