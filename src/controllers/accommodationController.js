@@ -158,6 +158,19 @@ class AccommodationController {
       return Response.errorResponse(res, 500, 'Something went wrong', error);
     }
   }
+
+  /**
+   * rate one accommodation
+   * @param {object} req request.
+   * @param {object} res response.
+   * @returns {object} accommodation.
+   */
+  async rateCenter(req, res) {
+    try {
+    } catch (err) {
+      return next(err);
+    }
+  }
 }
 
 export default new AccommodationController();
