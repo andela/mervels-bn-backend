@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable class-methods-use-this */
+import moment from 'moment';
+import { Op } from 'sequelize';
 import requestService from '../services/requestService';
 import Response from '../utils/response';
 import email from '../utils/mails/email';
@@ -203,6 +205,34 @@ class Requests {
       return Response.customResponse(res, 200, 'Update has been completed successfully', data);
     } catch (error) {
       return Response.errorResponse(res, 500, 'Something went wrong', error);
+    }
+  }
+
+  /**
+   * @param {object} req request
+   * @param {object} res response
+   * @param {object} next next
+   * @return {function} Get requests with pending status
+   */
+  async statistics(req, res, next) {
+    try {
+      const params = {
+        travelDate: {
+          [Op.gte]: [
+            moment()
+              .subtract(req.body.value, req.body.parameter)
+              .format('YYYY-MM-DD')
+          ],
+          [Op.lt]: [moment().format('YYYY-MM-DD')]
+        },
+        status: 'Approved',
+        user: req.user.id
+      };
+      const data = await requestService.findRequests(params);
+      const message = 'Trip Statistics Succesfully retrieved';
+      return Response.customResponse(res, 200, message, { total: data.length, trips: data });
+    } catch (error) {
+      return next(error);
     }
   }
 }

@@ -10,7 +10,29 @@ import validator from '../utils/validator';
  */
 export default class requestValidator {
   /**
-   * resets new password
+   * validates stats data
+   * @param {Object} req  request details.
+   * @param {Object} res  re sponse details.
+   * @param {Object} next middleware details
+   * @returns {Object}.
+   */
+  static async statistics(req, res, next) {
+    const schema = Joi.object().keys({
+      parameter: Joi.string()
+        .trim()
+        .valid('years', 'months', 'days', 'weeks')
+        .required()
+        .error(() => 'Parameter must be one of months,years,weeks,days'),
+      value: Joi.number()
+        .integer()
+        .required()
+        .error(() => 'value must be an integer')
+    });
+    validator(schema, req.body, res, next);
+  }
+
+  /**
+   * Validate one way trip
    * @param {Object} req  request details.
    * @param {Object} res  re sponse details.
    * @param {Object} next middleware details

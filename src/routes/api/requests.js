@@ -10,6 +10,10 @@ import location from '../../middlewares/validLocation';
 import Access from '../../middlewares/userRoles';
 
 const router = express.Router();
+router
+  .route('/trip-stats')
+  .post(verify, requestsValidator.statistics, Requests.statistics)
+  .all(method);
 
 router
   .route('/one-way')
