@@ -22,7 +22,7 @@ class Users {
     try {
       const details = await userService.findUser({ userEmail: rawData.userEmail });
       if (details) {
-        return Response.customResponse(res, 409, 'user already exists');
+        return Response.conflictError(res, 'User already exists');
       }
       // generate a hashed password
       const obj = new Password(rawData);
@@ -113,7 +113,7 @@ class Users {
     const { userEmail } = req.body;
     const user = await userService.findUser({ userEmail });
     if (!user) {
-      return Response.errorResponse(res, 404, 'this email is not registered');
+      return Response.notFoundError(res, 'this email is not registered');
     }
 
     const token = await SessionManager.generateToken(user);
@@ -147,7 +147,7 @@ class Users {
       const { userEmail } = SessionManager.verify(token);
       const user = await userService.findUser({ userEmail });
       if (user.accountVerified) {
-        return Response.errorResponse(res, 409, 'Email already verified', 'conflicts');
+        return Response.conflictError(res, 'Email already verified');
       }
       const result = userService.updateUser({ userEmail }, { accountVerified: true });
       return Response.customResponse(res, 201, 'Email verified succesfully', {
@@ -170,16 +170,16 @@ class Users {
       const userExists = await userService.findUser({ userEmail });
 
       if (!userExists) {
-        return Response.errorResponse(res, 401, 'Invalid email or password entered');
+        return Response.authenticationError(res, 'Invalid email or password entered');
       }
       if (userExists.accountVerified === false) {
-        return res.status(401).send({ status: res.statusCode, error: 'Email not verified' });
+        return Response.authenticationError(res, 'Email not verified');
       }
       const user = userExists.dataValues;
 
       const match = await Password.checkPasswordMatch(userPassword, user.userPassword);
       if (!match) {
-        return Response.errorResponse(res, 401, 'Invalid email or password entered');
+        return Response.authenticationError(res, 'Invalid email or password entered');
       }
 
       user.userToken = await SessionManager.createSession(user);
@@ -252,14 +252,14 @@ class Users {
     try {
       const userAccount = await userService.findUser({ id });
       if (!userAccount) {
-        return Response.customResponse(res, 403, 'Forbidden Request');
+        return Response.authenticationError(res, 'Forbidden Request');
       }
       const userDetails = SessionManager.decodeToken({
         token,
         secret: `${userAccount.userPassword}-${userAccount.createdAt}`
       });
       if (password !== newPassword) {
-        return Response.customResponse(res, 400, 'Passwords do not match re-type password');
+        return Response.badRequestError(res, 'Passwords do not match re-type password');
       }
       const pass = new Password({ userPassword: password });
       const userPassword = await pass.encryptPassword();
@@ -304,14 +304,10 @@ class Users {
     try {
       const details = await userService.findUser({ userEmail: rawData.userEmail });
       if (!details) {
-        return Response.customResponse(res, 404, "user doesn't exist");
+        return Response.notFoundError(res, "User doesn't exist");
       }
       if (details.userRoles === 'Super Administrator') {
-        return Response.customResponse(
-          res,
-          400,
-          'What you are trying achieve can not be completed'
-        );
+        return Response.badRequestError(res, 'What you are trying achieve can not be completed');
       }
       if (rawData.userRole !== details.userRoles) {
         if (rawData.userRole === 'Manager') {
@@ -340,10 +336,10 @@ class Users {
           { userEmail: rawData.userEmail },
           { userRoles: rawData.userRole }
         );
-        return Response.customResponse(res, 404, message);
+        return Response.notFoundError(res, message);
       }
       message = 'The user already has the rights you are trying to assign';
-      return Response.customResponse(res, 409, message);
+      return Response.conflictError(res, message);
     } catch (error) {
       return next(error);
     }
@@ -360,7 +356,7 @@ class Users {
     try {
       const user = await userService.findUser({ userEmail: req.body.userEmail });
       if (user) {
-        return Response.customResponse(res, 409, 'user already exists');
+        return Response.conflictError(res, 'user already exists');
       }
       const userPassword = Password.randomPassword();
       const obj = new Password({ userPassword });

@@ -51,7 +51,7 @@ class CommentController {
     try {
       const { id } = req.params;
       const commentExists = await CommentService.getCommentById(id);
-      if (!commentExists) return Response.errorResponse(res, 404, 'Error', 'Comment not found');
+      if (!commentExists) return Response.notFoundError(res, 'Comment not found');
       const updatedComment = await CommentService.updateComment(id, req.body);
       return Response.customResponse(
         res,
@@ -75,7 +75,7 @@ class CommentController {
     try {
       const { id } = req.params;
       const commentExists = await CommentService.getCommentById(id);
-      if (!commentExists) return Response.errorResponse(res, 404, 'Error', 'Comment not found');
+      if (!commentExists) return Response.notFoundError(res, 'Comment not found');
       await CommentService.deleteComment(id);
       return Response.customResponse(res, 200, 'Comment deleted successfully', 'deleted');
     } catch (error) {

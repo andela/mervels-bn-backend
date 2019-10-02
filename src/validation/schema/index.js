@@ -106,5 +106,11 @@ export default {
   listArray: Joi.array()
     .items(Joi.string().trim())
     .single()
-    .error(() => 'pass in an array of amenities must be strings')
+    .error(() => 'pass in an array of amenities must be strings'),
+  rating: Joi.number()
+    .integer()
+    .required()
+    .min(1)
+    .max(5)
+    .error(() => 'rating must be number between 1 and 5')
 };

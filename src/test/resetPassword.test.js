@@ -131,7 +131,7 @@ describe('Reset new Password', () => {
         if (err) {
           return done(err);
         }
-        expect(res.status).to.eq(403);
+        expect(res.status).to.eq(401);
         done();
       });
   });

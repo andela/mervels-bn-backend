@@ -90,6 +90,13 @@ class AccommodationService {
           },
           {
             model: database.Feedbacks
+          },
+          {
+            model: database.Requests,
+            as: 'requests'
+          },
+          {
+            model: database.Ratings
           }
         ]
       });

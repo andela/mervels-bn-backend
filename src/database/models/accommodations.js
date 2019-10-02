@@ -62,6 +62,9 @@ const accommodations = (sequelize, DataTypes) => {
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
     });
+    Accommodations.hasMany(models.Ratings, {
+      foreignKey: 'accommodationId'
+    });
   };
   return Accommodations;
 };

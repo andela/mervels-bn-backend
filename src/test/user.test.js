@@ -76,7 +76,6 @@ describe('create an account', () => {
       .send(user)
       .end((_err, res) => {
         expect(res.status).to.eq(401);
-        expect(res.body.error).to.eq('Email not verified');
         done();
       });
   });
@@ -510,7 +509,7 @@ describe('Test Access', () => {
         .send({ userEmail: 'josephdoe12gmail.com', userRole: 'Travel Administrator' })
         .end((_err, res) => {
           expect(res.status).to.eq(422);
-          expect(res.body.message).to.eq('Validation failed');
+          expect(res.body.error).to.eq('Validation Error');
           done();
         });
     });

@@ -1,13 +1,15 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import server from '../index';
+import index from '../index';
+
+const server = index.app;
 
 chai.use(chaiHttp);
 
 const { expect } = chai;
 
 const signInUrl = '/api/v1/auth/signin';
-const rateUrl = '/api/v1/accommodation/rate/';
+const rateUrl = '/api/v1/accommodations';
 
 let user1Token, user2Token;
 
@@ -48,21 +50,21 @@ before('LogIn user2', (done) => {
     });
 });
 
-describe.only('Rate accommodation', () => {
+describe('Rate accommodation', () => {
   it('User has stayed in facility', (done) => {
     const rating = {
       rating: 4
     };
     chai
       .request(server)
-      .post(`${rateUrl}/1`)
+      .post(`${rateUrl}/2/ratings`)
       .set('Authorization', `Bearer ${user1Token}`)
       .send(rating)
       .end((_err, res) => {
         if (_err) return done(_err);
 
         expect(res).to.have.status(201);
-        expect(res.body.data.userRating).eq(4);
+        expect(res.body.data.rating).eq(4);
         done();
       });
   });
@@ -73,13 +75,30 @@ describe.only('Rate accommodation', () => {
     };
     chai
       .request(server)
-      .post(`${rateUrl}/1`)
+      .post(`${rateUrl}/1/ratings`)
       .set('Authorization', `Bearer ${user2Token}`)
       .send(rating)
       .end((_err, res) => {
         if (_err) return done(_err);
 
-        expect(res).to.have.status(402);
+        expect(res).to.have.status(403);
+        done();
+      });
+  });
+
+  it('User rates a facility not available', (done) => {
+    const rating = {
+      rating: 4
+    };
+    chai
+      .request(server)
+      .post(`${rateUrl}/1021/ratings`)
+      .set('Authorization', `Bearer ${user2Token}`)
+      .send(rating)
+      .end((_err, res) => {
+        if (_err) return done(_err);
+
+        expect(res).to.have.status(404);
         done();
       });
   });
@@ -90,7 +109,7 @@ describe.only('Rate accommodation', () => {
     };
     chai
       .request(server)
-      .post(`${rateUrl}/1`)
+      .post(`${rateUrl}/1/ratings`)
       .set('Authorization', `Bearer ${user1Token}`)
       .send(rating)
       .end((_err, res) => {
@@ -107,7 +126,7 @@ describe.only('Rate accommodation', () => {
     };
     chai
       .request(server)
-      .post(`${rateUrl}/1`)
+      .post(`${rateUrl}/1/ratings`)
       .set('Authorization', `Bearer ${user1Token}`)
       .send(rating)
       .end((_err, res) => {
