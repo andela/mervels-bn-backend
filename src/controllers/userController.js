@@ -37,7 +37,8 @@ class Users {
         firstName: rawData.firstName,
         lastName: rawData.lastName,
         userRoles: rawData.userRoles,
-        accountVerified: data.accountVerified
+        accountVerified: data.accountVerified,
+        emailAllowed: data.emailAllowed
       });
       data.dataValues.userToken = token;
       delete data.userPassword;
@@ -90,7 +91,8 @@ class Users {
       email: data.userEmail,
       firstName: data.firstName,
       lastName: data.lastName,
-      userRoles: data.userRoles
+      userRoles: data.userRoles,
+      emailAllowed: data.emailAllowed
     });
     data.dataValues.userToken = token;
     delete data.userPassword;
@@ -380,6 +382,28 @@ class Users {
       });
       const result = await Emails.sendmail({ ...header, ...message });
       return Response.customResponse(res, 201, 'Account has been created successfully', data);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  /**
+   * Generates a new password.
+   * @param {object} req  details.
+   * @param {object} res  details.
+   * @param {object} next nest task
+   * @returns {object}.
+   */
+  async emailPreferences(req, res, next) {
+    try {
+      const { id, emailAllowed } = req.user;
+      const data = await userService.updateUser({ id }, { emailAllowed: !emailAllowed });
+      return Response.customResponse(
+        res,
+        200,
+        'Your email preferences have been successfully updated',
+        { emailAllowed: data[1][0].emailAllowed }
+      );
     } catch (error) {
       return next(error);
     }

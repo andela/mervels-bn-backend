@@ -3,8 +3,9 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import passport from 'passport';
 import '../config/passport';
-import server from '../index';
+import index from '../index';
 
+const server = index.app;
 const { expect } = chai;
 
 const signupUrl = '/api/v1/auth/signup';
@@ -23,6 +24,7 @@ const loginWithFacebook = '/api/v1/auth/facebook';
 const googleRedirect = '/api/v1/auth/google/redirect';
 const facebookRedirect = '/api/v1/auth/facebook/redirect';
 const signout = '/api/v1/auth/signout';
+const emailPreferences = '/api/v1/auth/email-preferences';
 
 chai.use(chaiHttp);
 
@@ -598,6 +600,21 @@ describe('User Profile', () => {
 
         expect(res.status).to.eq(422);
 
+        done();
+      });
+  });
+});
+
+describe('Email Preference', () => {
+  it('should update user email preference', (done) => {
+    chai
+      .request(server)
+      .patch(emailPreferences)
+      .set('Authorization', `Bearer ${token}`)
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(200);
+        expect(res.body.data.emailAllowed).to.eq(false);
         done();
       });
   });

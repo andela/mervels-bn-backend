@@ -1,8 +1,8 @@
-/* eslint-disable import/no-unresolved */
 /* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
 import '@babel/polyfill';
 import dotenv from 'dotenv';
+import socket from 'socket.io';
 
 const fs = require('fs'),
   http = require('http'),
@@ -14,7 +14,8 @@ const fs = require('fs'),
   passport = require('passport'),
   errorhandler = require('errorhandler'),
   Sentry = require('@sentry/node'),
-  logger = require('./utils/logger/logger');
+  logger = require('./utils/logger/logger'),
+  notifications = require('./utils/notifications/index');
 
 dotenv.config();
 const isProduction = process.env.NODE_ENV === 'production';
@@ -46,6 +47,9 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+// running all event listeners
+notifications();
 
 app.use(require('./routes'));
 
@@ -92,4 +96,9 @@ const server = app.listen(process.env.PORT || 3000, () => {
   console.log(`Listening on port ${server.address().port}`);
 });
 
-export default app;
+const io = socket(server);
+io.on('connection', (client) => {
+  console.log('socket connected', client.id);
+});
+
+export default { app, io };

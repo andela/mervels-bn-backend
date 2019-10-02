@@ -1,7 +1,9 @@
 /* eslint-disable no-underscore-dangle */
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import server from '../index';
+import index from '../index';
+
+const server = index.app;
 
 const { expect } = chai;
 chai.use(chaiHttp);
@@ -168,6 +170,17 @@ describe('Get Requests', () => {
       .end((_err, res) => {
         if (_err) done(_err);
         expect(res.status).to.eq(405);
+        done();
+      });
+  });
+  it('should change user email preferences', (done) => {
+    chai
+      .request(server)
+      .patch('/api/v1/auth/email-preferences')
+      .set('Authorization', `Bearer ${managerToken}`)
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(200);
         done();
       });
   });

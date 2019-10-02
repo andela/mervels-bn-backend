@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable func-names */
+import emitter from '../../utils/eventEmitters/emitter';
+
 module.exports = (sequelize, DataTypes) => {
   const Requests = sequelize.define(
     'Requests',
@@ -72,6 +74,13 @@ module.exports = (sequelize, DataTypes) => {
     Requests.hasMany(models.Comment, {
       foreignKey: 'request'
     });
+    Requests.hasMany(models.Notifications, {
+      foreignKey: 'requestId',
+      onDelete: 'CASCADE'
+    });
   };
+  Requests.afterCreate(({ dataValues }) => {
+    emitter.emit('request created', dataValues);
+  });
   return Requests;
 };

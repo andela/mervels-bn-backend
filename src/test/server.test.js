@@ -1,7 +1,9 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 
-import app from '../index';
+import index from '../index';
+
+const server = index.app;
 
 chai.should();
 chai.use(chaiHttp);
@@ -9,7 +11,7 @@ chai.use(chaiHttp);
 describe('server test', () => {
   it('should handle the unknown routes', (done) => {
     chai
-      .request(app)
+      .request(server)
       .get('/unknownroute')
       .send({ data: 'nothing' })
       .end((err, res) => {

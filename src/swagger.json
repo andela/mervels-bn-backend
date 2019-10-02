@@ -16,6 +16,10 @@
       "description": "User End Points"
     },
     {
+      "name": "notifications",
+      "description": "Notifications End Points"
+    },
+    {
       "name": "accommodation",
       "description": "Travel admin creates accommodations"
     },
@@ -453,6 +457,49 @@
           },
           "500": {
             "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/auth/email-preferences": {
+      "patch": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Update email preference",
+        "description": "This endpoint allows the user to opt in/out of email notifationss",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Your email preferences have been successfully updated"
+          },
+          "401": {
+            "description": "Invalid or expired token"
+          }
+        }
+      }
+    },
+    "/notifications": {
+      "get": {
+        "tags": [
+          "notifications"
+        ],
+        "summary": "View my notifcations",
+        "description": "User can view all his/her notifications",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "401": {
+            "status": 401,
+            "message": "Invalid or expired token used"
+          },
+          "200": {
+            "status": 200,
+            "message": "Your notifications have been retrieved successfully",
+            "data": []
           }
         }
       }
@@ -1097,9 +1144,6 @@
           "500": {
             "description": "Internal server error"
           }
-        },
-        "security": {
-          "bearerAuth": []
         }
       },
       "get": {
@@ -1885,5 +1929,10 @@
       "name": "Authorization",
       "in": "header"
     }
-  }
+  },
+  "security": [
+    {
+      "Bearer": []
+    }
+  ]
 }

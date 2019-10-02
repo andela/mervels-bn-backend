@@ -11,6 +11,8 @@ router.use('/profile', require('./userProfile'));
 
 router.use('/search', require('./search'));
 
+router.use('/notifications', require('./notifications'));
+
 router.use((err, req, res, next) => {
   if (err.name === 'JsonWebTokenError') {
     return res.status(400).json({

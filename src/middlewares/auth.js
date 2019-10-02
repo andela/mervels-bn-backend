@@ -12,8 +12,9 @@ const verify = async (req, res, next) => {
     if (result === null) return Response.errorResponse(res, 401, 'User not logged In');
     const { userEmail } = payload;
     // checking for the updated userRole from the db not from the token
-    const { userRoles } = await userService.findUser({ userEmail });
+    const { userRoles, emailAllowed } = await userService.findUser({ userEmail });
     payload.userRoles = userRoles;
+    payload.emailAllowed = emailAllowed;
     req.user = payload;
     next();
   } catch (error) {
