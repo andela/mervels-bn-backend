@@ -28,6 +28,7 @@ router.post(
   Accommodations.createAccommodation
 );
 router.get('/', verify, Accommodations.getAllAccommodations);
+router.get('/most-travelled-destination', verify, Accommodations.getMostTravelledDestination);
 router.get(
   '/:accommodationId',
   verify,

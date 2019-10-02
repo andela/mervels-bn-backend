@@ -14,6 +14,16 @@ export default {
         updatedAt: new Date()
       },
       {
+        from: 'KIGALI, RWANDA',
+        travelDate: ['2019-10-01'],
+        returnDate: '2019-12-12',
+        reason: 'Business Travel',
+        status: 'Approved',
+        user: 3,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
         from: 'ACCRA, GHANA',
         travelDate: ['2019-08-01'],
         returnDate: '2019-12-12',

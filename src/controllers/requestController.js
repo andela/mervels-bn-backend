@@ -168,9 +168,10 @@ class Requests {
   /**
    * @param {object} req request
    * @param {object} res response
+   * @param {object} next response
    * @return {function} requests
    */
-  async EditRequest(req, res) {
+  async EditRequest(req, res, next) {
     try {
       const formatedData = {
         ...req.body,

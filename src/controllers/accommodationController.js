@@ -1,9 +1,12 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable class-methods-use-this */
+import moment from 'moment';
+import { Op } from 'sequelize';
 import Response from '../utils/response';
 import AccommodationService from '../services/accommodationService';
 import LikeService from '../services/likeService';
 import LocationService from '../services/locationService';
+import requestService from '../services/requestService';
 import uploader from '../utils/cloudinary';
 import reviewController from './reviewController';
 
@@ -125,9 +128,10 @@ class AccommodationController {
    * gets one accommodation
    * @param {object} req request.
    * @param {object} res response.
+   * @param {object} next response.
    * @returns {object} accommodation.
    */
-  async likeOrUnlike(req, res) {
+  async likeOrUnlike(req, res, next) {
     try {
       const exist = await AccommodationService.getAccommodation({
         id: req.params.accommodationId
@@ -148,6 +152,70 @@ class AccommodationController {
       await LikeService.unlike(like);
       return Response.customResponse(res, 200, `Successfully unliked ${exist.name}`, {
         likes: likes - 1
+      });
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  /**
+   * gets all accommodations
+   * @param {object} req request
+   * @param {object} res response
+   * @param {object} next next
+   * @returns {object} accommodation
+   */
+  async getMostTravelledDestination(req, res, next) {
+    try {
+      const final = [];
+      let data = [];
+      const requests = await requestService.findRequests({
+        status: 'Approved',
+        travelDate: {
+          [Op.lt]: [moment().format('YYYY-MM-DD')]
+        }
+      });
+
+      const accommodationRequest = requests.map((elem) => elem.accommodations);
+      for (let i = 0; i < accommodationRequest.length; i += 1) {
+        data = data.concat(accommodationRequest[i]);
+      }
+      if (data.length === 0) {
+        return Response.customResponse(res, 200, 'There are currently no past travels', {
+          data: final,
+          count: 0
+        });
+      }
+      const counter = {};
+      let maxCount = 1;
+      let mostTravelled = [];
+
+      for (let i = 0; i < data.length; i += 1) {
+        const el = data[i].name;
+        if (counter[el] === undefined) {
+          counter[el] = 1;
+        } else {
+          counter[el] += 1;
+        }
+        if (counter[el] > maxCount) {
+          mostTravelled = [el];
+          maxCount = counter[el];
+        } else if (counter[el] === maxCount) {
+          mostTravelled.push(el);
+          maxCount = counter[el];
+        }
+      }
+      await Promise.all(
+        mostTravelled.map(async (elem) => {
+          const accommodation = await AccommodationService.getAccommodation({
+            name: elem.toUpperCase()
+          });
+          final.push(accommodation);
+        })
+      );
+      return Response.customResponse(res, 200, 'Your request was successful', {
+        data: final,
+        count: maxCount
       });
     } catch (error) {
       return next(error);
