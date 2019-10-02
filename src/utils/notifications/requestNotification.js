@@ -14,15 +14,35 @@ class Notifications {
    */
   async makeNotification(request) {
     const manager = await userService.findUser({ userRoles: 'Manager' });
-    const { firstName, lastName } = await userService.findUser({ id: request.user });
+    const { id, firstName, lastName } = await userService.findUser({ id: request.user });
     return {
       id: manager.id,
+      userId: id,
       firstName,
       lastName,
       emailAllowed: manager.emailAllowed,
       userEmail: manager.userEmail,
       manager: manager.firstName
     };
+  }
+
+  /**
+   * sends notification
+   * @param {string} notification message
+   * @param {integer} userId owner of niotification
+   * @param {string} type type of notification
+   * @param {integer} requestId id of request
+   * @return {function} create notifications
+   */
+  async notify(notification, userId, type, requestId) {
+    const inAppNotification = await NotificationService.createNotification({
+      notification,
+      userId,
+      type,
+      requestId
+    });
+    // in app socket.io notification
+    app.io.emit('created', inAppNotification);
   }
 
   /**
@@ -39,14 +59,7 @@ class Notifications {
         manager
       } = await this.makeNotification(request);
       const notificationMessage = `${firstName} ${lastName} requested a new trip`;
-      const inAppNotification = await NotificationService.createNotification({
-        notification: notificationMessage,
-        userId: id,
-        type: 'created',
-        requestId: request.id
-      });
-      // in app socket.io notification
-      app.io.emit('created', inAppNotification);
+      this.notify(notificationMessage, id, 'created', request.id);
       // email nofitication
       if (emailAllowed) {
         const requestUrl = `https://${process.env.baseUrl}/api/v1/requests/${request.id}`;
@@ -56,6 +69,20 @@ class Notifications {
           subject: 'New travel request'
         });
         Emails.sendmail({ ...header, ...msg });
+      }
+    });
+  }
+
+  /**
+   * works for both approve and reject
+   * @return {function} create notifications
+   */
+  async requestUpdated() {
+    await emitter.on('request update', async (request) => {
+      const { userId } = await this.makeNotification(request);
+      if (request.status !== 'Pending') {
+        const notificationMessage = `Your Request has been ${request.status.toLowerCase()}`;
+        this.notify(notificationMessage, userId, 'updated', request.id);
       }
     });
   }
