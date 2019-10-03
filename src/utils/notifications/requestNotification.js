@@ -123,6 +123,17 @@ class Notifications {
       }
     });
   }
+
+  /**
+   * @return {funtion} notifications
+   */
+  async requestEdited() {
+    await emitter.on('request edited', async (request) => {
+      const { id, firstName, lastName } = await this.makeNotification({ user: request.user });
+      const notification = `${firstName} ${lastName} edited a travel request`;
+      this.notify(notification, id, 'request edited', request.id);
+    });
+  }
 }
 
 export default new Notifications();
