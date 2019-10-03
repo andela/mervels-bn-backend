@@ -2,6 +2,7 @@
 import emitter from '../eventEmitters/emitter';
 import NotificationService from '../../services/notificationService';
 import userService from '../../services/userService';
+import requestService from '../../services/requestService';
 import app from '../../index';
 import Emails from '../mails/email';
 import RequestNotification from '../mails/requestNotification.email';
@@ -83,6 +84,42 @@ class Notifications {
       if (request.status !== 'Pending') {
         const notificationMessage = `Your Request has been ${request.status.toLowerCase()}`;
         this.notify(notificationMessage, userId, 'updated', request.id);
+      }
+    });
+  }
+
+  /**
+   * works for both approve and reject
+   * @return {function} create notifications
+   */
+  async newComment() {
+    await emitter.on('new comment', async (comment) => {
+      const commentOwner = await userService.findUser({ id: comment.user });
+      const request = await requestService.findRequest({ id: comment.request });
+      const requestOwner = await userService.findUser({ id: request.user });
+      const manager = await userService.findUser({ userRoles: 'Manager' });
+      let sendTo;
+      let notificationMessage;
+      if (commentOwner.id !== requestOwner.id) {
+        notificationMessage = 'The manager commented on your travel request';
+        sendTo = requestOwner;
+      } else {
+        notificationMessage = `${requestOwner.firstName} ${requestOwner.lastName} commented on their travel request`;
+        sendTo = manager;
+      }
+      this.notify(notificationMessage, sendTo.id, 'comment', comment.request);
+      if (sendTo.emailAllowed) {
+        const requestUrl = `https://${process.env.baseUrl}/api/v1/requests/${request.id}`;
+        const msg = RequestNotification.requestCreated(
+          requestUrl,
+          sendTo.firstName,
+          notificationMessage
+        );
+        const header = Emails.header({
+          to: sendTo.userEmail,
+          subject: 'New travel request comment'
+        });
+        Emails.sendmail({ ...header, ...msg });
       }
     });
   }

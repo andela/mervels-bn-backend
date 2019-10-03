@@ -1,3 +1,5 @@
+import emitter from '../../utils/eventEmitters/emitter';
+
 export default (sequelize, DataTypes) => {
   const Comment = sequelize.define(
     'Comment',
@@ -38,5 +40,8 @@ export default (sequelize, DataTypes) => {
       onDelete: 'CASCADE'
     });
   };
+  Comment.afterCreate(({ dataValues }) => {
+    emitter.emit('new comment', dataValues);
+  });
   return Comment;
 };
