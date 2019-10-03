@@ -82,5 +82,15 @@ module.exports = (sequelize, DataTypes) => {
   Requests.afterCreate(({ dataValues }) => {
     emitter.emit('request created', dataValues);
   });
+  Requests.afterBulkUpdate((data) => {
+    data.individualHooks = true;
+    sequelize
+      .query(`SELECT * FROM "Requests" WHERE id = ${data.where.id}`, {
+        type: sequelize.QueryTypes.SELECT
+      })
+      .then((request) => {
+        emitter.emit('request update', request[0]);
+      });
+  });
   return Requests;
 };
