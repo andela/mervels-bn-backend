@@ -938,6 +938,86 @@
         }
       }
     },
+    "/accommodations/most-travelled-destination": {
+      "get": {
+        "tags": [
+          "accommodation"
+        ],
+        "summary": "Get the most travelled destination",
+        "description": "This is to help managers and other users to make better decisions",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "an authorization header",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retrives the most travelled destinations",
+            "examples": {
+              "application/json": {
+                "status": 200,
+                "message": "Your requests were retrieved successfully",
+                "data": {
+                    "data": [
+                        {
+                            "id": 1,
+                            "name": "HOTEL",
+                            "status": "Available",
+                            "imageUrl": null,
+                            "amenities": null,
+                            "locationId": 1,
+                            "description": null,
+                            "services": null,
+                            "createdAt": "2019-10-02T17:08:18.684Z",
+                            "updatedAt": "2019-10-02T17:08:18.684Z",
+                            "Rooms": [],
+                            "Likes": [],
+                            "Feedbacks": []
+                        },
+                        {
+                            "id": 2,
+                            "name": "MARIOT",
+                            "status": "Unavailable",
+                            "imageUrl": null,
+                            "amenities": null,
+                            "locationId": 1,
+                            "description": null,
+                            "services": null,
+                            "createdAt": "2019-10-02T17:08:18.684Z",
+                            "updatedAt": "2019-10-02T17:08:18.684Z",
+                            "Rooms": [],
+                            "Likes": [],
+                            "Feedbacks": []
+                        }
+                    ],
+                    "count": 2
+                }
+            }
+            }
+          },
+          "401": {
+            "description": "invalid or expired token",
+            "examples": {
+              "application/json": {
+                "status": 401,
+                "message": "Invalid or expired token used",
+                "error": {
+                  "name": "JsonWebTokenError",
+                  "message": "jwt must be provided"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/requests/my-requests": {
       "get": {
         "tags": [
