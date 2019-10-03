@@ -8,6 +8,24 @@ export default {
         accommodationId: 1,
         createdAt: new Date(),
         updatedAt: new Date()
+      },
+      {
+        requestId: 2,
+        accommodationId: 2,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        requestId: 3,
+        accommodationId: 2,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        requestId: 4,
+        accommodationId: 2,
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ],
     {}

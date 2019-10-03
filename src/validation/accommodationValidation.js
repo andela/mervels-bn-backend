@@ -58,15 +58,19 @@ export default class accommodationValidator {
   }
 
   static async validateFeedback(req, res, next) {
-    const feedback = req.body;
-    feedback.accommodation = parseInt(req.params.id, 10);
-    const schema = Joi.object()
-      .keys({
-        feedback: Schema.string,
-        accommodation: Schema.id
-      })
-      .options({ allowUnknown: false });
+    const schema = Joi.object().keys({
+      feedback: Schema.string,
+      id: Schema.id
+    });
 
-    validator(schema, feedback, res, next);
+    validator(schema, { ...req.body, ...req.params }, res, next);
+  }
+
+  static async validateRating(req, res, next) {
+    const ratingSchema = Joi.object().keys({
+      rating: Schema.rating,
+      id: Schema.id
+    });
+    validator(ratingSchema, { ...req.body, ...req.params }, res, next);
   }
 }

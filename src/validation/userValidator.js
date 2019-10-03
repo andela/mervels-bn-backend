@@ -28,12 +28,7 @@ export default class userValidator {
       firstName: Schema.name,
       lastName: Schema.name
     });
-    schema.validate(req.body, (err) => {
-      if (err) {
-        return Response.errorResponse(res, 422, 'Validation failed', err.details[0].message);
-      }
-      next();
-    });
+    validator(schema, req.body, res, next);
   }
 
   /**

@@ -521,7 +521,7 @@ describe('Reject request', () => {
       .end((_err, res) => {
         if (_err) done(_err);
         expect(res.status).to.eq(422);
-        expect(res.body.message).to.eq('Validation failed');
+        expect(res.body.error).to.eq('Validation Error');
         done();
       });
   });
@@ -537,8 +537,8 @@ describe('Reject request', () => {
       .end((_err, res) => {
         if (_err) done(_err);
         expect(res.status).to.eq(422);
-        expect(res.body.message).to.eq('Validation failed');
-        expect(res.body.error).to.eq('"requestId" must be an integer');
+        expect(res.body.error).to.eq('Validation Error');
+
         done();
       });
   });
@@ -632,7 +632,7 @@ describe('Accept request', () => {
       .end((_err, res) => {
         if (_err) done(_err);
         expect(res.status).to.eq(422);
-        expect(res.body.message).to.eq('Validation failed');
+        expect(res.body.error).to.eq('Validation Error');
         done();
       });
   });
@@ -648,8 +648,7 @@ describe('Accept request', () => {
       .end((_err, res) => {
         if (_err) done(_err);
         expect(res.status).to.eq(422);
-        expect(res.body.message).to.eq('Validation failed');
-        expect(res.body.error).to.eq('"requestId" must be an integer');
+        expect(res.body.error).to.eq('Validation Error');
         done();
       });
   });

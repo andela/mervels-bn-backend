@@ -5,6 +5,7 @@ import AccommodationService from '../services/accommodationService';
 import LikeService from '../services/likeService';
 import LocationService from '../services/locationService';
 import uploader from '../utils/cloudinary';
+import reviewController from './reviewController';
 
 /** Class representing accommodation controller. */
 class AccommodationController {
@@ -25,7 +26,7 @@ class AccommodationController {
       // check if the location is available
       const location = await LocationService.getLocationById(req.body.locationId);
       if (!location) {
-        return Response.errorResponse(res, 404, 'Location not found', 'error');
+        return Response.notFoundError(res, 'Location not found');
       }
       const { name, locationId } = req.body;
       const accommodationExist = await AccommodationService.getAccommodation({
@@ -33,12 +34,7 @@ class AccommodationController {
         locationId
       });
       if (accommodationExist) {
-        return Response.errorResponse(
-          res,
-          409,
-          'this accommodation already exist in this location',
-          'conflict'
-        );
+        return Response.conflictError(res, 'this accommodation already exist in this location');
       }
       req.body.name = req.body.name.toUpperCase();
       const accommodation = await AccommodationService.createAccommodation(req.body);
@@ -62,19 +58,14 @@ class AccommodationController {
         id: accommodationId
       });
       if (!exist) {
-        return Response.errorResponse(res, 404, 'error', 'Accommodation not found');
+        return Response.notFoundError(res, 'Accommodation not found');
       }
       const roomExist = await AccommodationService.getRoom({
         name,
         accommodationId
       });
       if (roomExist) {
-        return Response.errorResponse(
-          res,
-          409,
-          'this room already exist in this accommodation',
-          'conflict'
-        );
+        return Response.conflictError(res, 'this room already exist in this accommodation');
       }
       const room = await AccommodationService.createRoom(req.body);
       return Response.customResponse(res, 201, 'Room created successfully', room);
@@ -117,9 +108,13 @@ class AccommodationController {
       const exist = await AccommodationService.getAccommodation({
         id: accommodationId
       });
-      if (!exist) return Response.errorResponse(res, 404, 'error', 'Accommodation not found');
+      if (!exist) return Response.notFoundError(res, 'Accommodation not found');
       exist.dataValues.likes = exist.Likes.length;
       delete exist.dataValues.Likes;
+
+      exist.dataValues.Ratings = reviewController.getAccommodationRating(exist, req.user.id);
+      delete exist.dataValues.requests;
+
       return Response.customResponse(res, 200, 'Accommodation fetched successfully', exist);
     } catch (error) {
       return next(error);
@@ -137,7 +132,7 @@ class AccommodationController {
       const exist = await AccommodationService.getAccommodation({
         id: req.params.accommodationId
       });
-      if (!exist) return Response.errorResponse(res, 404, 'Enter a valid accommodation ID', 'Not found');
+      if (!exist) return Response.notFoundError(res, 'Enter a valid accommodation ID');
       const like = {
         user: req.user.id,
         accommodation: req.params.accommodationId
@@ -155,7 +150,7 @@ class AccommodationController {
         likes: likes - 1
       });
     } catch (error) {
-      return Response.errorResponse(res, 500, 'Something went wrong', error);
+      return next(error);
     }
   }
 }

@@ -252,7 +252,7 @@ describe('Travel Administrator', () => {
       .send({ name: 'Ngorongoro', type: 'flat' })
       .end((_err, res) => {
         expect(res.status).to.eq(422);
-        expect(res.body.message).to.eq('Validation failed');
+        expect(res.body.error).to.eq('Validation Error');
         done();
       });
   });
@@ -264,7 +264,7 @@ describe('Travel Administrator', () => {
       .send({ type: 'flat', accommodationId: 1 })
       .end((_err, res) => {
         expect(res.status).to.eq(422);
-        expect(res.body.message).to.eq('Validation failed');
+        expect(res.body.error).to.eq('Validation Error');
         done();
       });
   });
@@ -276,7 +276,7 @@ describe('Travel Administrator', () => {
       .send({ name: 'flat', accommodationId: 1 })
       .end((_err, res) => {
         expect(res.status).to.eq(422);
-        expect(res.body.message).to.eq('Validation failed');
+        expect(res.body.error).to.eq('Validation Error');
         done();
       });
   });
@@ -293,7 +293,7 @@ describe('Travel Administrator', () => {
       })
       .end((_err, res) => {
         expect(res.status).to.eq(404);
-        expect(res.body.error).to.eq('Accommodation not found');
+        expect(res.body.error).to.eq('Not Found');
         done();
       });
   });
@@ -307,7 +307,7 @@ describe('Travel Administrator', () => {
       })
       .end((_err, res) => {
         expect(res.status).to.eq(422);
-        expect(res.body.message).to.eq('Validation failed');
+        expect(res.body.error).to.eq('Validation Error');
         done();
       });
   });
@@ -321,7 +321,7 @@ describe('Travel Administrator', () => {
       })
       .end((_err, res) => {
         expect(res.status).to.eq(422);
-        expect(res.body.message).to.eq('Validation failed');
+        expect(res.body.error).to.eq('Validation Error');
         done();
       });
   });
@@ -369,7 +369,7 @@ describe('Travel Administrator', () => {
       .set('Authorization', `Bearer ${adminToken}`)
       .end((_err, res) => {
         expect(res.status).to.eq(422);
-        expect(res.body.message).to.eq('Validation failed');
+        expect(res.body.error).to.eq('Validation Error');
         done();
       });
   });
@@ -380,7 +380,7 @@ describe('Travel Administrator', () => {
       .set('Authorization', `Bearer ${adminToken}`)
       .end((_err, res) => {
         expect(res.status).to.eq(404);
-        expect(res.body.error).to.eq('Accommodation not found');
+        expect(res.body.error).to.eq('Not Found');
         done();
       });
   });

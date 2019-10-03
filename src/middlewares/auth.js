@@ -9,7 +9,7 @@ const verify = async (req, res, next) => {
     const payload = await SessionManger.decodeToken({ token });
     const result = await SessionManger.verifyToken(payload.userEmail);
 
-    if (result === null) return Response.errorResponse(res, 401, 'User not logged In');
+    if (result === null) return Response.authenticationError(res, 'User not logged In');
     const { userEmail } = payload;
     // checking for the updated userRole from the db not from the token
     const { userRoles, emailAllowed } = await userService.findUser({ userEmail });
@@ -18,7 +18,7 @@ const verify = async (req, res, next) => {
     req.user = payload;
     next();
   } catch (error) {
-    return Response.errorResponse(res, 401, 'Invalid or expired token used', error);
+    return Response.authenticationError(res, 'Invalid or expired token used');
   }
 };
 

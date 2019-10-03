@@ -20,7 +20,7 @@ class SearchValidator {
     const result = fieldKeys.some((el) => allowed.indexOf(el) === -1);
 
     if (result) {
-      return Response.errorResponse(res, 422, 'Invalid query paramaters passed', 'Search Error');
+      return Response.validationError(res, 'Invalid query paramaters passed', 'Validation Error');
     }
     next();
   }

@@ -19,10 +19,8 @@ class Requests {
   async trip(req, res, next) {
     const len = req.body.to.length;
     if (len !== req.body.accommodations.length || len !== req.body.travelDate.length) {
-      return Response.errorResponse(
+      return Response.notFoundError(
         res,
-        400,
-        '',
         'Book an accommodation for each location on a specific date'
       );
     }
@@ -103,14 +101,14 @@ class Requests {
       const { requestId } = req.params;
       const request = await requestService.findRequest({ id: requestId });
       if (!request) {
-        return Response.errorResponse(res, 404, 'request not found', 'Not found');
+        return Response.notFoundError(res, 'request not found');
       }
       const requesterId = request.user;
       if (request.status === 'Approved') {
-        return Response.errorResponse(res, 409, 'Request already approved', 'conflict');
+        return Response.conflictError(res, 'Request already approved');
       }
       if (request.status === 'Rejected') {
-        return Response.errorResponse(res, 409, 'Request already rejected', 'conflict');
+        return Response.conflictError(res, 'Request already rejected');
       }
       const requester = await UserService.findUser({ id: requesterId });
       const data = await requestService.rejectUpdateRequest(requestId, 'Rejected');
@@ -140,14 +138,14 @@ class Requests {
       const { requestId } = req.params;
       const request = await requestService.findRequest({ id: requestId });
       if (!request) {
-        return Response.errorResponse(res, 404, 'request not found', 'Not found');
+        return Response.notFoundError(res, 404, 'request not found');
       }
       const requesterId = request.user;
       if (request.status === 'Approved') {
-        return Response.errorResponse(res, 409, 'Request already accepted', 'conflict');
+        return Response.conflictError(res, 'Request already approved');
       }
       if (request.status === 'Rejected') {
-        return Response.errorResponse(res, 409, 'Request already rejected', 'conflict');
+        return Response.conflictError(res, 'Request already rejected');
       }
       const requester = await UserService.findUser({ id: requesterId });
       const data = await requestService.rejectUpdateRequest(requestId, 'Approved');
@@ -183,12 +181,7 @@ class Requests {
         formatedData.to.length !== formatedData.accommodations.length
         || formatedData.travelDate.length !== formatedData.to.length
       ) {
-        return Response.errorResponse(
-          res,
-          400,
-          'Unequal number of values in the request',
-          'Bad Request'
-        );
+        return Response.badRequestError(res, 'Unequal number of values in the request');
       }
       // update the object
       let data = await requestService.updateRequest(formatedData, id);
@@ -204,7 +197,7 @@ class Requests {
       const result = await email.sendmail({ ...header, ...msg });
       return Response.customResponse(res, 200, 'Update has been completed successfully', data);
     } catch (error) {
-      return Response.errorResponse(res, 500, 'Something went wrong', error);
+      return next(error);
     }
   }
 

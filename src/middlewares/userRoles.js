@@ -15,12 +15,7 @@ class Access {
     const { userRoles } = req.user;
     const allowedUsers = ['Travel Administrator', 'Accommodation Supplier'];
     if (allowedUsers.includes(userRoles) === false) {
-      return Response.errorResponse(
-        res,
-        403,
-        'You are not allowed to perform this task',
-        'Authorization error'
-      );
+      return Response.authorizationError(res, 'You are not allowed to perform this task');
     }
     next();
   }
@@ -34,7 +29,7 @@ class Access {
    */
   static async isAdmin(req, res, next) {
     if (req.user.userRoles !== 'Super Administrator') {
-      return Response.errorResponse(res, 403, "You don't have rights to complete this operation");
+      return Response.authorizationError(res, "You don't have rights to complete this operation");
     }
     next();
   }
@@ -49,20 +44,10 @@ class Access {
   static async isOwnerOrManager(req, res, next) {
     const request = await RequestService.findRequest({ id: req.params.id });
     if (!request) {
-      return Response.errorResponse(
-        res,
-        404,
-        'Please use a valid request ID',
-        'Invalid request ID'
-      );
+      return Response.notFoundError(res, 'Please use a valid request ID');
     }
     if (req.user.userRoles !== 'Manager' && req.user.id !== request.user) {
-      return Response.errorResponse(
-        res,
-        403,
-        "You don't have rights to complete this operation",
-        'Access Denied'
-      );
+      return Response.authorizationError(res, "You don't have rights to complete this operation");
     }
     next();
   }
@@ -77,20 +62,10 @@ class Access {
   static async isCommentOwner(req, res, next) {
     const comment = await CommentService.getCommentById(req.params.id);
     if (!comment) {
-      return Response.errorResponse(
-        res,
-        404,
-        'Please use a valid comment ID',
-        'Invalid comment ID'
-      );
+      return Response.notFoundError(res, 'Please use a valid comment ID');
     }
     if (req.user.id !== comment.user) {
-      return Response.errorResponse(
-        res,
-        403,
-        "You don't have rights to complete this operation",
-        'Access Denied'
-      );
+      return Response.authorizationError(res, "You don't have rights to complete this operation");
     }
     next();
   }
@@ -104,12 +79,7 @@ class Access {
    */
   static managerRole(req, res, next) {
     if (req.user.userRoles !== 'Manager') {
-      return Response.errorResponse(
-        res,
-        403,
-        'You are not allowed to perform this task',
-        'Authorization error'
-      );
+      return Response.authorizationError(res, 'You are not allowed to perform this task');
     }
     next();
   }
@@ -129,27 +99,15 @@ class Access {
     }
     const data = await RequestService.findRequest({ id });
     if (data === null) {
-      return Response.errorResponse(
-        res,
-        404,
-        'Request not found',
-        'enter a valid request',
-        'enter a valid request'
-      );
+      return Response.notFoundError(res, 'enter a valid request');
     }
     const { user, status } = data.dataValues;
     if (user !== req.user.id) {
-      return Response.errorResponse(
-        res,
-        403,
-        "You don't have rights to edit this request",
-        'Insufficient Privileges'
-      );
+      return Response.authorizationError(res, "You don't have rights to edit this request");
     }
     if (status !== 'Pending') {
-      return Response.errorResponse(
+      return Response.authorizationError(
         res,
-        403,
         "You can't edit a request that has either been rejected or Approved"
       );
     }

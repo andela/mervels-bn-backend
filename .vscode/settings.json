@@ -1,0 +1,13 @@
+{
+    "sqltools.connections": [
+        {
+            "askForPassword": true,
+            "database": "barefoot",
+            "dialect": "PostgreSQL",
+            "name": "barefoot- local",
+            "port": 5432,
+            "server": "localhost",
+            "username": "williamvedastus"
+        }
+    ]
+}

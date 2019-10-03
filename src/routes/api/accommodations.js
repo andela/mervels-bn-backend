@@ -3,7 +3,7 @@ import fileupload from 'express-fileupload';
 import Accommodations from '../../controllers/accommodationController';
 import verify from '../../middlewares/auth';
 import accommodationValidator from '../../validation/accommodationValidation';
-import FeedBack from '../../controllers/feedbackController';
+import Review from '../../controllers/reviewController';
 import Access from '../../middlewares/userRoles';
 
 const router = express.Router();
@@ -41,11 +41,8 @@ router.patch(
   Accommodations.likeOrUnlike
 );
 
-router.post(
-  '/:id/feedback',
-  verify,
-  accommodationValidator.validateFeedback,
-  FeedBack.addFeedBackController
-);
+router.post('/:id/feedback', verify, accommodationValidator.validateFeedback, Review.addedFeedback);
+
+router.post('/:id/ratings', verify, accommodationValidator.validateRating, Review.rateCenter);
 
 module.exports = router;
