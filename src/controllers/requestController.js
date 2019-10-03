@@ -8,6 +8,7 @@ import email from '../utils/mails/email';
 import UserService from '../services/userService';
 import UpdateEmail from '../utils/mails/update.email';
 import ApprovalEmail from '../utils/mails/approval.email';
+import Emitter from '../utils/eventEmitters/emitter';
 /** Class representing a password util. */
 class Requests {
   /**
@@ -188,14 +189,17 @@ class Requests {
       let data = await requestService.updateRequest(formatedData, id);
       const roleDetails = await UserService.findUser({ userRoles: 'Manager' });
       data = data.dataValues;
+      await Emitter.emit('request edited', data);
       data.manager = roleDetails.dataValues.userEmail;
       data.user = req.user.firstName;
-      const header = email.header({
-        to: roleDetails.dataValues.userEmail,
-        subject: ' BareFoot Update Notification '
-      });
-      const msg = UpdateEmail.updateTemplate(data);
-      const result = await email.sendmail({ ...header, ...msg });
+      if (roleDetails.emailAllowed) {
+        const header = email.header({
+          to: roleDetails.dataValues.userEmail,
+          subject: ' BareFoot Update Notification '
+        });
+        const msg = UpdateEmail.updateTemplate(data);
+        const result = await email.sendmail({ ...header, ...msg });
+      }
       return Response.customResponse(res, 200, 'Update has been completed successfully', data);
     } catch (error) {
       return next(error);

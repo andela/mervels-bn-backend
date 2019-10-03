@@ -678,6 +678,16 @@ describe('Accept request', () => {
   });
 });
 describe('Update Requests', () => {
+  before('should change user email preferences', (done) => {
+    chai
+      .request(server)
+      .patch('/api/v1/auth/email-preferences')
+      .set('Authorization', `Bearer ${managerToken}`)
+      .end((_err, res) => {
+        if (_err) done(_err);
+        done();
+      });
+  });
   it('with all valid properties', (done) => {
     chai
       .request(server)
