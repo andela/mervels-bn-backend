@@ -330,6 +330,18 @@ describe('Get Requests', () => {
           done();
         });
     });
+    it('should add comment as manager', (done) => {
+      chai
+        .request(server)
+        .post(addRequestCommentUrl)
+        .set('Authorization', `Bearer ${managerToken}`)
+        .send(comment)
+        .end((_err, res) => {
+          if (_err) done(_err);
+          expect(res.status).to.eq(201);
+          done();
+        });
+    });
     it('should have a valid comment', (done) => {
       chai
         .request(server)
