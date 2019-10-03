@@ -1,6 +1,7 @@
-const dotenv = require('dotenv');
+import dotenv from 'dotenv';
 
 dotenv.config();
+
 module.exports = {
   production: {
     use_env_variable: 'DATABASE_URL',

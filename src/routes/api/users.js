@@ -84,4 +84,4 @@ router
   .patch(verify, Users.emailPreferences)
   .all(method);
 
-module.exports = router;
+export default router;

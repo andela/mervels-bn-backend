@@ -6,4 +6,4 @@ const router = express.Router();
 
 router.get('/', verify, notificationController.getNotifications);
 
-module.exports = router;
+export default router;

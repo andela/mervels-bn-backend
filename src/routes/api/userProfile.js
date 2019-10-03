@@ -8,4 +8,4 @@ const router = express.Router();
 router.patch('/', auth, userProfileValidator.checkUpdate, userProfileController.updateProfile);
 router.get('/', auth, userProfileController.userProfile);
 
-module.exports = router;
+export default router;

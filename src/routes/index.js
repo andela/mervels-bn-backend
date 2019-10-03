@@ -1,10 +1,12 @@
 import swagger from 'swagger-ui-express';
+import express from 'express';
 import swaggerDoc from '../swagger.json';
+import index from './api';
 
-const router = require('express').Router();
+const router = express.Router();
 
-router.use('/api/v1/', require('./api'));
+router.use('/api/v1/', index);
 
 router.use('/api/docs', swagger.serve, swagger.setup(swaggerDoc));
 
-module.exports = router;
+export default router;

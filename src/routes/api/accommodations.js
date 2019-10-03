@@ -45,4 +45,4 @@ router.post('/:id/feedback', verify, accommodationValidator.validateFeedback, Re
 
 router.post('/:id/ratings', verify, accommodationValidator.validateRating, Review.rateCenter);
 
-module.exports = router;
+export default router;
