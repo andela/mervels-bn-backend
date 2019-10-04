@@ -1,17 +1,21 @@
 import express from 'express';
+import usersRouter from './users';
+import requestRouter from './requests';
+import accommodationRouter from './accommodations';
+import userProfileRouter from './userProfile';
+import searchRouter from './search';
+import notificationRouter from './notifications';
 
 const router = express.Router();
-router.use('/auth', require('./users'));
-router.use('/requests', require('./requests'));
-router.use('/accommodations', require('./accommodations'));
+router.use('/auth', usersRouter);
+router.use('/requests', requestRouter);
+router.use('/accommodations', accommodationRouter);
 
-router.use('/auth', require('./users'));
+router.use('/profile', userProfileRouter);
 
-router.use('/profile', require('./userProfile'));
+router.use('/search', searchRouter);
 
-router.use('/search', require('./search'));
-
-router.use('/notifications', require('./notifications'));
+router.use('/notifications', notificationRouter);
 
 router.use((err, req, res, next) => {
   if (err.name === 'JsonWebTokenError') {
@@ -25,3 +29,5 @@ router.use((err, req, res, next) => {
 });
 
 module.exports = router;
+
+// export default router;

@@ -12,4 +12,4 @@ router.get(
   searchController.searchRequests
 );
 
-module.exports = router;
+export default router;

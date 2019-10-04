@@ -3,19 +3,16 @@
 import '@babel/polyfill';
 import dotenv from 'dotenv';
 import socket from 'socket.io';
-
-const fs = require('fs'),
-  http = require('http'),
-  path = require('path'),
-  methods = require('methods'),
-  express = require('express'),
-  bodyParser = require('body-parser'),
-  cors = require('cors'),
-  passport = require('passport'),
-  errorhandler = require('errorhandler'),
-  Sentry = require('@sentry/node'),
-  logger = require('./utils/logger/logger'),
-  notifications = require('./utils/notifications/index');
+import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import errorhandler from 'errorhandler';
+import morgan from 'morgan';
+import * as Sentry from '@sentry/node';
+import method_overide from 'method-override';
+import notifications from './utils/notifications/index';
+import logger from './utils/logger/logger';
+import routes from './routes';
 
 dotenv.config();
 const isProduction = process.env.NODE_ENV === 'production';
@@ -27,12 +24,12 @@ app.use(Sentry.Handlers.requestHandler());
 app.enable('trust proxy');
 app.use(cors());
 // Normal express config defaults
-app.use(require('morgan')('dev'));
+app.use(morgan('dev'));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use(require('method-override')());
+app.use(method_overide());
 
 app.use(express.static(`${__dirname}/public`));
 
@@ -51,7 +48,7 @@ app.use((req, res, next) => {
 // running all event listeners
 notifications();
 
-app.use(require('./routes'));
+app.use(routes);
 
 // / catch 404 and forward to error handler
 app.use((req, res, next) => {
@@ -66,7 +63,6 @@ app.use((req, res, next) => {
 // will print stacktrace
 if (!isProduction) {
   app.use((err, req, res, next) => {
-    console.log(err.stack);
     logger.error(err.stack);
     res.status(err.status || 500);
     res.json({
