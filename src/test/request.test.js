@@ -591,6 +591,39 @@ describe('Accept request', () => {
         done();
       });
   });
+  it('user should be  able to get one request', (done) => {
+    chai
+      .request(server)
+      .get(`/api/v1/requests/${requestId}`)
+      .set('Authorization', `Bearer ${managerToken}`)
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(200);
+        done();
+      });
+  });
+  it('user should not be able to get one request without or with invalid id', (done) => {
+    chai
+      .request(server)
+      .get('/api/v1/requests/abc')
+      .set('Authorization', `Bearer ${managerToken}`)
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(422);
+        done();
+      });
+  });
+  it('user should not be able to get one request if not found', (done) => {
+    chai
+      .request(server)
+      .get('/api/v1/requests/200')
+      .set('Authorization', `Bearer ${managerToken}`)
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(404);
+        done();
+      });
+  });
   it('Manager should be able to accept a request', (done) => {
     chai
       .request(server)

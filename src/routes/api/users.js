@@ -83,5 +83,9 @@ router
   .route('/email-preferences')
   .patch(verify, Users.emailPreferences)
   .all(method);
+router
+  .route('/unsubscribe')
+  .patch(userValidator.validateUnsubscribe, Users.unsubscribe)
+  .all(method);
 
 export default router;

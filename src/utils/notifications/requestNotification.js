@@ -63,12 +63,15 @@ class Notifications {
       this.notify(notificationMessage, id, 'created', request.id);
       // email nofitication
       if (emailAllowed) {
+        const unsubscribeUrl = Emails.unsubscribeUrl({ userEmail });
         const requestUrl = `https://${process.env.baseUrl}/api/v1/requests/${request.id}`;
-        const msg = RequestNotification.requestCreated(requestUrl, manager, notificationMessage);
-        const header = Emails.header({
-          to: userEmail,
-          subject: 'New travel request'
-        });
+        const msg = RequestNotification.requestCreated(
+          requestUrl,
+          manager,
+          notificationMessage,
+          unsubscribeUrl
+        );
+        const header = Emails.header({ to: userEmail, subject: 'New travel request' });
         Emails.sendmail({ ...header, ...msg });
       }
     });
@@ -110,10 +113,12 @@ class Notifications {
       this.notify(notificationMessage, sendTo.id, 'comment', comment.request);
       if (sendTo.emailAllowed) {
         const requestUrl = `https://${process.env.baseUrl}/api/v1/requests/${request.id}`;
+        const unsubscribeUrl = Emails.unsubscribeUrl({ userEmail: sendTo.userEmail });
         const msg = RequestNotification.requestCreated(
           requestUrl,
           sendTo.firstName,
-          notificationMessage
+          notificationMessage,
+          unsubscribeUrl
         );
         const header = Emails.header({
           to: sendTo.userEmail,

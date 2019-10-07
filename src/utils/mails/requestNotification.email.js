@@ -11,9 +11,10 @@ class RequestNotification {
    * @param {string} url verify link
    * @param {Object} firstName user details
    * @param {object} notification notification
+   * @param {string} unsubscribeUrl unsubscribeUrl
    * @returns {String} verify email template
    */
-  static requestCreated(url, firstName, notification) {
+  static requestCreated(url, firstName, notification, unsubscribeUrl) {
     const html = `<body style="margin: 0; padding: 0;">
           <table border="0" cellpadding="0" cellspacing="0" width="900px" style="padding: 0 40px 0 40px; background-color:#f1f2f3;">
             <tr><td align="center" style="background-color:#f9fcff; margin: 0 50px 0 50px;">
@@ -31,7 +32,9 @@ class RequestNotification {
                     >Take action</a></td></tr>
                 <tr><td align="center" style="color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
                     <p>contact <a href=#>Support@barefoot</a> if you didnt intiate this request</p>
-                    <p>Thank you for using Bare Foot Nomad</p></td></tr></table></tr><tr>
+                    <p>Thank you for using Bare Foot Nomad</p>
+                    <p>Don't want to receive such emails from barefootNomad? <a href="${unsubscribeUrl}">Unsubscribe</a></p>
+                    </td></tr></table></tr><tr>
               <td align="center" style="padding: 30px 30px 30px 30px;">&reg; BARE FOOT NOMAD, 2019<br/>
               </td></tr></table></body>`;
     return { html };

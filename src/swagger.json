@@ -516,6 +516,60 @@
         }
       }
     },
+    "/auth/unsubscribe/?token={token}": {
+      "patch": {
+        "tags": [
+          "user"
+        ],
+        "summary": "unsubscribe",
+        "description": "unsubscribe from email notification",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "description": "token for the user who is to be opted-out",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "request found",
+            "examples": {
+              "application/json": {
+                "status": 200,
+                "message": "You 've opted out of email notifications successfully",
+                "data": {
+                    "emailAllowed": false
+                }
+            }
+            }
+          },
+          "409": {
+            "description": "conflicts",
+            "examples": {
+              "application/json": {
+                "status": 409,
+                "message": "You are already opted out of email notifications",
+                "error": "Conflict Error"
+              }
+            }
+          },
+          "400": {
+            "description": "invalid token",
+            "examples": {
+              "application/json": {
+                "status": 400,
+                "errors": "bad request"
+              }
+            }
+          }
+        }
+      }
+    },
     "/notifications": {
       "get": {
         "tags": [
@@ -1072,6 +1126,84 @@
             "status": 200,
             "message": "Your requests were retrieved successfully",
             "data": []
+          }
+        }
+      }
+    },
+    "/requests/{id}": {
+      "get": {
+        "tags": [
+          "requests"
+        ],
+        "summary": "Get one request",
+        "description": "get one request in the application",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "an authorization header",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "request Id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "request found",
+            "examples": {
+              "application/json": {
+                "status": 200,
+                "message": "Request retrieved successfully",
+                "data": [
+                    {
+                        "id": 1,
+                        "from": "KIGALI, RWANDA",
+                        "travelDate": [
+                            "2019-10-01"
+                        ],
+                        "returnDate": "2019-12-12",
+                        "reason": "Business Travel",
+                        "status": "Pending",
+                        "user": 5,
+                        "createdAt": "2019-10-07T08:51:56.082Z",
+                        "updatedAt": "2019-10-07T08:51:56.082Z",
+                        "accommodations": []
+                    }
+                ]
+            }
+            }
+          },
+          "401": {
+            "description": "invalid or expired token",
+            "examples": {
+              "application/json": {
+                "status": 401,
+                "message": "Invalid or expired token used",
+                "error": {
+                  "name": "JsonWebTokenError",
+                  "message": "jwt must be provided"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "request not found",
+            "examples": {
+              "application/json": {
+                "status": 404,
+                "message": "error",
+                "error": "request not found"
+              }
+            }
           }
         }
       }

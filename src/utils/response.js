@@ -19,7 +19,6 @@ class Response {
   /**
    * Generates a new password.
    * @param {object} res  details.
-   * @param {string} status  details.
    * @param {string} message  details.
    * @param {object} error  details.
    * @returns {object}.
@@ -35,7 +34,6 @@ class Response {
   /**
    * Retuns a authorization error response
    * @param {object} res  details.
-   * @param {string} status  details.
    * @param {string} message  details.
    * @param {object} data  details.
    * @returns {object}.
@@ -51,7 +49,6 @@ class Response {
   /**
    * Retuns a authorization error response
    * @param {object} res  details.
-   * @param {string} status  details.
    * @param {string} message  details.
    * @param {object} data  details.
    * @returns {object}.
@@ -67,7 +64,6 @@ class Response {
   /**
    * Retuns a not found error response
    * @param {object} res  details.
-   * @param {string} status  details.
    * @param {string} message  details.
    * @param {object} data  details.
    * @returns {object}.
@@ -83,7 +79,6 @@ class Response {
   /**
    * Retuns a conflict error response
    * @param {object} res  details.
-   * @param {string} status  details.
    * @param {string} message  details.
    * @param {object} data  details.
    * @returns {object}.
@@ -99,7 +94,6 @@ class Response {
   /**
    * Retuns a bad error response
    * @param {object} res  details.
-   * @param {string} status  details.
    * @param {string} message  details.
    * @param {object} data  details.
    * @returns {object}.

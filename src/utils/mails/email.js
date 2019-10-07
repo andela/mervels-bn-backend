@@ -1,5 +1,6 @@
 import sgMail from '@sendgrid/mail';
 import dotenv from 'dotenv';
+import generateToken from '../generateToken';
 
 dotenv.config();
 
@@ -30,6 +31,16 @@ class Emails {
    */
   static emailUrl(data) {
     return `http://${process.env.baseUrl}/api/v1/auth/${data.endpoint}/${data.userId}/${data.token}`;
+  }
+
+  /**
+   * Creates a customized url
+   * @param {Object} data object conatining url details
+   * @returns {string} customized url
+   */
+  static unsubscribeUrl(data) {
+    const token = generateToken(data);
+    return `https://${process.env.baseUrl}/api/v1/auth/unsubscribe/?token=${token}`;
   }
 
   /**

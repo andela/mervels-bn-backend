@@ -100,4 +100,17 @@ export default class userValidator {
     });
     validator(schema, req.body, res, next);
   }
+
+  /**
+   * @param {object} req  request.
+   * @param {object} res  response.
+   * @param {function} next next.
+   * @returns {object}.
+   */
+  static async validateUnsubscribe(req, res, next) {
+    const body = Joi.object().keys({
+      token: Schema.link
+    });
+    validator(body, req.query, res, next);
+  }
 }

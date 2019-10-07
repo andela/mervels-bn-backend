@@ -23,10 +23,11 @@ class UpdateEmail {
               <tr><td align="center"
                   style="color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
                   </td></tr><tr><td align="center">
-                  <p style=" font-family: Arial, sans-serif; font-size: 16px;">User ${data.user} has made changes to there requests</p>
+                  <p style=" font-family: Arial, sans-serif; font-size: 16px;">User ${data.user} has made changes to their requests</p>
                 </td></tr><tr><td align="center"
                 style="color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
                   <p><strong>Updated At:</strong> ${data.updatedAt}</p>
+                  <p>Don't want to receive such emails from barefootNomad? <a href="${data.unsubscribeUrl}">Unsubscribe</a></p>
                 </td></tr></table></td></tr><tr><td align="center" style="padding: 30px 30px 30px 30px;">
             &reg; BARE FOOT NOMAD, 2019<br /></td></tr></table></body>`;
     return { html };

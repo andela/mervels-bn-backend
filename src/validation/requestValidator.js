@@ -115,4 +115,18 @@ export default class requestValidator {
     });
     validator(schema, req.body, res, next);
   }
+
+  /**
+   * Validates get request entries
+   * @param {Object} req  request details.
+   * @param {Object} res  response details.
+   * @param {Object} next middleware details
+   * @returns {Object}.
+   */
+  static async validateGetRequest(req, res, next) {
+    const schema = Joi.object().keys({
+      id: Schema.number
+    });
+    validator(schema, { ...req.params }, res, next);
+  }
 }

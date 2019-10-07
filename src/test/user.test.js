@@ -605,6 +605,37 @@ describe('User Profile', () => {
 });
 
 describe('Email Preference', () => {
+  it('can opt out of email nofitications from email', (done) => {
+    chai
+      .request(server)
+      .patch(`/api/v1/auth/unsubscribe/?token=${token}`)
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(200);
+        expect(res.body.data.emailAllowed).to.eq(false);
+        done();
+      });
+  });
+  it('should not opt out of email nofitications if already opted out', (done) => {
+    chai
+      .request(server)
+      .patch(`/api/v1/auth/unsubscribe/?token=${token}`)
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(409);
+        done();
+      });
+  });
+  it('should not opt out of email nofitications if value is not false', (done) => {
+    chai
+      .request(server)
+      .patch('/api/v1/auth/unsubscribe/?value=12')
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(422);
+        done();
+      });
+  });
   it('should update user email preference', (done) => {
     chai
       .request(server)
@@ -613,7 +644,7 @@ describe('Email Preference', () => {
       .end((_err, res) => {
         if (_err) done(_err);
         expect(res.status).to.eq(200);
-        expect(res.body.data.emailAllowed).to.eq(false);
+        expect(res.body.data.emailAllowed).to.eq(true);
         done();
       });
   });
