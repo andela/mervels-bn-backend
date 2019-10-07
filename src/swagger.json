@@ -481,6 +481,41 @@
         }
       }
     },
+    "/notifications/mark-as-read": {
+      "patch": {
+        "tags": [
+          "notifications"
+        ],
+        "summary": "Mark one or all notifications as read",
+        "description": "This endpoint allows the user to mark one or all his/her notifications as read. You pass in an id to mark one as read, or leave it to mark all as read",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name" : "id",
+            "in" : "query",
+            "description" : "Notification ID",
+            "required" : false,
+            "type" : "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notification(s) successfully marked as read"
+          },
+          "422": {
+            "description": "Wrong Data format is entered"
+          },
+          "404": {
+            "description": "Notification not found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
     "/notifications": {
       "get": {
         "tags": [

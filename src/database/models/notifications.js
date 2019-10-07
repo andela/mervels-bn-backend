@@ -12,6 +12,10 @@ export default (sequelize, DataTypes) => {
       requestId: {
         allowNull: true,
         type: DataTypes.STRING
+      },
+      read: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
       }
     },
     {}

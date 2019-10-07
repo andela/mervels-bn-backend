@@ -41,6 +41,10 @@ export default {
     .integer()
     .min(0)
     .required(),
+  idOptional: Joi.number()
+    .integer()
+    .min(0)
+    .optional(),
   string: Joi.string()
     .trim()
     .min(1)

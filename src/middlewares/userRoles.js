@@ -2,6 +2,7 @@
 import Response from '../utils/response';
 import RequestService from '../services/requestService';
 import CommentService from '../services/commentService';
+import NotificationService from '../services/notificationService';
 /** Class representing a UserRole. */
 class Access {
   /**
@@ -66,6 +67,26 @@ class Access {
     }
     if (req.user.id !== comment.user) {
       return Response.authorizationError(res, "You don't have rights to complete this operation");
+    }
+    next();
+  }
+
+  /**
+   * Checks if the user is the request owner or manager.
+   *@param {string} req  data.
+   * @param {string} res  data.
+   * @param {string} next data.
+   * @returns {string} object.
+   */
+  static async isNotificationOwner(req, res, next) {
+    if (req.query.id) {
+      const data = await NotificationService.getNotifications({ id: req.query.id });
+      if (data.notifications.length === 0) {
+        return Response.notFoundError(res, 'Please use a valid notification ID');
+      }
+      if (req.user.id !== data.notifications[0].dataValues.userId) {
+        return Response.authorizationError(res, "You can't mark this notification as read");
+      }
     }
     next();
   }
