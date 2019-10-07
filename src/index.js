@@ -2,7 +2,6 @@
 /* eslint-disable no-unused-vars */
 import '@babel/polyfill';
 import dotenv from 'dotenv';
-import socket from 'socket.io';
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
@@ -13,6 +12,8 @@ import method_overide from 'method-override';
 import notifications from './utils/notifications/index';
 import logger from './utils/logger/logger';
 import routes from './routes';
+import socket from './utils/socket';
+import Schedule from './services/scheduler';
 
 dotenv.config();
 const isProduction = process.env.NODE_ENV === 'production';
@@ -31,7 +32,7 @@ app.use(bodyParser.json());
 
 app.use(method_overide());
 
-app.use(express.static(`${__dirname}/public`));
+app.use(express.static(`${__dirname}/public/`));
 
 if (!isProduction) {
   app.use(errorhandler());
@@ -47,6 +48,10 @@ app.use((req, res, next) => {
 
 // running all event listeners
 notifications();
+
+// runs the scheduler
+const schedule = new Schedule('0 0 * * 0');
+schedule.deleteSchedule();
 
 app.use(routes);
 
@@ -92,9 +97,6 @@ const server = app.listen(process.env.PORT || 3000, () => {
   console.log(`Listening on port ${server.address().port}`);
 });
 
-const io = socket(server);
-io.on('connection', (client) => {
-  console.log('socket connected', client.id);
-});
+socket.socketFunction.socketStartUp(server);
 
-export default { app, io };
+export default { app };

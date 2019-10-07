@@ -5,11 +5,13 @@ import accommodationRouter from './accommodations';
 import userProfileRouter from './userProfile';
 import searchRouter from './search';
 import notificationRouter from './notifications';
+import chatRouter from './chat';
 
 const router = express.Router();
 router.use('/auth', usersRouter);
 router.use('/requests', requestRouter);
 router.use('/accommodations', accommodationRouter);
+router.use('/chat', chatRouter);
 
 router.use('/profile', userProfileRouter);
 

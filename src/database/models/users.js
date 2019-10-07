@@ -63,7 +63,9 @@ export default (sequelize, DataTypes) => {
     Users.hasMany(models.Requests, {
       foreignKey: 'user'
     });
-
+    Users.hasMany(models.chat, {
+      foreignKey: 'userId'
+    });
     Users.hasOne(models.UserProfile, {
       foreignKey: 'userId',
       as: 'userProfile'
