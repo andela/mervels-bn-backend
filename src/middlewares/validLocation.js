@@ -19,32 +19,17 @@ class Location {
     realDates = dates.map((date) => new Date(date));
     for (let date = 0; date < realDates.length - 1; date += 1) {
       if (realDates[date] > realDates[date + 1]) {
-        return Response.errorResponse(
-          res,
-          409,
-          'Travel Dates must be in ascending order',
-          'Wrong Travel Dates'
-        );
+        return Response.badRequestError(res, 'Travel Dates must be in ascending order');
       }
     }
 
     const today = Date.now();
     if (realDates[0] < today) {
-      return Response.errorResponse(
-        res,
-        400,
-        'You can not enter a date from the past',
-        'Data validation error'
-      );
+      return Response.badRequestError(res, 'You can not enter a date from the past');
     }
     const returnDate = new Date(req.body.returnDate);
     if (realDates[realDates.length - 1] > returnDate) {
-      return Response.errorResponse(
-        res,
-        409,
-        'Return Date must be greater than travel date',
-        'Wrong return Date'
-      );
+      return Response.badRequestError(res, 'Return Date must be greater than travel date');
     }
     next();
   }
@@ -63,7 +48,7 @@ class Location {
     const result = await location.all();
     for (let locale = 0; locale < toArray.length - 1; locale += 1) {
       if (toArray[locale] === toArray[locale + 1]) {
-        return Response.errorResponse(res, 409, 'Enter a different next destination', 'Conflict');
+        return Response.conflictError(res, 'Enter a different next destination');
       }
     }
     for (let x = 0; x < result.length; x += 1) {
@@ -71,7 +56,7 @@ class Location {
     }
     const notlocation = toArray.filter((loca) => !locations.includes(loca));
     if (notlocation.length > 0) {
-      return Response.customResponse(res, 404, 'location doesnot exist');
+      return Response.notFoundError(res, 'location doesnot exist');
     }
     next();
   }
@@ -93,7 +78,7 @@ class Location {
       accArray.map(async (elem) => {
         const accommodation = await accommodations.getAccommodation({ name: elem.toUpperCase() });
         if (!accommodation) {
-          return Response.customResponse(res, 404, 'accommodation doesnot exist');
+          return Response.notFoundError(res, 'accommodation doesnot exist');
         }
         req.body.accommodations.push(accommodation.id);
         accomodations.push(accommodation);
@@ -101,16 +86,14 @@ class Location {
     );
     for (let x = 0; x < accomodations.length; x += 1) {
       if (accomodations[x].locationId !== req.body.to[x]) {
-        return Response.customResponse(
+        return Response.notFoundError(
           res,
-          404,
           `accommodation "${accomodations[x].dataValues.name}" is not in specified location`
         );
       }
       if (accomodations[x].status !== 'Available') {
-        return Response.customResponse(
+        return Response.notFoundError(
           res,
-          404,
           `accommodation "${accomodations[x].name}" is not available`
         );
       }
