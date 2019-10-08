@@ -98,6 +98,9 @@ router.delete(
 );
 router
   .route('/:id')
+  .get(verify, requestsValidator.validateGetRequest, Access.isOwnerOrManager, Requests.getRequest);
+router
+  .route('/:id')
   .put(
     verify,
     Access.isOwner,

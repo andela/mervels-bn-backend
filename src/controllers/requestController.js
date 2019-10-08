@@ -75,6 +75,24 @@ class Requests {
    * @param {object} req request
    * @param {object} res response
    * @param {object} next next
+   * @return {function} requests
+   */
+  async getRequest(req, res, next) {
+    try {
+      const data = await requestService.findRequests({ id: req.params.id });
+      if (!data[0]) {
+        return Response.notFoundError(res, 'request is not found');
+      }
+      return Response.customResponse(res, 200, 'Request found successfully', data);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  /**
+   * @param {object} req request
+   * @param {object} res response
+   * @param {object} next next
    * @return {function} Get requests with pending status
    */
   async getPendingApprovals(req, res, next) {
@@ -112,14 +130,17 @@ class Requests {
         return Response.conflictError(res, 'Request already rejected');
       }
       const requester = await UserService.findUser({ id: requesterId });
-      const data = await requestService.rejectUpdateRequest(requestId, 'Rejected');
-      const header = email.header({
-        from: manager.userEmail,
-        to: requester.userEmail,
-        subject: 'Request rejected'
-      });
-      const msg = ApprovalEmail.rejectAcceptRequestTemplate(reason, requester);
-      await email.sendmail({ ...header, ...msg });
+      if (requester.emailAllowed) {
+        const unsubscribeUrl = email.unsubscribeUrl({ userEmail: requester.userEmail });
+        const data = await requestService.rejectUpdateRequest(requestId, 'Rejected');
+        const header = email.header({
+          from: manager.userEmail,
+          to: requester.userEmail,
+          subject: 'Request rejected'
+        });
+        const msg = ApprovalEmail.rejectAcceptRequestTemplate(reason, requester, unsubscribeUrl);
+        await email.sendmail({ ...header, ...msg });
+      }
       return Response.customResponse(res, 200, 'Request rejected successfully', { requestId });
     } catch (error) {
       return next(error);
@@ -149,17 +170,21 @@ class Requests {
         return Response.conflictError(res, 'Request already rejected');
       }
       const requester = await UserService.findUser({ id: requesterId });
-      const data = await requestService.rejectUpdateRequest(requestId, 'Approved');
-      const header = email.header({
-        from: manager.userEmail,
-        to: requester.userEmail,
-        subject: 'Request approved'
-      });
-      const msg = ApprovalEmail.rejectAcceptRequestTemplate(
-        'Your travel request has been approved. Have a good time',
-        requester
-      );
-      await email.sendmail({ ...header, ...msg });
+      if (requester.emailAllowed) {
+        const unsubscribeUrl = email.unsubscribeUrl({ userEmail: requester.userEmail });
+        const data = await requestService.rejectUpdateRequest(requestId, 'Approved');
+        const header = email.header({
+          from: manager.userEmail,
+          to: requester.userEmail,
+          subject: 'Request approved'
+        });
+        const msg = ApprovalEmail.rejectAcceptRequestTemplate(
+          'Your travel request has been approved. Have a good time',
+          requester,
+          unsubscribeUrl
+        );
+        await email.sendmail({ ...header, ...msg });
+      }
       return Response.customResponse(res, 200, 'Request approved successfully', { requestId });
     } catch (error) {
       return next(error);
@@ -193,11 +218,12 @@ class Requests {
       data.manager = roleDetails.dataValues.userEmail;
       data.user = req.user.firstName;
       if (roleDetails.emailAllowed) {
+        const unsubscribeUrl = email.unsubscribeUrl({ userEmail: roleDetails.userEmail });
         const header = email.header({
           to: roleDetails.dataValues.userEmail,
           subject: ' BareFoot Update Notification '
         });
-        const msg = UpdateEmail.updateTemplate(data);
+        const msg = UpdateEmail.updateTemplate({ ...data, unsubscribeUrl });
         const result = await email.sendmail({ ...header, ...msg });
       }
       return Response.customResponse(res, 200, 'Update has been completed successfully', data);

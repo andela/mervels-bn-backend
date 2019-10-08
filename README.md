@@ -75,13 +75,16 @@ Make company global travel and accommodation easy and convenient for the strong 
 | Get UserProfile    | **GET**   | Users         | `/api/v1/profile` | Gets the user profile |
 | Update UserProfile | **PATCH** | Users         | `/api/v1/profile` | Updates user profile|
 | Signout            | **POST**  | Users         | `/api/v1/auth/signout`| Logsout singed in user|
+| Unsubscribe        | **PATCH** | Users         | `/api/v1/auth/unsubscribe`| Unsubscibe from email notifications
+| Preferences        | **PATCH** | Users      | `/api/v1/auth/email-preferences`| Change email notification preferences
 | One Way Request    | **POST**  | Requests    | `/api/v1/requests/oneway`| Creates a oneway request|
 | Return Request     | **POST**  | Requests    | `/api/v1/requests/oneway`| Creates a oneway request|
 | Multicity Request  | **POST**  | Requests    | `/api/v1/requests/multi_city`| Creates a oneway request|
 | Pending Requests | **GET**  |Requests | `/api/v1/requests/`| Manager get all pending requests
 | Search Requests | **GET** | Requests | `/api/v1/requests?{params}` | Users can search through requests 
-| Approve Request | **PATCH** | Requests | `api/v1/requests/approve/{id}` | Manager Approve request using Request Id
-| Reject Request | **PATCH** | Requests | `api/v1/requests/reject/{id}` | Manager Reject request using Request Id
+| Approve Request | **PATCH** | Requests | `/api/v1/requests/approve/{id}` | Manager Approve request using Request Id
+| Reject Request | **PATCH** | Requests | `/api/v1/requests/reject/{id}` | Manager Reject request using Request Id
+| Get one request| **GET**  | Requests | `/api/v1/requests/{id}` | Manager and request owner can get it by id
 | All accommodations | **GET**   | Accommodations| `/api/v1/accommodations`| Get all accommodations
 | Accommodation by ID| **GET**   | Accommodations| `/api/v1/accommodations/{id}`| Get accommodation by ID
 | Add accommodation  | **POST**  | Accommodations| `/api/v1/accommodations`| Create accommodation

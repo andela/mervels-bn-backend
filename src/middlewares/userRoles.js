@@ -45,7 +45,7 @@ class Access {
   static async isOwnerOrManager(req, res, next) {
     const request = await RequestService.findRequest({ id: req.params.id });
     if (!request) {
-      return Response.notFoundError(res, 'Please use a valid request ID');
+      return Response.notFoundError(res, 'request not found');
     }
     if (req.user.userRoles !== 'Manager' && req.user.id !== request.user) {
       return Response.authorizationError(res, "You don't have rights to complete this operation");

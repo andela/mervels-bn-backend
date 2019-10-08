@@ -8,6 +8,7 @@ import Emails from '../utils/mails/email';
 import supplierEmail from '../utils/mails/supplier.email';
 import ResetPasswordEmail from '../utils/mails/resetPassord.email';
 import VerifyEmail from '../utils/mails/verify.email';
+import verify from '../middlewares/auth';
 /** Class representing a password util. */
 class Users {
   /**
@@ -398,6 +399,33 @@ class Users {
         res,
         200,
         'Your email preferences have been successfully updated',
+        { emailAllowed: data[1][0].emailAllowed }
+      );
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  /**
+   * Generates a new password.
+   * @param {object} req  details.
+   * @param {object} res  details.
+   * @param {object} next nest task
+   * @returns {object}.
+   */
+  async unsubscribe(req, res, next) {
+    try {
+      const { token } = req.query;
+      const { userEmail } = SessionManager.verify(token);
+      const user = await userService.findUser({ userEmail });
+      if (!user.emailAllowed) {
+        return Response.conflictError(res, 'You are already opted out of email notifications');
+      }
+      const data = await userService.updateUser({ userEmail }, { emailAllowed: false });
+      return Response.customResponse(
+        res,
+        200,
+        "You've opted out of email notifications successfully",
         { emailAllowed: data[1][0].emailAllowed }
       );
     } catch (error) {
