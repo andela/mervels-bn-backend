@@ -12,6 +12,8 @@ let managerToken;
 
 const signinUrl = '/api/v1/auth/signin';
 const getNotifications = '/api/v1/notifications';
+const markOneAsRead = '/api/v1/notifications/mark-as-read?id=1';
+const markAllAsRead = '/api/v1/notifications/mark-as-read';
 
 before('Log In manager correct credentials', (done) => {
   const user = {
@@ -35,11 +37,35 @@ before('Log In manager correct credentials', (done) => {
     });
 });
 
-describe('Get Requests', () => {
-  it('when they are logged In', (done) => {
+describe('Notifications', () => {
+  it('should retrieve all', (done) => {
     chai
       .request(server)
       .get(getNotifications)
+      .set('Authorization', `Bearer ${managerToken}`)
+      .send()
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(200);
+        done();
+      });
+  });
+  it('should mark one notification as read', (done) => {
+    chai
+      .request(server)
+      .patch(markOneAsRead)
+      .set('Authorization', `Bearer ${managerToken}`)
+      .send()
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(200);
+        done();
+      });
+  });
+  it('should not mark as read if already marked', (done) => {
+    chai
+      .request(server)
+      .patch(markAllAsRead)
       .set('Authorization', `Bearer ${managerToken}`)
       .send()
       .end((_err, res) => {

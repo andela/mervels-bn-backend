@@ -22,6 +22,7 @@ const updateComment = '/api/v1/requests/comments/1';
 const InvalidUpdateUrl = '/api/v1/requests/comments/a';
 const pendingApprovals = '/api/v1/requests/pending';
 const updateResquest = '/api/v1/requests/1';
+const markAllAsRead = '/api/v1/notifications/mark-as-read';
 
 const oneWay = {
   from: 'Kigali, Rwanda',
@@ -818,6 +819,20 @@ describe('Update Requests', () => {
       .end((_err, res) => {
         if (_err) done(_err);
         expect(res.status).to.eq(422);
+        done();
+      });
+  });
+});
+describe('Notifications', () => {
+  it('should mark all as read', (done) => {
+    chai
+      .request(server)
+      .patch(markAllAsRead)
+      .set('Authorization', `Bearer ${managerToken}`)
+      .send()
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(200);
         done();
       });
   });
