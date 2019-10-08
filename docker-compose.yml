@@ -6,29 +6,32 @@ services:
       - ./pgdata:/var/lib/postgresql/data
     ports:
       - '5432:5432'
+    restart: always
   redis:
     image: redis
 
   web: 
     environment:
       DEV_DATABASE_URL: "postgres://postgres@db:5432/postgres"
+      DATABASE_URL: "postgres://postgres@db:5432/postgres"
       REDIS_URL: "redis://redis:6379"
-      TOKEN: "ANDELA"
-      API_KEY: "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"
+      TOKEN: ${TOKEN}
+      API_KEY: ${API_KEY}
       baseUrl: "localhost:3000"
-      FROM_EMAIL: "marveldev53@gmail.com"
-      CLOUDINARY_NAME: drayzii
-      CLOUDINARY_API_KEY: 684962114961327
-      CLOUDINARY_API_SECRET: nd7rO_KTFnhyfkRXCS4pqzgIyjA
-      GOOGLE_CLIENT_ID: 521248916925-ttu587qlg15lu551phfh3th78agds3dv.apps.googleusercontent.com
-      GOOGLE_CLIENT_SECRET: YqdoMG2xstMCN_qUB6bHuQvF
-      FB_CLIENT_ID: 2953236191359414
-      FB_CLIENT_SECRET: 1b018140636e8cb098de1dfe22178ad1
+      FROM_EMAIL: ${FROM_EMAIL}
+      CLOUDINARY_NAME: ${CLOUDINARY_NAME}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      FB_CLIENT_ID: ${FB_CLIENT_ID}
+      FB_CLIENT_SECRET: ${FB_CLIENT_SECRET}
     build: .
     depends_on:
       - db
       - redis
     ports: 
       [3000:3000]
-    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; npm start'
+    restart: always
+
     
