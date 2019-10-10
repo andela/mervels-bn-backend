@@ -3,7 +3,7 @@ import emitter from '../eventEmitters/emitter';
 import NotificationService from '../../services/notificationService';
 import userService from '../../services/userService';
 import requestService from '../../services/requestService';
-import app from '../../index';
+import app from '../socket';
 import Emails from '../mails/email';
 import RequestNotification from '../mails/requestNotification.email';
 
