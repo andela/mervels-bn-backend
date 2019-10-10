@@ -100,6 +100,10 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'requestId',
       onDelete: 'CASCADE'
     });
+    Requests.hasMany(models.Bookings, {
+      foreignKey: 'requestId',
+      onDelete: 'CASCADE'
+    });
   };
   Requests.afterCreate(({ dataValues }) => {
     emitter.emit('request created', dataValues);

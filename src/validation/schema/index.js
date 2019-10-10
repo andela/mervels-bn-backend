@@ -1,6 +1,21 @@
 /* eslint-disable no-useless-escape */
 import Joi from '@hapi/joi';
-import TripSchema from './trip';
+
+const details = Joi.object().keys({
+  travelDate: Joi.string()
+    .trim()
+    .regex(/^(20)\d\d[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$/)
+    .optional()
+    .error(() => 'Enter date of travel in yyyy-mm-dd format atleast today'),
+  accommodation: Joi.string()
+    .trim()
+    .optional()
+    .error(() => 'Enter a Place of accomodation'),
+  location: Joi.number()
+    .integer()
+    .optional()
+    .error(() => 'Enter id of destination')
+});
 
 export default {
   email: Joi.string()
@@ -76,34 +91,15 @@ export default {
   minDate: Joi.date()
     .min('now')
     .error(() => 'Enter date of return in yyyy-mm-dd format greater than date of travel'),
-  dateMultiple: Joi.array()
-    .items(TripSchema.travelDate)
-    .single()
-    .min(1)
-    .error(() => 'Enter date of travel in yyyy-mm-dd format atleast today'),
-  destinations: Joi.array()
-    .items(
-      Joi.number()
-        .integer()
-        .min(0)
-        .required()
-    )
-    .single()
-    .min(1)
-    .error(() => 'Enter a single id of destination'),
-  accommodations: Joi.array()
-    .items(
-      Joi.string()
-        .trim()
-        .required()
-    )
-    .single()
-    .min(1),
-  accommodationIds: Joi.array()
-    .items(Joi.number())
-    .single()
-    .max(1)
-    .error(() => 'Enter a Place of accomodation'),
+  to: Joi.array()
+    .items(details)
+    .error(() => 'Enter correct destination details'),
+  from: Joi.string()
+    .trim()
+    .regex(/^[a-zA-Z]+,\s[a-zA-Z]+$/)
+    .optional()
+    .min(2)
+    .error(() => 'Enter place of departure, "from" in City, Country format'),
   listArray: Joi.array()
     .items(Joi.string().trim())
     .single()

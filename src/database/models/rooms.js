@@ -26,6 +26,10 @@ const rooms = (sequelize, DataTypes) => {
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
     });
+    Rooms.hasMany(models.Bookings, {
+      foreignKey: 'roomId',
+      onDelete: 'CASCADE'
+    });
   };
   return Rooms;
 };

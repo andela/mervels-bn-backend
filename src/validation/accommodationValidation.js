@@ -18,7 +18,7 @@ export default class accommodationValidator {
    */
   static async validateCreateAccommodation(req, res, next) {
     const schema = Joi.object().keys({
-      name: Schema.name,
+      name: Schema.string,
       locationId: Schema.id,
       services: Schema.listArray,
       amenities: Schema.listArray,

@@ -6,7 +6,7 @@ import requestsValidator from '../../validation/requestValidator';
 import commentsValidator from '../../validation/commentValidator';
 import verify from '../../middlewares/auth';
 import method from '../../utils/method';
-import location from '../../middlewares/validLocation';
+import tripValues from '../../middlewares/tripValues';
 import Access from '../../middlewares/userRoles';
 import profileAutofill from '../../middlewares/getProfileInfo';
 
@@ -22,9 +22,9 @@ router
     verify,
     profileAutofill,
     requestsValidator.oneWay,
-    location.validDate,
-    location.validLocation,
-    location.validAccomodation,
+    tripValues.isValidDates,
+    tripValues.isValidLocation,
+    tripValues.isValidAccomodation,
     Requests.trip
   )
   .all(method);
@@ -35,9 +35,9 @@ router
     verify,
     profileAutofill,
     requestsValidator.returnTrip,
-    location.validDate,
-    location.validLocation,
-    location.validAccomodation,
+    tripValues.isValidDates,
+    tripValues.isValidLocation,
+    tripValues.isValidAccomodation,
     Requests.trip
   )
   .all(method);
@@ -48,9 +48,9 @@ router
     verify,
     profileAutofill,
     requestsValidator.multiCity,
-    location.validDate,
-    location.validLocation,
-    location.validAccomodation,
+    tripValues.isValidDates,
+    tripValues.isValidLocation,
+    tripValues.isValidAccomodation,
     Requests.trip
   )
   .all(method);
@@ -109,9 +109,9 @@ router
     verify,
     Access.isOwner,
     requestsValidator.validateEditRequest,
-    location.validLocation,
-    location.validAccomodation,
-    location.validDate,
+    tripValues.isValidLocation,
+    tripValues.isValidAccomodation,
+    tripValues.isValidDates,
     Requests.EditRequest
   )
   .all(method);

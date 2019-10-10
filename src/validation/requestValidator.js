@@ -80,20 +80,14 @@ export default class requestValidator {
    * @returns {Object}.
    */
   static async multiCity(req, res, next) {
-    const schema = Joi.object()
-      .keys({
-        from: TripSchema.from,
-        to: Schema.destinations.required(),
-        travelDate: Schema.dateMultiple.required(),
-        returnDate: Schema.minDate.required(),
-        reason: Schema.stringLong,
-        accommodation: Schema.accommodations.required(),
-        passportName: Schema.passportName.required(),
-        passportNumber: Schema.passportNumber.required(),
-        gender: Schema.gender,
-        role: Schema.string
-      })
-      .options({ allowUnknown: false });
+    const schema = Joi.object().keys({
+      ...TripSchema,
+      returnDate: Schema.minDate,
+      passportName: Schema.passportName.required(),
+      passportNumber: Schema.passportNumber.required(),
+      gender: Schema.gender,
+      role: Schema.string
+    });
     validator(schema, req.body, res, next);
   }
 
@@ -120,16 +114,11 @@ export default class requestValidator {
    * @returns {Object}.
    */
   static async validateEditRequest(req, res, next) {
-    req.body.sm = req.body.travelDate[req.body.travelDate.length - 1];
     const schema = Joi.object().keys({
-      from: TripSchema.from,
-      to: Schema.destinations,
-      travelDate: Schema.dateMultiple,
+      from: Schema.from,
+      to: Schema.to,
       returnDate: Schema.minDate,
-      reason: Schema.stringLong,
-      accommodations: Schema.accommodationIds,
-      accommodation: Joi.optional(),
-      sm: Joi.required()
+      reason: Schema.stringLongOptional
     });
     validator(schema, req.body, res, next);
   }

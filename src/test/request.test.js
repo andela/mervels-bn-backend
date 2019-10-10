@@ -27,11 +27,28 @@ const markAllAsRead = '/api/v1/notifications/mark-as-read';
 
 const oneWay = {
   from: 'Kigali, Rwanda',
-  to: 1,
-  travelDate: '2040-11-02',
-  reason:
-    'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 'hotel',
+  passportNumber: '121HU3H3U32',
+  passportName: 'Robben Bahati',
+  gender: 'MALE',
+  to: [
+    {
+      travelDate: '2040-11-12',
+      location: 2,
+      accommodation: 'sheraton'
+    }
+  ],
+  reason: 'iam travelling cause the company allows us to, i mean the company finances everything'
+};
+const invalidLocation = {
+  from: 'Kigali, Rwanda',
+  to: [
+    {
+      travelDate: '2040-11-12',
+      location: 400,
+      accommodation: 'sheraton'
+    }
+  ],
+  reason: 'iam travelling cause the company allows us to, i mean the company finances everything',
   passportNumber: '121HU3H3U32',
   passportName: 'Robben Bahati',
   gender: 'MALE'
@@ -39,11 +56,15 @@ const oneWay = {
 
 const oneWayAutofill = {
   from: 'Kigali, Rwanda',
-  to: 1,
-  travelDate: '2019-11-26',
+  to: [
+    {
+      travelDate: '2019-11-26',
+      location: 1,
+      accommodation: 'hotel'
+    }
+  ],
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 'hotel',
   passportNumber: '121HU3H3U32',
   passportName: 'Robben Bahati',
   gender: 'MALE'
@@ -51,98 +72,125 @@ const oneWayAutofill = {
 
 const noPassportNumber = {
   from: 'Kigali, Rwanda',
-  to: 1,
-  travelDate: '2019-11-02',
+  to: [
+    {
+      travelDate: '2019-11-26',
+      location: 1,
+      accommodation: 'hotel'
+    }
+  ],
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 'hotel',
   passportName: 'Robben Bahati',
   gender: 'MALE'
 };
 
 const noPassportName = {
   from: 'Kigali, Rwanda',
-  to: 1,
-  travelDate: '2019-11-02',
+  to: [
+    {
+      travelDate: '2019-11-26',
+      location: 1,
+      accommodation: 'hotel'
+    }
+  ],
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 'hotel',
   passportNumber: '121HU3H3U32',
   gender: 'MALE'
 };
 
 const noGender = {
   from: 'Kigali, Rwanda',
-  to: 1,
-  travelDate: '2019-11-02',
+  to: [
+    {
+      travelDate: '2019-11-26',
+      location: 1,
+      accommodation: 'hotel'
+    }
+  ],
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 'hotel',
   passportNumber: '121HU3H3U32',
   passportName: 'Robben Bahati'
 };
 
 const wrongLocation = {
   from: 'Kigali, Rwanda',
-  to: 90,
-  travelDate: '2040-11-02',
-  reason:
-    'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 'Hotel',
+  to: [
+    {
+      travelDate: '2040-11-12',
+      location: 'wrong',
+      accommodation: 'sheraton'
+    }
+  ],
+  reason: 'iam travelling cause the company allows us to, i mean the company finances everything',
   passportNumber: '121HU3H3U32',
   passportName: 'Robben Bahati',
   gender: 'MALE'
 };
 const WrongDate = {
   from: 'Kigali, Rwanda',
-  to: 1,
-  travelDate: '02-12-2019', // wrong date format should be yyyy-mm-dd
-  reason:
-    'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 1,
+  to: [
+    {
+      travelDate: '11-12-2040',
+      location: 2,
+      accommodation: 'sheraton'
+    }
+  ],
+  reason: 'iam travelling cause the company allows us to, i mean the company finances everything',
   passportNumber: '121HU3H3U32',
   passportName: 'Robben Bahati',
   gender: 'MALE'
 };
 const WrongAccomodation = {
   from: 'Kigali, Rwanda',
-  to: 1,
-  travelDate: '2019-11-02',
-  reason:
-    'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 2,
+  to: [
+    {
+      travelDate: '2040-11-12',
+      location: 2,
+      accommodation: 333
+    }
+  ],
+  reason: 'iam travelling cause the company allows us to, i mean the company finances everything',
   passportNumber: '121HU3H3U32',
   passportName: 'Robben Bahati',
   gender: 'MALE'
 };
 const wrongTo = {
   from: 'Kigali, Rwanda',
-  to: 'Rwanda',
-  travelDate: '2019-11-02',
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 1,
   passportNumber: '121HU3H3U32',
   passportName: 'Robben Bahati',
   gender: 'MALE'
 };
 const Wrongfrom = {
   from: 'Rwanda',
-  to: 'kigali, Rwanda',
-  travelDate: '2019-11-02',
+  to: [
+    {
+      travelDate: '2040-11-12',
+      location: 2,
+      accommodation: 'sheraton'
+    }
+  ],
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 1,
   passportNumber: '121HU3H3U32',
   passportName: 'Robben Bahati',
   gender: 'MALE'
 };
+
 const WrongDescription = {
   from: 'Kigali, Rwanda',
-  to: 1,
-  travelDate: '2019-11-02',
-  reason: 'iam travelling cause',
-  accommodation: 1,
+  to: [
+    {
+      travelDate: '2040-11-12',
+      location: 2,
+      accommodation: 'sheraton'
+    }
+  ],
+  reason: 'iam',
   passportNumber: '121HU3H3U32',
   passportName: 'Robben Bahati',
   gender: 'MALE'
@@ -156,24 +204,32 @@ const invalidComment = {
 
 const returnTripData = {
   from: 'North, Rwanda',
-  to: 1,
-  travelDate: '2020-11-12',
-  returnDate: '2020-11-20',
+  to: [
+    {
+      travelDate: '2040-11-12',
+      location: 1,
+      accommodation: 'hotel'
+    }
+  ],
+  returnDate: '2040-11-20',
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 'hotel',
   passportNumber: '121HU3H3U32',
   passportName: 'Robben Bahati',
   gender: 'MALE'
 };
+
 const wrongreturnDate = {
   from: 'Kigali, Rwanda',
-  to: 1,
-  travelDate: '2019-11-02',
-  returnDate: '2010-01-02',
-  reason:
-    'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 'hotel',
+  to: [
+    {
+      travelDate: '2040-11-12',
+      location: 2,
+      accommodation: 'sheraton'
+    }
+  ],
+  returnDate: '2030-12-02',
+  reason: 'iam travelling cause the company allows us to, i mean the company finances everything',
   passportNumber: '121HU3H3U32',
   passportName: 'Robben Bahati',
   gender: 'MALE'
@@ -255,7 +311,7 @@ describe('Get Requests', () => {
         done();
       });
   });
-  it('User should request for a one way trip', (done) => {
+  it('User should post a one way trip', (done) => {
     chai
       .request(server)
       .post(oneway)
@@ -333,7 +389,7 @@ describe('Get Requests', () => {
       .request(server)
       .post(oneway)
       .set('Authorization', `Bearer ${token}`)
-      .send(wrongLocation)
+      .send(invalidLocation)
       .end((_err, res) => {
         if (_err) done(_err);
         expect(res.status).to.eq(404);
@@ -358,6 +414,18 @@ describe('Get Requests', () => {
       .post(oneway)
       .set('Authorization', `Bearer ${token}`)
       .send(wrongTo)
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(422);
+        done();
+      });
+  });
+  it('User should not request one trip with wrong location id', (done) => {
+    chai
+      .request(server)
+      .post(oneway)
+      .set('Authorization', `Bearer ${token}`)
+      .send(wrongLocation)
       .end((_err, res) => {
         if (_err) done(_err);
         expect(res.status).to.eq(422);
@@ -421,7 +489,7 @@ describe('Get Requests', () => {
       .send(wrongreturnDate)
       .end((_err, res) => {
         if (_err) done(_err);
-        expect(res.status).to.eq(422);
+        expect(res.status).to.eq(400);
         done();
       });
   });
@@ -594,11 +662,15 @@ describe('Reject request', () => {
   before('create a travel request', (done) => {
     const request = {
       from: 'Kigali, Rwanda',
-      to: 1,
-      travelDate: '2040-11-04',
+      to: [
+        {
+          travelDate: '2040-10-12',
+          location: 2,
+          accommodation: 'sheraton'
+        }
+      ],
       reason:
         'I am travelling cause the company allows us to, i mean the company finances everything so why not?',
-      accommodation: 'hotel',
       passportNumber: '121HU3H3U32',
       passportName: 'Robben Bahati',
       gender: 'MALE'
@@ -708,11 +780,15 @@ describe('Accept request', () => {
   before('create a travel request', (done) => {
     const request = {
       from: 'Kigali, Rwanda',
-      to: 1,
-      travelDate: '2040-11-03',
+      to: [
+        {
+          travelDate: '2040-10-13',
+          location: 2,
+          accommodation: 'sheraton'
+        }
+      ],
       reason:
         'I am travelling cause the company allows us to, i mean the company finances everything so why not?',
-      accommodation: 'hotel',
       passportNumber: '121HU3H3U32',
       passportName: 'Robben Bahati',
       gender: 'MALE'
@@ -753,105 +829,6 @@ describe('Accept request', () => {
   it('user should not be able to get one request if not found', (done) => {
     chai
       .request(server)
-      .get('/api/v1/requests/200')
-      .set('Authorization', `Bearer ${managerToken}`)
-      .end((_err, res) => {
-        if (_err) done(_err);
-        expect(res.status).to.eq(404);
-        done();
-      });
-  });
-  it('Manager should be able to accept a request', (done) => {
-    chai
-      .request(server)
-      .patch(`/api/v1/requests/approve/${requestId}`)
-      .set('Authorization', `Bearer ${managerToken}`)
-      .send({
-        reason:
-          'this is the reason why you can make this trip hence it is rejected. sorry for your loss'
-      })
-      .end((_err, res) => {
-        if (_err) done(_err);
-        expect(res.status).to.eq(200);
-        done();
-      });
-  });
-  it('Manager should be not be able to accept an already accepted request', (done) => {
-    chai
-      .request(server)
-      .patch(`/api/v1/requests/approve/${requestId}`)
-      .set('Authorization', `Bearer ${managerToken}`)
-      .send({
-        reason:
-          'your request have been accepted your request have been accepted your request have been accepted '
-      })
-      .end((_err, res) => {
-        if (_err) done(_err);
-        expect(res.status).to.eq(409);
-        done();
-      });
-  });
-  it('Manager should be not be able to accept a request that is not created', (done) => {
-    chai
-      .request(server)
-      .patch('/api/v1/requests/approve/1099')
-      .set('Authorization', `Bearer ${managerToken}`)
-      .send({
-        reason:
-          'your request have been accepted your request have been accepted your request have been accepted '
-      })
-      .end((_err, res) => {
-        if (_err) done(_err);
-        expect(res.status).to.eq(404);
-        done();
-      });
-  });
-  it('Manager should be not be able to accept a request if reason is not valid', (done) => {
-    chai
-      .request(server)
-      .patch('/api/v1/requests/approve/1099')
-      .set('Authorization', `Bearer ${managerToken}`)
-      .send({ reason: 'this i' })
-      .end((_err, res) => {
-        if (_err) done(_err);
-        expect(res.status).to.eq(422);
-        expect(res.body.error).to.eq('Validation Error');
-        done();
-      });
-  });
-  it('Manager should be not be able to accept a request if requestId an integer', (done) => {
-    chai
-      .request(server)
-      .patch('/api/v1/requests/approve/0.5')
-      .set('Authorization', `Bearer ${managerToken}`)
-      .send({
-        reason:
-          'this irequestId is required and requestId is required and must bmust be an integer greater than zero'
-      })
-      .end((_err, res) => {
-        if (_err) done(_err);
-        expect(res.status).to.eq(422);
-        expect(res.body.error).to.eq('Validation Error');
-        done();
-      });
-  });
-  it('should be not be able to accept a request if not manager', (done) => {
-    chai
-      .request(server)
-      .patch(`/api/v1/requests/approve/${requestId}`)
-      .set('Authorization', `Bearer ${token}`)
-      .send({ reason: 'Manager should be not be able to accept a request if reason is not valid' })
-      .end((_err, res) => {
-        if (_err) done(_err);
-        expect(res.status).to.eq(403);
-        done();
-      });
-  });
-});
-describe('Update Requests', () => {
-  before('should change user email preferences', (done) => {
-    chai
-      .request(server)
       .patch('/api/v1/auth/email-preferences')
       .set('Authorization', `Bearer ${managerToken}`)
       .end((_err, res) => {
@@ -866,15 +843,40 @@ describe('Update Requests', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({
         from: 'Kigali, Rwanda',
-        to: 1,
-        travelDate: '2040-11-02',
-        returnDate: '2040-11-04',
-        reason: 'hey the nklnk;joihnbyugvytgtfredersg;lklmnjnbvytfyfjo',
-        accommodation: 'Hotel'
+        to: [
+          {
+            travelDate: '2020-11-12',
+            location: 2,
+            accommodation: 'sheraton'
+          }
+        ],
+        reason: 'iam travelling cause the company allows us to, i mean the that'
       })
       .end((_err, res) => {
         if (_err) done(_err);
         expect(res.status).to.eq(200);
+        done();
+      });
+  });
+  it('with all invalid location', (done) => {
+    chai
+      .request(server)
+      .put(updateResquest)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        from: 'Kigali, Rwanda',
+        to: [
+          {
+            travelDate: '2020-11-12',
+            location: 'rest',
+            accommodation: 'sheraton'
+          }
+        ],
+        reason: 'iam travelling cause the company allows us to, i mean the that'
+      })
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(422);
         done();
       });
   });
@@ -884,12 +886,15 @@ describe('Update Requests', () => {
       .put(updateResquest)
       .set('Authorization', `Bearer ${token}`)
       .send({
-        from: 2,
-        to: 1,
-        travelDate: '2019-11-02',
-        returnDate: '2019-11-04',
-        reason: 'hey the nklnk;joihnbyugvytgtfredersg;lklmnjnbvytfyfjo',
-        accommodation: 'Hotel'
+        from: 400,
+        to: [
+          {
+            travelDate: '2020-11-12',
+            location: 2,
+            accommodation: 'sheraton'
+          }
+        ],
+        reason: 'iam travelling cause the company allows us to, i mean the that'
       })
       .end((_err, res) => {
         if (_err) done(_err);
@@ -904,11 +909,8 @@ describe('Update Requests', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({
         from: 'Kigali, Rwanda',
-        to: 'r',
-        travelDate: '2019-11-02',
-        returnDate: '2019-11-04',
-        reason: 'hey the nklnk;joihnbyugvytgtfredersg;lklmnjnbvytfyfjo',
-        accommodation: 'Hotel'
+        to: 'destination',
+        reason: 'iam travelling cause the company allows us to, i mean the that'
       })
       .end((_err, res) => {
         if (_err) done(_err);
@@ -923,11 +925,17 @@ describe('Update Requests', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({
         from: 'Kigali, Rwanda',
-        to: 1,
-        travelDate: '2019-11-2',
-        returnDate: '2019-11-04',
-        reason: 'hey the nklnk;joihnbyugvytgtfredersg;lklmnjnbvytfyfjo',
-        accommodation: 'Hotel'
+        to: [
+          {
+            travelDate: '2020-11-12-34',
+            location: 2,
+            accommodation: 'sheraton'
+          }
+        ],
+        reason: 'iam travelling cause the company allows us to, i mean the that',
+        passportNumber: '121HU3H3U32',
+        passportName: 'Robben Bahati',
+        gender: 'MALE'
       })
       .end((_err, res) => {
         if (_err) done(_err);
@@ -942,11 +950,18 @@ describe('Update Requests', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({
         from: 'Kigali, Rwanda',
-        to: 1,
-        travelDate: '2019-11-02',
-        returnDate: '2002-11-04',
-        reason: 'hey the nklnk;joihnbyugvytgtfredersg;lklmnjnbvytfyfjo',
-        accommodation: 'Hotel'
+        to: [
+          {
+            travelDate: '2020-11-12',
+            location: 2,
+            accommodation: 'sheraton'
+          }
+        ],
+        returnDate: '20-11-12',
+        reason: 'iam travelling cause the company allows us to, i mean the that',
+        passportNumber: '121HU3H3U32',
+        passportName: 'Robben Bahati',
+        gender: 'MALE'
       })
       .end((_err, res) => {
         if (_err) done(_err);
@@ -961,11 +976,15 @@ describe('Update Requests', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({
         from: 'Kigali, Rwanda',
-        to: 1,
-        travelDate: '2019-11-02',
-        returnDate: '2019-11-04',
-        reason: 'hey the ',
-        accommodation: 'Hotel'
+        to: [
+          {
+            travelDate: '2020-11-12',
+            location: 2,
+            accommodation: 'sheraton'
+          }
+        ],
+        returnDate: '2029-12-12',
+        reason: 'ia'
       })
       .end((_err, res) => {
         if (_err) done(_err);
@@ -980,11 +999,18 @@ describe('Update Requests', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({
         from: 'Kigali, Rwanda',
-        to: 1,
-        travelDate: '2019-11-02',
-        returnDate: '2019-11-04',
-        reason: 'hey the nklnk;joihnbyugvytgtfredersg;lklmnjnbvytfyfjo',
-        accommodations: ' '
+        to: [
+          {
+            travelDate: '2020-11-12',
+            location: 2,
+            accommodation: 8
+          }
+        ],
+        returnDate: '2029-12-12',
+        reason: 'iam travelling cause the company allows us to, i mean the that',
+        passportNumber: '121HU3H3U32',
+        passportName: 'Robben Bahati',
+        gender: 'MALE'
       })
       .end((_err, res) => {
         if (_err) done(_err);

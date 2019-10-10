@@ -18,39 +18,32 @@ class Requests {
    * @return {function} requests
    */
   async trip(req, res, next) {
-    const len = req.body.to.length;
-    if (len !== req.body.accommodations.length || len !== req.body.travelDate.length) {
-      return Response.notFoundError(
-        res,
-        'Book an accommodation for each location on a specific date'
-      );
-    }
-    const request = await requestService.findRequest({
-      from: req.body.from.toUpperCase(),
-      travelDate: req.body.travelDate,
-      user: req.user.id
-    });
-    if (request) {
-      return Response.badRequestError(res, 'Request already exists');
-    }
-    const {
-      gender, passportNumber, passportName, role
-    } = req.body;
-    const oneway = {
-      from: req.body.from.toUpperCase(),
-      travelDate: req.body.travelDate,
-      reason: req.body.reason.trim(),
-      user: req.user.id,
-      gender,
-      passportNumber,
-      passportName,
-      role
-    };
-    const bothRequests = {
-      ...oneway,
-      returnDate: req.body.returnDate
-    };
     try {
+      const request = await requestService.findRequest({
+        from: req.body.from.toUpperCase(),
+        travelDate: req.body.travelDates,
+        user: req.user.id
+      });
+      if (request) {
+        return Response.conflictError(res, 'request already exists');
+      }
+      const {
+        gender, passportNumber, passportName, role
+      } = req.body;
+      const oneway = {
+        from: req.body.from.toUpperCase(),
+        travelDate: req.body.travelDates,
+        reason: req.body.reason.trim(),
+        user: req.user.id,
+        gender,
+        passportNumber,
+        passportName,
+        role
+      };
+      const bothRequests = {
+        ...oneway,
+        returnDate: req.body.returnDate
+      };
       const result = await requestService.addRequest(bothRequests, req.body.accommodations);
       return Response.customResponse(
         res,
@@ -59,7 +52,7 @@ class Requests {
         result
       );
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 
@@ -211,12 +204,6 @@ class Requests {
         reason: req.body.reason.trim()
       };
       const { id } = req.params;
-      if (
-        formatedData.to.length !== formatedData.accommodations.length
-        || formatedData.travelDate.length !== formatedData.to.length
-      ) {
-        return Response.badRequestError(res, 'Unequal number of values in the request');
-      }
       // update the object
       let data = await requestService.updateRequest(formatedData, id);
       const roleDetails = await UserService.findUser({ userRoles: 'Manager' });
