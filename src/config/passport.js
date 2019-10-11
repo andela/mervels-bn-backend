@@ -4,22 +4,16 @@
 import dotenv from 'dotenv';
 import Fs from 'passport-facebook';
 import Gs from 'passport-google-oauth';
-
-import MockFs from '@passport-next/passport-mocked';
-import MockGs from '@passport-next/passport-mocked';
+import MockPass from '@passport-next/passport-mocked';
 
 let FacebookStrategy;
 let GoogleStrategy;
 if (process.env.NODE_ENV !== 'test') {
-  // FacebookStrategy = require('passport-facebook').Strategy;
-  // GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
   FacebookStrategy = Fs.Strategy;
   GoogleStrategy = Gs.OAuth2Strategy;
 } else {
-  // FacebookStrategy = require('@passport-next/passport-mocked').Strategy;
-  // GoogleStrategy = require('@passport-next/passport-mocked').OAuth2Strategy;
-  FacebookStrategy = MockFs.Strategy;
-  GoogleStrategy = MockGs.OAuth2Strategy;
+  FacebookStrategy = MockPass.Strategy;
+  GoogleStrategy = MockPass.OAuth2Strategy;
 }
 
 const passport = require('passport');
