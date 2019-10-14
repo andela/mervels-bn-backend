@@ -37,6 +37,12 @@ export default {
     location: {
       type: Sequelize.STRING
     },
+    passportName: {
+      type: Sequelize.STRING
+    },
+    passportNumber: {
+      type: Sequelize.STRING
+    },
     createdAt: {
       allowNull: false,
       type: Sequelize.DATE

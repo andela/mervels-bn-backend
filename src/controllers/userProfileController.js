@@ -13,6 +13,10 @@ class userProfileController {
       await UserProfileService.updateOrCreate(userId, req.body);
 
       const profile = await UserProfileService.getProfile(userId);
+      const profileData = profile.dataValues.userProfile.dataValues;
+      res.cookie('passportNumber', profileData.passportNumber);
+      res.cookie('passportName', profileData.passportName);
+      res.cookie('gender', profileData.gender);
       return Response.customResponse(res, 200, 'User Profile Updated', profile);
     } catch (error) {
       return next(error);

@@ -8,7 +8,8 @@ import cors from 'cors';
 import errorhandler from 'errorhandler';
 import morgan from 'morgan';
 import * as Sentry from '@sentry/node';
-import method_overide from 'method-override';
+import methodOveride from 'method-override';
+import cookieParser from 'cookie-parser';
 import notifications from './utils/notifications/index';
 import logger from './utils/logger/logger';
 import routes from './routes';
@@ -26,11 +27,11 @@ app.enable('trust proxy');
 app.use(cors());
 // Normal express config defaults
 app.use(morgan('dev'));
-
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use(method_overide());
+app.use(methodOveride());
 
 app.use(express.static(`${__dirname}/public/`));
 

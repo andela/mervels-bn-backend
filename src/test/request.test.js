@@ -13,6 +13,7 @@ let token, managerToken;
 const signinUrl = '/api/v1/auth/signin';
 const getMyRequestUrl = '/api/v1/requests/my-requests';
 const oneway = '/api/v1/requests/one-way';
+const autofill = '/api/v1/requests/one-way?autofill=true';
 const returnTrip = '/api/v1/requests/return-trip';
 const getRequestCommentsUrl = '/api/v1/requests/1/comments';
 const addRequestCommentUrl = '/api/v1/requests/1/comment';
@@ -30,15 +31,67 @@ const oneWay = {
   travelDate: '2019-11-02',
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 'hotel'
+  accommodation: 'hotel',
+  passportNumber: '121HU3H3U32',
+  passportName: 'Robben Bahati',
+  gender: 'MALE'
 };
+
+const oneWayAutofill = {
+  from: 'Kigali, Rwanda',
+  to: 1,
+  travelDate: '2019-11-26',
+  reason:
+    'iam travelling cause the company allows us to, i mean the company finances everything so why not',
+  accommodation: 'hotel',
+  passportNumber: '121HU3H3U32',
+  passportName: 'Robben Bahati',
+  gender: 'MALE'
+};
+
+const noPassportNumber = {
+  from: 'Kigali, Rwanda',
+  to: 1,
+  travelDate: '2019-11-02',
+  reason:
+    'iam travelling cause the company allows us to, i mean the company finances everything so why not',
+  accommodation: 'hotel',
+  passportName: 'Robben Bahati',
+  gender: 'MALE'
+};
+
+const noPassportName = {
+  from: 'Kigali, Rwanda',
+  to: 1,
+  travelDate: '2019-11-02',
+  reason:
+    'iam travelling cause the company allows us to, i mean the company finances everything so why not',
+  accommodation: 'hotel',
+  passportNumber: '121HU3H3U32',
+  gender: 'MALE'
+};
+
+const noGender = {
+  from: 'Kigali, Rwanda',
+  to: 1,
+  travelDate: '2019-11-02',
+  reason:
+    'iam travelling cause the company allows us to, i mean the company finances everything so why not',
+  accommodation: 'hotel',
+  passportNumber: '121HU3H3U32',
+  passportName: 'Robben Bahati'
+};
+
 const wrongLocation = {
   from: 'Kigali, Rwanda',
   to: 90,
   travelDate: '2019-11-02',
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 'Hotel'
+  accommodation: 'Hotel',
+  passportNumber: '121HU3H3U32',
+  passportName: 'Robben Bahati',
+  gender: 'MALE'
 };
 const WrongDate = {
   from: 'Kigali, Rwanda',
@@ -46,7 +99,10 @@ const WrongDate = {
   travelDate: '02-12-2019', // wrong date format should be yyyy-mm-dd
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 1
+  accommodation: 1,
+  passportNumber: '121HU3H3U32',
+  passportName: 'Robben Bahati',
+  gender: 'MALE'
 };
 const WrongAccomodation = {
   from: 'Kigali, Rwanda',
@@ -54,7 +110,10 @@ const WrongAccomodation = {
   travelDate: '2019-11-02',
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 2
+  accommodation: 2,
+  passportNumber: '121HU3H3U32',
+  passportName: 'Robben Bahati',
+  gender: 'MALE'
 };
 const wrongTo = {
   from: 'Kigali, Rwanda',
@@ -62,7 +121,10 @@ const wrongTo = {
   travelDate: '2019-11-02',
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 1
+  accommodation: 1,
+  passportNumber: '121HU3H3U32',
+  passportName: 'Robben Bahati',
+  gender: 'MALE'
 };
 const Wrongfrom = {
   from: 'Rwanda',
@@ -70,14 +132,20 @@ const Wrongfrom = {
   travelDate: '2019-11-02',
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 1
+  accommodation: 1,
+  passportNumber: '121HU3H3U32',
+  passportName: 'Robben Bahati',
+  gender: 'MALE'
 };
 const WrongDescription = {
   from: 'Kigali, Rwanda',
   to: 1,
   travelDate: '2019-11-02',
   reason: 'iam travelling cause',
-  accommodation: 1
+  accommodation: 1,
+  passportNumber: '121HU3H3U32',
+  passportName: 'Robben Bahati',
+  gender: 'MALE'
 };
 const comment = {
   comment: 'This is a sample comment'
@@ -93,7 +161,10 @@ const returnTripData = {
   returnDate: '2019-11-20',
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 'hotel'
+  accommodation: 'hotel',
+  passportNumber: '121HU3H3U32',
+  passportName: 'Robben Bahati',
+  gender: 'MALE'
 };
 const wrongreturnDate = {
   from: 'Kigali, Rwanda',
@@ -102,7 +173,10 @@ const wrongreturnDate = {
   returnDate: '2010-01-02',
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 'hotel'
+  accommodation: 'hotel',
+  passportNumber: '121HU3H3U32',
+  passportName: 'Robben Bahati',
+  gender: 'MALE'
 };
 
 before('Log In normal users correct credentials', (done) => {
@@ -194,6 +268,67 @@ describe('Get Requests', () => {
       .end((_err, res) => {
         if (_err) done(_err);
         expect(res.status).to.eq(200);
+        done();
+      });
+  });
+  it('User should request for a one way trip using autofill', (done) => {
+    chai
+      .request(server)
+      .post(autofill)
+      .set('Authorization', `Bearer ${token}`)
+      .set('Cookie', 'passportNumber=1234WDFS3D5F;passportName=Jonathan%20Shyaka;gender=MALE')
+      .send(oneWayAutofill)
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(200);
+        done();
+      });
+  });
+  it('User should not request autofill without cookies set', (done) => {
+    chai
+      .request(server)
+      .post(autofill)
+      .set('Authorization', `Bearer ${token}`)
+      .send(oneWayAutofill)
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(400);
+        done();
+      });
+  });
+  it('User should not request one trip without passport number', (done) => {
+    chai
+      .request(server)
+      .post(oneway)
+      .set('Authorization', `Bearer ${token}`)
+      .send(noPassportNumber)
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(422);
+        done();
+      });
+  });
+  it('User should not request one trip without passport name', (done) => {
+    chai
+      .request(server)
+      .post(oneway)
+      .set('Authorization', `Bearer ${token}`)
+      .send(noPassportName)
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(422);
+        done();
+      });
+  });
+  it('User should not request one trip without gender', (done) => {
+    chai
+      .request(server)
+      .post(oneway)
+      .set('Authorization', `Bearer ${token}`)
+      .send(noGender)
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(422);
         done();
       });
   });
@@ -467,7 +602,10 @@ describe('Reject request', () => {
       travelDate: '2019-11-04',
       reason:
         'I am travelling cause the company allows us to, i mean the company finances everything so why not?',
-      accommodation: 'hotel'
+      accommodation: 'hotel',
+      passportNumber: '121HU3H3U32',
+      passportName: 'Robben Bahati',
+      gender: 'MALE'
     };
     chai
       .request(server)
@@ -578,7 +716,10 @@ describe('Accept request', () => {
       travelDate: '2019-11-03',
       reason:
         'I am travelling cause the company allows us to, i mean the company finances everything so why not?',
-      accommodation: 'hotel'
+      accommodation: 'hotel',
+      passportNumber: '121HU3H3U32',
+      passportName: 'Robben Bahati',
+      gender: 'MALE'
     };
     chai
       .request(server)

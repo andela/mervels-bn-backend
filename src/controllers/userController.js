@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable class-methods-use-this */
 import userService from '../services/userService';
+import UserProfileService from '../services/userProfileService';
 import Password from '../utils/generatePassword';
 import SessionManager from '../utils/sessionManager';
 import Response from '../utils/response';
@@ -188,6 +189,14 @@ class Users {
       delete user.accountVerified;
       delete user.createdAt;
       delete user.updatedAt;
+
+      const profile = await UserProfileService.getProfile(user.id);
+      if (profile.dataValues.userProfile) {
+        const profileData = profile.dataValues.userProfile.dataValues;
+        res.cookie('passportNumber', profileData.passportNumber);
+        res.cookie('passportName', profileData.passportName);
+        res.cookie('gender', profileData.gender);
+      }
 
       return Response.customResponse(res, 200, 'User signed In successfully', user);
     } catch (error) {

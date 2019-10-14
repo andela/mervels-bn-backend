@@ -116,7 +116,7 @@ class Access {
     const { id } = req.params;
     // check id the id sent is not a number
     if (isNaN(id)) {
-      return Response.errorResponse(res, 400, 'A bad request was sent', 'enter a valid request');
+      return Response.badRequestError(res, 'enter a valid request');
     }
     const data = await RequestService.findRequest({ id });
     if (data === null) {

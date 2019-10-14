@@ -15,7 +15,9 @@ class userProfileValidator {
       location: Schema.stringOptional,
       department: Schema.department,
       phoneNumber: Schema.phone,
-      birthDate: Schema.birthDate
+      birthDate: Schema.birthDate,
+      passportName: Schema.passportName,
+      passportNumber: Schema.passportNumber
     });
     validator(schema, req.body, res, next);
   }

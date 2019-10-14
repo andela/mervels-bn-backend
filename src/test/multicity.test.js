@@ -22,7 +22,10 @@ const req = {
     accommodations: ['hotel', 'Sheraton'],
     travelDate: [4, 'date'],
     returnDate: '2040-12-02',
-    reason: 'jormi joromi i want you to joromi joromi kilode kilode wo why treat me o baby joromi'
+    reason: 'jormi joromi i want you to joromi joromi kilode kilode wo why treat me o baby joromi',
+    passportNumber: '121HU3H3U32',
+    passportName: 'Robben Bahati',
+    gender: 'MALE'
   }
 };
 const multi = {
@@ -32,7 +35,10 @@ const multi = {
   returnDate: '2040-12-02',
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: ['hotel', 'Sheraton']
+  accommodation: ['hotel', 'Sheraton'],
+  passportNumber: '121HU3H3U32',
+  passportName: 'Robben Bahati',
+  gender: 'MALE'
 };
 const multiDate = {
   from: 'Kiigali, Rwanda',
@@ -40,7 +46,10 @@ const multiDate = {
   travelDate: ['2040-11', '2040-11-12'],
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: ['hotel', 'Sheraton']
+  accommodation: ['hotel', 'Sheraton'],
+  passportNumber: '121HU3H3U32',
+  passportName: 'Robben Bahati',
+  gender: 'MALE'
 };
 const wrongAcc = {
   from: 'Kiigali, Rwanda',
@@ -49,7 +58,10 @@ const wrongAcc = {
   returnDate: '2040-12-02',
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: ['hotel', 'excess']
+  accommodation: ['hotel', 'excess'],
+  passportNumber: '121HU3H3U32',
+  passportName: 'Robben Bahati',
+  gender: 'MALE'
 };
 const wrongAccommodation = {
   from: 'Kiigali, Rwanda',
@@ -57,14 +69,20 @@ const wrongAccommodation = {
   travelDate: ['2040-11-02', '2040-11-12'],
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 2
+  accommodation: 2,
+  passportNumber: '121HU3H3U32',
+  passportName: 'Robben Bahati',
+  gender: 'MALE'
 };
 const wrongReason = {
   from: 'Kiigali, Rwanda',
   to: [1, 2],
   travelDate: ['2040-11-02', '2040-11-12'],
   reason: 'y not',
-  accommodation: 'sheraton'
+  accommodation: 'sheraton',
+  passportNumber: '121HU3H3U32',
+  passportName: 'Robben Bahati',
+  gender: 'MALE'
 };
 const wrongTo = {
   from: 'Kiigali, Rwanda',
@@ -72,7 +90,10 @@ const wrongTo = {
   travelDate: ['2040-11-02', '2040-11-12'],
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 'hotel'
+  accommodation: 'hotel',
+  passportNumber: '121HU3H3U32',
+  passportName: 'Robben Bahati',
+  gender: 'MALE'
 };
 const wrongfrom = {
   from: 1,
@@ -80,7 +101,10 @@ const wrongfrom = {
   travelDate: ['2040-11-02', '2040-11-12'],
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: ['hotel', 'Sheraton']
+  accommodation: ['hotel', 'Sheraton'],
+  passportNumber: '121HU3H3U32',
+  passportName: 'Robben Bahati',
+  gender: 'MALE'
 };
 const wrongReturn = {
   from: 'Kigali, Rwanda',
@@ -89,7 +113,10 @@ const wrongReturn = {
   returnDate: '2010-11-02',
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: ['hotel', 'Sheraton']
+  accommodation: ['hotel', 'Sheraton'],
+  passportNumber: '121HU3H3U32',
+  passportName: 'Robben Bahati',
+  gender: 'MALE'
 };
 
 describe('Multicity Request', () => {

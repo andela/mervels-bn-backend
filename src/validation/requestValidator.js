@@ -39,9 +39,15 @@ export default class requestValidator {
    * @returns {Object}.
    */
   static async oneWay(req, res, next) {
-    const schema = Joi.object().keys({
-      ...TripSchema
-    });
+    const schema = Joi.object()
+      .keys({
+        ...TripSchema,
+        passportName: Schema.passportName.required(),
+        passportNumber: Schema.passportNumber.required(),
+        gender: Schema.gender.required(),
+        role: Schema.string
+      })
+      .options({ allowUnknown: false });
     validator(schema, req.body, res, next);
   }
 
@@ -53,10 +59,16 @@ export default class requestValidator {
    * @returns {Object}.
    */
   static async returnTrip(req, res, next) {
-    const schema = Joi.object().keys({
-      ...TripSchema,
-      returnDate: Schema.minDate
-    });
+    const schema = Joi.object()
+      .keys({
+        ...TripSchema,
+        returnDate: Schema.minDate,
+        passportName: Schema.passportName.required(),
+        passportNumber: Schema.passportNumber.required(),
+        gender: Schema.gender,
+        role: Schema.string
+      })
+      .options({ allowUnknown: false });
     validator(schema, req.body, res, next);
   }
 
@@ -68,14 +80,20 @@ export default class requestValidator {
    * @returns {Object}.
    */
   static async multiCity(req, res, next) {
-    const schema = Joi.object().keys({
-      from: TripSchema.from,
-      to: Schema.destinations.required(),
-      travelDate: Schema.dateMultiple.required(),
-      returnDate: Schema.minDate.required(),
-      reason: Schema.stringLong,
-      accommodation: Schema.accommodations.required()
-    });
+    const schema = Joi.object()
+      .keys({
+        from: TripSchema.from,
+        to: Schema.destinations.required(),
+        travelDate: Schema.dateMultiple.required(),
+        returnDate: Schema.minDate.required(),
+        reason: Schema.stringLong,
+        accommodation: Schema.accommodations.required(),
+        passportName: Schema.passportName.required(),
+        passportNumber: Schema.passportNumber.required(),
+        gender: Schema.gender,
+        role: Schema.string
+      })
+      .options({ allowUnknown: false });
     validator(schema, req.body, res, next);
   }
 
