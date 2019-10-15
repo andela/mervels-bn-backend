@@ -59,11 +59,8 @@ export default {
     .min(30),
   stringOptional: Joi.string()
     .trim()
-    .min(1)
-    .optional(),
-  gender: Joi.string()
-    .valid('MALE', 'FEMALE', 'OTHER')
-    .optional(),
+    .min(1),
+  gender: Joi.string().valid('MALE', 'FEMALE', 'OTHER'),
   department: Joi.string()
     .trim()
     .optional()
@@ -116,5 +113,13 @@ export default {
     .required()
     .min(1)
     .max(5)
-    .error(() => 'rating must be number between 1 and 5')
+    .error(() => 'rating must be number between 1 and 5'),
+  passportName: Joi.string()
+    .min(1)
+    .trim()
+    .error(() => 'Passport name must be string and atleast 2 chars long'),
+  passportNumber: Joi.string()
+    .min(1)
+    .trim()
+    .error(() => 'Passport Number must be a string and atleast 4 chars long')
 };

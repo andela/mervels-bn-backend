@@ -12,7 +12,9 @@ export default (sequelize, DataTypes) => {
       language: DataTypes.STRING,
       currency: DataTypes.STRING,
       gender: DataTypes.STRING,
-      location: DataTypes.STRING
+      location: DataTypes.STRING,
+      passportName: DataTypes.STRING,
+      passportNumber: DataTypes.STRING
     },
     {}
   );

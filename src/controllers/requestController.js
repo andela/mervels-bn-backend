@@ -31,13 +31,20 @@ class Requests {
       user: req.user.id
     });
     if (request) {
-      return Response.errorResponse(res, 400, 'Duplicate', 'Request already exists');
+      return Response.badRequestError(res, 'Request already exists');
     }
+    const {
+      gender, passportNumber, passportName, role
+    } = req.body;
     const oneway = {
       from: req.body.from.toUpperCase(),
       travelDate: req.body.travelDate,
       reason: req.body.reason.trim(),
-      user: req.user.id
+      user: req.user.id,
+      gender,
+      passportNumber,
+      passportName,
+      role
     };
     const bothRequests = {
       ...oneway,

@@ -56,6 +56,28 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           isNumeric: true
         }
+      },
+      passportName: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      passportNumber: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      gender: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          isIn: {
+            args: [['MALE', 'FEMALE', 'OTHER']],
+            msg: 'Gender can only be MALE, FEMALE or OTHER'
+          }
+        }
+      },
+      role: {
+        type: DataTypes.STRING,
+        allowNull: false
       }
     },
     {}

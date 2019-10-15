@@ -7,6 +7,22 @@ export default {
       primaryKey: true,
       type: Sequelize.INTEGER
     },
+    passportName: {
+      allowNull: false,
+      type: Sequelize.STRING
+    },
+    passportNumber: {
+      allowNull: false,
+      type: Sequelize.STRING
+    },
+    gender: {
+      allowNull: false,
+      type: Sequelize.STRING
+    },
+    role: {
+      allowNull: false,
+      type: Sequelize.STRING
+    },
     from: {
       type: Sequelize.STRING
     },

@@ -8,6 +8,7 @@ import verify from '../../middlewares/auth';
 import method from '../../utils/method';
 import location from '../../middlewares/validLocation';
 import Access from '../../middlewares/userRoles';
+import profileAutofill from '../../middlewares/getProfileInfo';
 
 const router = express.Router();
 router
@@ -19,6 +20,7 @@ router
   .route('/one-way')
   .post(
     verify,
+    profileAutofill,
     requestsValidator.oneWay,
     location.validDate,
     location.validLocation,
@@ -31,6 +33,7 @@ router
   .route('/return-trip')
   .post(
     verify,
+    profileAutofill,
     requestsValidator.returnTrip,
     location.validDate,
     location.validLocation,
@@ -43,6 +46,7 @@ router
   .route('/multi-city')
   .post(
     verify,
+    profileAutofill,
     requestsValidator.multiCity,
     location.validDate,
     location.validLocation,
