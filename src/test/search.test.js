@@ -163,7 +163,7 @@ describe('Search Requests', () => {
   it('search request by accommodation', (done) => {
     chai
       .request(server)
-      .get(`${searchUrl}?accommodation=Hotel`)
+      .get(`${searchUrl}?accommodations=Hotel`)
       .set('Authorization', `Bearer ${managerToken}`)
       .end((_err, res) => {
         if (_err) return done(_err);

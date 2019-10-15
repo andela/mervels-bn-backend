@@ -1,37 +1,9 @@
 import moment from 'moment';
+import { Sequelize } from 'sequelize';
+
+const { Op } = Sequelize;
 
 class Search {
-  searchData(data, filters) {
-    const results = [];
-    const filterKeys = Object.keys(filters);
-    if (filterKeys.length === 0) return data;
-    for (let count = 0; count < data.length; count++) {
-      let match = false;
-      for (const key of filterKeys) {
-        switch (key) {
-          case 'requester':
-            match = data[count].requester.firstName.toLowerCase() === filters[key].toLowerCase()
-              || data[count].requester.lastName.toLowerCase() === filters[key].toLowerCase();
-            break;
-          case 'travelDate':
-            const travelDate = this.formatDate(filters[key]);
-            match = data[count].travelDate.includes(travelDate);
-            break;
-          case 'returnDate':
-            const returnDate = this.formatDate(filters[key]);
-            match = data[count].returnDate === returnDate;
-            break;
-          case 'accommodation':
-          case 'destination':
-            match = this.searchObjectArray(data[count].accommodations, filters[key], key);
-            break;
-        }
-        if (match) results.push(data[count]);
-      }
-    }
-    return results;
-  }
-
   formatDate(date) {
     const formatedDate = moment(date)
       .format()
@@ -46,23 +18,49 @@ class Search {
     return averageRating;
   }
 
-  searchObjectArray(accommodationArray, element, key) {
-    let found = false;
-    for (const accommodation of accommodationArray) {
-      if (key === 'accommodation' && accommodation.dataValues.name === element.toUpperCase()) {
-        found = true;
-        break;
+  createQuery(params) {
+    const queries = {
+      query: {
+        id: {
+          [Op.eq]: params.id
+        },
+        status: {
+          [Op.iLike]: `%${params.status}%`
+        },
+        user: {
+          [Op.eq]: params.user
+        },
+        travelDate: {
+          [Op.contains]: [this.formatDate(params.travelDate)]
+        },
+        returnDate: {
+          [Op.eq]: this.formatDate(params.returnDate)
+        },
+        accommodations: Sequelize.where(Sequelize.col('name'), {
+          [Op.iLike]: `%${params.accommodations}%`
+        }),
+        destination: Sequelize.where(
+          Sequelize.fn('concat', Sequelize.col('country'), Sequelize.col('city')),
+          {
+            [Op.iLike]: `%${params.destination}%`
+          }
+        ),
+        requester: Sequelize.where(
+          Sequelize.fn('concat', Sequelize.col('firstName'), Sequelize.col('lastName')),
+          {
+            [Op.iLike]: `%${params.requester}%`
+          }
+        )
       }
-      if (
-        key === 'destination'
-        && (accommodation.dataValues.Location.country === element.toUpperCase()
-          || accommodation.dataValues.Location.city === element.toUpperCase())
-      ) {
-        found = true;
-        break;
-      }
-    }
-    return found;
+    };
+    const keysQueries = Object.keys(queries.query);
+    const keysParams = Object.keys(params);
+    keysQueries.forEach((key) => {
+      if (!keysParams.includes(key)) delete queries.query[key];
+    });
+    return {
+      ...queries.query
+    };
   }
 }
 

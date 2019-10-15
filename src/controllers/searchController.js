@@ -1,3 +1,5 @@
+/* eslint-disable require-jsdoc */
+/* eslint-disable class-methods-use-this */
 import { Sequelize } from 'sequelize';
 import Response from '../utils/response';
 import RequestService from '../services/requestService';
@@ -8,36 +10,16 @@ const { Op } = Sequelize;
 class SearchController {
   async searchRequests(req, res, next) {
     try {
-      // object that will be passed to the db where clause
-      const searchDb = {};
-      // objec passed to search class
-      const filters = {};
-      const field = req.query;
-
-      const fieldKeys = Object.keys(field);
-
-      const keysToSkip = ['requester', 'travelDate', 'returnDate', 'accommodation', 'destination'];
-
-      fieldKeys.forEach((key) => {
-        if (key === 'id' || key === 'user') {
-          searchDb[key] = { [Op.eq]: field[key] };
-        } else if (!keysToSkip.includes(key)) {
-          searchDb[key] = { [Op.iLike]: `%${field[key].trim()}%` };
-        } else {
-          filters[key] = field[key].trim();
-        }
-      });
+      const query = Search.createQuery(req.params);
 
       // Making the user only get their requests
-      if (req.user.userRoles !== 'Manager') searchDb.user = { [Op.eq]: req.user.id };
-      let data = await RequestService.search(searchDb);
+      if (req.user.userRoles !== 'Manager') query.user = { [Op.eq]: req.user.id };
 
-      data = data.map((el) => el.dataValues);
-      const results = Search.searchData(data, filters);
+      const data = await RequestService.search(query);
 
-      if (results.length === 0) return Response.notFoundError(res, 'Request not found');
+      if (data.dataValues.length === 0) return Response.notFoundError(res, 'Request not found');
 
-      return Response.customResponse(res, 200, 'Request Found', results);
+      return Response.customResponse(res, 200, 'Request Found', data);
     } catch (error) {
       return next(error);
     }

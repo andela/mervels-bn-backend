@@ -102,7 +102,8 @@ class RequestService {
             attributes: ['id', 'name', 'status', 'imageUrl', 'locationId'],
             include: [
               {
-                model: database.Locations
+                model: database.Locations,
+                as: 'Location'
               }
             ]
           }
