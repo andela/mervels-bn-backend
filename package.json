@@ -13,7 +13,7 @@
     "lint:fix": "prettier-eslint  '**/*.js' --write",
     "start": "npm run db-migrate && npm run build && node ./src/build/index.js",
     "start:dev": "nodemon --exec babel-node src/index.js",
-    "docker:start": "npm run db-migrate:dev && npm run start:dev",
+    "docker:start": "npm test && npm run coverage",
     "test": "export NODE_ENV=test && npm run db-migrate:test && npm run db-seed:test && nyc --reporter=html --reporter=text mocha --require @babel/register ./src/test/*.js ./src/test/unit-tests/*.js --timeout 60000 --exit",
     "cover": "nyc --reporter=html --reporter=text npm test",
     "coverage": "nyc report --reporter=text-lcov | coveralls"

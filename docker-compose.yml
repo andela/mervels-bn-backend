@@ -13,6 +13,7 @@ services:
   web: 
     environment:
       DEV_DATABASE_URL: "postgres://postgres@db:5432/postgres"
+      DATABASE_URL_TEST: "postgres://postgres@db:5432/postgres"
       DATABASE_URL: "postgres://postgres@db:5432/postgres"
       REDIS_URL: "redis://redis:6379"
       TOKEN: ${TOKEN}
