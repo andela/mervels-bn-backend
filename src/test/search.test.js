@@ -100,7 +100,7 @@ describe('Search Requests', () => {
   });
 
   it('search request by travelDate', (done) => {
-    const search = `${searchUrl}?travelDate=2019/11/02`;
+    const search = `${searchUrl}?travelDate=2020/11/02`;
     chai
       .request(server)
       .get(search)
