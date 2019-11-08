@@ -15,6 +15,7 @@ const signinUrl = '/api/v1/auth/signin';
 const sendLinkUrl = '/api/v1/auth/createLink';
 const updateRole = '/api/v1/auth/updateRole';
 const profileUrl = '/api/v1/profile';
+const profilePictureUrl = '/api/v1/profile/picture';
 
 let token1;
 let superToken;
@@ -598,6 +599,33 @@ describe('User Profile', () => {
         if (_err) done(_err);
 
         expect(res.status).to.eq(422);
+
+        done();
+      });
+  });
+});
+
+describe('User Profile Picture', () => {
+  it('should get user Profile Picture', (done) => {
+    chai
+      .request(server)
+      .get(profilePictureUrl)
+      .set('Authorization', `Bearer ${token}`)
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(200);
+        done();
+      });
+  });
+  it('should update user Profile Picture', (done) => {
+    chai
+      .request(server)
+      .patch(profilePictureUrl)
+      .set('Authorization', `Bearer ${token}`)
+      .attach('image', 'src/test/testData/marvel.png', 'marvel.png')
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(200);
 
         done();
       });

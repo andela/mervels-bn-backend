@@ -196,8 +196,11 @@ class Users {
         res.cookie('passportNumber', profileData.passportNumber);
         res.cookie('passportName', profileData.passportName);
         res.cookie('gender', profileData.gender);
+      } else {
+        res.cookie('passportNumber', null);
+        res.cookie('passportName', null);
+        res.cookie('gender', null);
       }
-
       return Response.customResponse(res, 200, 'User signed In successfully', user);
     } catch (error) {
       return next(error);

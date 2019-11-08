@@ -3,6 +3,7 @@
 import UserProfileService from '../services/userProfileService';
 import UserService from '../services/userService';
 import Response from '../utils/response';
+import uploader from '../utils/cloudinary';
 
 class userProfileController {
   async updateProfile(req, res, next) {
@@ -29,6 +30,30 @@ class userProfileController {
       const profile = await UserProfileService.getProfile(userId);
 
       return Response.customResponse(res, 200, 'User Profile Updated', profile);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  async updatePicture(req, res, next) {
+    try {
+      const { image } = req.files;
+      const cloudFile = await uploader(image.tempFilePath);
+      req.body.url = cloudFile.url;
+      const user = req.user.id;
+      const response = await UserProfileService.updateOrCreatePicture(user, req.body);
+      return Response.customResponse(res, 200, 'Profile Picture Updated', response[1][0]);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  async getPicture(req, res, next) {
+    try {
+      const user = req.user.id;
+      const response = await UserProfileService.getPicture(user);
+
+      return Response.customResponse(res, 200, 'Profile Picture Retrieved', response);
     } catch (error) {
       return next(error);
     }

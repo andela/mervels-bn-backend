@@ -28,7 +28,7 @@ const markAllAsRead = '/api/v1/notifications/mark-as-read';
 const oneWay = {
   from: 'Kigali, Rwanda',
   to: 1,
-  travelDate: '2019-11-02',
+  travelDate: '2020-11-02',
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
   accommodation: 'hotel',
@@ -85,7 +85,7 @@ const noGender = {
 const wrongLocation = {
   from: 'Kigali, Rwanda',
   to: 90,
-  travelDate: '2019-11-02',
+  travelDate: '2020-11-02',
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
   accommodation: 'Hotel',
@@ -599,7 +599,7 @@ describe('Reject request', () => {
     const request = {
       from: 'Kigali, Rwanda',
       to: 1,
-      travelDate: '2019-11-04',
+      travelDate: '2020-11-04',
       reason:
         'I am travelling cause the company allows us to, i mean the company finances everything so why not?',
       accommodation: 'hotel',
@@ -713,7 +713,7 @@ describe('Accept request', () => {
     const request = {
       from: 'Kigali, Rwanda',
       to: 1,
-      travelDate: '2019-11-03',
+      travelDate: '2020-11-03',
       reason:
         'I am travelling cause the company allows us to, i mean the company finances everything so why not?',
       accommodation: 'hotel',
@@ -871,8 +871,8 @@ describe('Update Requests', () => {
       .send({
         from: 'Kigali, Rwanda',
         to: 1,
-        travelDate: '2019-11-02',
-        returnDate: '2019-11-04',
+        travelDate: '2020-11-02',
+        returnDate: '2020-11-04',
         reason: 'hey the nklnk;joihnbyugvytgtfredersg;lklmnjnbvytfyfjo',
         accommodation: 'Hotel'
       })
