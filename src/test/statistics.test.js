@@ -37,7 +37,7 @@ describe('Trip Statistics', () => {
         if (err) {
           return done(err);
         }
-        token = res.body.data.userToken;
+        token = res.body.data;
         done();
       });
   });

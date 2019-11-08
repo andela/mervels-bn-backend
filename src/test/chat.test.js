@@ -36,9 +36,7 @@ describe('Chat message', () => {
           return done(err);
         }
         expect(res).to.have.status(200);
-        expect(res.body.data).to.have.property('userToken');
-
-        token = res.body.data.userToken;
+        token = res.body.data;
 
         done();
       });

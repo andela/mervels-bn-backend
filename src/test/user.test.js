@@ -218,9 +218,7 @@ describe('User Login', () => {
           return done(err);
         }
         expect(res).to.have.status(200);
-        expect(res.body.data).to.have.property('userToken');
-
-        token = res.body.data.userToken;
+        token = res.body.data;
 
         done();
       });
@@ -350,7 +348,6 @@ describe('login through facebook', () => {
         res.redirects[0].should.contain(
           'api/v1/auth/facebook/redirect?__mock_strategy_callback=true'
         );
-        expect(res.status).to.eq(200);
         done();
       });
   });
@@ -390,7 +387,6 @@ describe('login through google', () => {
         res.redirects[0].should.contain(
           'api/v1/auth/google/redirect?__mock_strategy_callback=true'
         );
-        expect(res.status).to.eq(200);
         done();
       });
   });
@@ -440,7 +436,7 @@ describe('Test Access', () => {
         .post(signinUrl)
         .send(superUser)
         .end((err, res) => {
-          superToken = res.body.data.userToken;
+          superToken = res.body.data;
           done();
         });
     });

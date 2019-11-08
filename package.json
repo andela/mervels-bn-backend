@@ -36,7 +36,7 @@
     "@hapi/joi": "^15.1.1",
     "@passport-next/passport-mocked": "^1.3.0",
     "@sendgrid/mail": "^6.4.0",
-    "@sentry/node": "^5.6.2",
+    "@sentry/node": "^5.7.1",
     "babel-watch": "^7.0.0",
     "bcrypt": "^3.0.6",
     "body-parser": "^1.18.3",

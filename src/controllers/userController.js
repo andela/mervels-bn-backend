@@ -76,6 +76,7 @@ class Users {
    * @returns {object}.
    */
   async socialLogin(req, res) {
+    const { FRONTEND_URL } = process.env;
     const userEmail = req.user.email;
     const { firstName, lastName } = req.user;
     const userRoles = 'Requester';
@@ -96,12 +97,13 @@ class Users {
       userRoles: data.userRoles,
       emailAllowed: data.emailAllowed
     });
-    data.dataValues.userToken = token;
-    delete data.userPassword;
-    delete data.accountVerified;
-    delete data.createdAt;
-    delete data.updatedAt;
-    return Response.customResponse(res, 200, 'Successfully logged in!', data.dataValues);
+    const apiResponse = {
+      status: 200,
+      message: 'Successfully logged in',
+      data: token
+    };
+    const responseBuffer = Buffer.from(JSON.stringify(apiResponse));
+    return res.redirect(`${FRONTEND_URL}/login?code=${responseBuffer.toString('base64')}`);
   }
 
   /**
@@ -201,7 +203,8 @@ class Users {
         res.cookie('passportName', null);
         res.cookie('gender', null);
       }
-      return Response.customResponse(res, 200, 'User signed In successfully', user);
+
+      return Response.customResponse(res, 200, 'User signed In successfully', user.userToken);
     } catch (error) {
       return next(error);
     }

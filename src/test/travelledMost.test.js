@@ -20,7 +20,7 @@ describe('Most travel destinations', () => {
         userPassword: 'Root1123#'
       })
       .end((err, res) => {
-        userToken = res.body.data.userToken;
+        userToken = res.body.data;
         done();
       });
   });

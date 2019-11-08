@@ -29,9 +29,7 @@ before('Log In manager correct credentials', (done) => {
         return done(err);
       }
       expect(res).to.have.status(200);
-      expect(res.body.data).to.have.property('userToken');
-
-      managerToken = res.body.data.userToken;
+      managerToken = res.body.data;
 
       done();
     });

@@ -26,10 +26,7 @@ before('Log In manager correct credentials', (done) => {
         return done(err);
       }
       expect(res).to.have.status(200);
-      expect(res.body.data).to.have.property('userToken');
-
-      managerToken = res.body.data.userToken;
-
+      managerToken = res.body.data;
       done();
     });
 });
@@ -48,10 +45,7 @@ before('Log In normal users correct credentials', (done) => {
         return done(err);
       }
       expect(res).to.have.status(200);
-      expect(res.body.data).to.have.property('userToken');
-
-      userToken = res.body.data.userToken;
-
+      userToken = res.body.data;
       done();
     });
 });
@@ -100,7 +94,11 @@ describe('Search Requests', () => {
   });
 
   it('search request by travelDate', (done) => {
+<<<<<<< HEAD
     const search = `${searchUrl}?travelDate=2020/11/02`;
+=======
+    const search = `${searchUrl}?travelDate=2040/11/02`;
+>>>>>>> feat(profile): implement viewing and updating a profile picture (#63)
     chai
       .request(server)
       .get(search)
