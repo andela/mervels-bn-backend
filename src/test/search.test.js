@@ -112,11 +112,10 @@ describe('Search Requests', () => {
   it('search request by return Date', (done) => {
     chai
       .request(server)
-      .get(`${searchUrl}?returnDate=2019/11/20`)
+      .get(`${searchUrl}?returnDate=2020/11/20`)
       .set('Authorization', `Bearer ${managerToken}`)
       .end((_err, res) => {
         if (_err) return done(_err);
-
         expect(res).to.have.status(200);
 
         expect(res.body.data.length).to.greaterThan(0);

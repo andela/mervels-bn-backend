@@ -157,8 +157,8 @@ const invalidComment = {
 const returnTripData = {
   from: 'North, Rwanda',
   to: 1,
-  travelDate: '2019-11-12',
-  returnDate: '2019-11-20',
+  travelDate: '2020-11-12',
+  returnDate: '2020-11-20',
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
   accommodation: 'hotel',
