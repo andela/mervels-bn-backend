@@ -94,11 +94,7 @@ describe('Search Requests', () => {
   });
 
   it('search request by travelDate', (done) => {
-<<<<<<< HEAD
-    const search = `${searchUrl}?travelDate=2020/11/02`;
-=======
     const search = `${searchUrl}?travelDate=2040/11/02`;
->>>>>>> feat(profile): implement viewing and updating a profile picture (#63)
     chai
       .request(server)
       .get(search)
