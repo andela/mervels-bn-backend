@@ -70,7 +70,7 @@ before((done) => {
       userPassword: 'Root1123#'
     })
     .end((err, res) => {
-      requesterToken = res.body.data.userToken;
+      requesterToken = res.body.data;
       done();
     });
 });
@@ -81,7 +81,7 @@ before((done) => {
     .post('/api/v1/auth/signin')
     .send(travelAdmin)
     .end((err, res) => {
-      adminToken = res.body.data.userToken;
+      adminToken = res.body.data;
       done();
     });
 });
@@ -93,7 +93,7 @@ describe('Travel Administrator', () => {
       .post('/api/v1/auth/signin')
       .send(superUser)
       .end((err, res) => {
-        superToken = res.body.data.userToken;
+        superToken = res.body.data;
         done();
       });
   });
@@ -459,7 +459,7 @@ describe('Accommodation Supplier', () => {
         userPassword: '792dmgT2W8_0'
       })
       .end((err, res) => {
-        supplierToken = res.body.data.userToken;
+        supplierToken = res.body.data;
         done();
       });
   });
@@ -491,7 +491,7 @@ describe('Accommodation feedback', () => {
         userPassword: 'Root1123#'
       })
       .end((err, res) => {
-        token = res.body.data.userToken;
+        token = res.body.data;
         done();
       });
   });

@@ -30,7 +30,7 @@ before('LogIn user1', (done) => {
     .end((_err, res) => {
       if (_err) return done(_err);
 
-      user1Token = res.body.data.userToken;
+      user1Token = res.body.data;
 
       done();
     });
@@ -44,7 +44,7 @@ before('LogIn user2', (done) => {
     .end((_err, res) => {
       if (_err) return done(_err);
 
-      user2Token = res.body.data.userToken;
+      user2Token = res.body.data;
 
       done();
     });

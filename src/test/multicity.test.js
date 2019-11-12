@@ -133,7 +133,7 @@ describe('Multicity Request', () => {
         if (err) {
           return done(err);
         }
-        token = res.body.data.userToken;
+        token = res.body.data;
         done();
       });
   });
