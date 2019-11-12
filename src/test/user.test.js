@@ -258,10 +258,9 @@ describe('User Login', () => {
         done();
       });
   });
-
-  it('with incorrect email field', (done) => {
+  it('with empty email field', (done) => {
     const user = {
-      Email: 'whjghj@stations.com',
+      userEmail: '',
       userPassword: '123123'
     };
     chai
@@ -276,28 +275,10 @@ describe('User Login', () => {
         done();
       });
   });
-  it('with incorrect password field', (done) => {
+  it('with empty email field', (done) => {
     const user = {
-      userEmail: 'whjghj@stations.com',
-      password: '123123'
-    };
-    chai
-      .request(server)
-      .post(signinUrl)
-      .send(user)
-      .end((err, res) => {
-        if (err) {
-          return done(err);
-        }
-        expect(res).to.have.status(422);
-        done();
-      });
-  });
-
-  it('with empty fields', (done) => {
-    const user = {
-      email: 'whjghj@stations.com',
-      password: ' '
+      userEmail: 'rrrrrr',
+      userPassword: ''
     };
     chai
       .request(server)

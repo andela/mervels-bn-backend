@@ -40,8 +40,12 @@ export default class userValidator {
    */
   static async validateSignIn(req, res, next) {
     const schema = Joi.object().keys({
-      userEmail: Schema.email,
-      userPassword: Schema.password
+      userEmail: Joi.string()
+        .required()
+        .error(() => 'email is required'),
+      userPassword: Joi.string()
+        .required()
+        .error(() => 'password is required')
     });
     validator(schema, req.body, res, next);
   }
