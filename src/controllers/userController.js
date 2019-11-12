@@ -47,7 +47,7 @@ class Users {
       delete data.accountVerified;
       delete data.createdAt;
       delete data.updatedAt;
-      const link = `${req.protocol}://${process.env.baseUrl}/api/v1/auth/verify/?token=${token}`;
+      const link = `${process.env.FRONTEND_VERIFY_URL}/verify/?token=${token}`;
       let verification;
       try {
         const header = Emails.header({
@@ -121,7 +121,7 @@ class Users {
     }
 
     const token = await SessionManager.generateToken(user);
-    const link = `${req.protocol}://${process.env.baseUrl}/api/v1/auth/verify/?token=${token}`;
+    const link = `${process.env.FRONTEND_VERIFY_URL}/verify/?token=${token}`;
     try {
       const header = Emails.header({
         to: userEmail,
@@ -154,8 +154,12 @@ class Users {
         return Response.conflictError(res, 'Email already verified');
       }
       const result = userService.updateUser({ userEmail }, { accountVerified: true });
+      const userExists = user.dataValues;
+      userExists.accountVerified = true;
+      const userToken = await SessionManager.createSession(userExists);
       return Response.customResponse(res, 201, 'Email verified succesfully', {
-        userEmail
+        userEmail,
+        userToken
       });
     } catch (error) {
       return next({ message: 'error.message', stack: error.stack, status: 401 });
