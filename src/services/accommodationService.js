@@ -119,5 +119,40 @@ class AccommodationService {
       throw error;
     }
   }
+
+  /**
+   * fetches a room.
+   * @returns {object} The User object.
+   */
+  static async getAllRoom() {
+    try {
+      return await Rooms.findAll();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * updates rooms
+   * @param {Array} ids array of rooms.
+   * @param {object} data array of rooms.
+   * @returns {object} The User object.
+   */
+  static async updateRoom(ids, data) {
+    try {
+      return await Rooms.update(data, {
+        returning: true,
+        where: [
+          {
+            id: {
+              [sequelize.Op.in]: ids
+            }
+          }
+        ]
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 export default AccommodationService;

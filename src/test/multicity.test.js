@@ -30,93 +30,45 @@ const req = {
 };
 const multi = {
   from: 'Kigali, Rwanda',
-  to: [1, 2],
-  travelDate: ['2040-11-02', '2040-11-12'],
+  to: [
+    {
+      travelDate: '2040-11-12',
+      location: 2,
+      accommodation: 'sheraton'
+    },
+    {
+      travelDate: '2040-11-22',
+      location: 1,
+      accommodation: 'hotel'
+    }
+  ],
   returnDate: '2040-12-02',
   reason:
     'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: ['hotel', 'Sheraton'],
   passportNumber: '121HU3H3U32',
   passportName: 'Robben Bahati',
   gender: 'MALE'
 };
-const multiDate = {
-  from: 'Kiigali, Rwanda',
-  to: [1, 2],
-  travelDate: ['2040-11', '2040-11-12'],
-  reason:
-    'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: ['hotel', 'Sheraton'],
-  passportNumber: '121HU3H3U32',
-  passportName: 'Robben Bahati',
-  gender: 'MALE'
-};
-const wrongAcc = {
-  from: 'Kiigali, Rwanda',
-  to: [1, 2],
-  travelDate: ['2040-11-02', '2040-11-12'],
-  returnDate: '2040-12-02',
-  reason:
-    'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: ['hotel', 'excess'],
-  passportNumber: '121HU3H3U32',
-  passportName: 'Robben Bahati',
-  gender: 'MALE'
-};
-const wrongAccommodation = {
-  from: 'Kiigali, Rwanda',
-  to: [1, 2],
-  travelDate: ['2040-11-02', '2040-11-12'],
-  reason:
-    'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 2,
-  passportNumber: '121HU3H3U32',
-  passportName: 'Robben Bahati',
-  gender: 'MALE'
-};
-const wrongReason = {
-  from: 'Kiigali, Rwanda',
-  to: [1, 2],
-  travelDate: ['2040-11-02', '2040-11-12'],
-  reason: 'y not',
-  accommodation: 'sheraton',
-  passportNumber: '121HU3H3U32',
-  passportName: 'Robben Bahati',
-  gender: 'MALE'
-};
-const wrongTo = {
-  from: 'Kiigali, Rwanda',
-  to: 'to',
-  travelDate: ['2040-11-02', '2040-11-12'],
-  reason:
-    'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: 'hotel',
-  passportNumber: '121HU3H3U32',
-  passportName: 'Robben Bahati',
-  gender: 'MALE'
-};
-const wrongfrom = {
-  from: 1,
-  to: [1, 2],
-  travelDate: ['2040-11-02', '2040-11-12'],
-  reason:
-    'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: ['hotel', 'Sheraton'],
-  passportNumber: '121HU3H3U32',
-  passportName: 'Robben Bahati',
-  gender: 'MALE'
-};
-const wrongReturn = {
+
+const wrongAccomodation = {
   from: 'Kigali, Rwanda',
-  to: [1, 2],
-  travelDate: ['2040-11-02', '2040-11-12'],
-  returnDate: '2010-11-02',
-  reason:
-    'iam travelling cause the company allows us to, i mean the company finances everything so why not',
-  accommodation: ['hotel', 'Sheraton'],
+  to: [
+    {
+      travelDate: '2040-11-12',
+      location: 2,
+      accommodation: 'sheraton'
+    },
+    {
+      travelDate: '2040-11-22',
+      location: 1,
+      accommodation: 'rental'
+    }
+  ],
+  returnDate: '2040-12-02',
   passportNumber: '121HU3H3U32',
   passportName: 'Robben Bahati',
-  gender: 'MALE'
+  gender: 'MALE',
+  reason: 'iam travelling cause the company allows us to, i mean the company finances everything'
 };
 
 describe('Multicity Request', () => {
@@ -137,7 +89,7 @@ describe('Multicity Request', () => {
         done();
       });
   });
-  it('User should request for a multiCity trip', (done) => {
+  it('User should post a request multicity', (done) => {
     chai
       .request(server)
       .post(multiCity)
@@ -149,84 +101,12 @@ describe('Multicity Request', () => {
         done();
       });
   });
-  it('User should not request multicity with wrong Date', (done) => {
-    chai
-      .request(server)
-      .post(multiCity)
-      .set('Authorization', `Bearer ${token}`)
-      .send(multiDate)
-      .end((_err, res) => {
-        if (_err) done(_err);
-        expect(res.status).to.eq(422);
-        done();
-      });
-  });
-  it('User should not request multicity with wrong Accommodation', (done) => {
-    chai
-      .request(server)
-      .post(multiCity)
-      .set('Authorization', `Bearer ${token}`)
-      .send(wrongAccommodation)
-      .end((_err, res) => {
-        if (_err) done(_err);
-        expect(res.status).to.eq(422);
-        done();
-      });
-  });
-  it('User should not request multicity with wrong Reason', (done) => {
-    chai
-      .request(server)
-      .post(multiCity)
-      .set('Authorization', `Bearer ${token}`)
-      .send(wrongReason)
-      .end((_err, res) => {
-        if (_err) done(_err);
-        expect(res.status).to.eq(422);
-        done();
-      });
-  });
-  it('User should not request multicity with wrong location', (done) => {
-    chai
-      .request(server)
-      .post(multiCity)
-      .set('Authorization', `Bearer ${token}`)
-      .send(wrongTo)
-      .end((_err, res) => {
-        if (_err) done(_err);
-        expect(res.status).to.eq(422);
-        done();
-      });
-  });
-  it('User should not request multicity with wrong return Date', (done) => {
-    chai
-      .request(server)
-      .post(multiCity)
-      .set('Authorization', `Bearer ${token}`)
-      .send(wrongReturn)
-      .end((_err, res) => {
-        if (_err) done(_err);
-        expect(res.status).to.eq(422);
-        done();
-      });
-  });
-  it('User should not request multicity with wrong from', (done) => {
-    chai
-      .request(server)
-      .post(multiCity)
-      .set('Authorization', `Bearer ${token}`)
-      .send(wrongfrom)
-      .end((_err, res) => {
-        if (_err) done(_err);
-        expect(res.status).to.eq(422);
-        done();
-      });
-  });
   it('User should not request multicity with accomodation not exisiting', (done) => {
     chai
       .request(server)
       .post(multiCity)
       .set('Authorization', `Bearer ${token}`)
-      .send(wrongAcc)
+      .send(wrongAccomodation)
       .end((_err, res) => {
         if (_err) done(_err);
         expect(res.status).to.eq(404);

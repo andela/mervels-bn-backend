@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import cron from 'node-cron';
 import chat from './chatService';
 
@@ -15,9 +16,15 @@ class Schedule {
    * @returns {void}
    */
   deleteSchedule() {
-    this.job = cron.schedule(this.pattern, async () => {
-      await chat.deleteMessages();
-    });
+    cron.schedule(this.pattern, this.callback);
+  }
+
+  /**
+   *  deletes message from database
+   * @returns {void}
+   */
+  async callback() {
+    await chat.deleteMessages();
   }
 }
 export default Schedule;

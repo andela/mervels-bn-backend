@@ -1,3 +1,4 @@
+/* eslint-disable no-return-await */
 /* eslint-disable no-useless-catch */
 import database from '../database/models';
 
@@ -19,7 +20,13 @@ class LocationService {
    * @returns {object} all locations.
    */
   static async all() {
-    const result = await Locations.findAll();
+    const result = await Locations.findAll({
+      include: [
+        {
+          model: database.Accommodations
+        }
+      ]
+    });
     return result;
   }
 }

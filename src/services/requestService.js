@@ -1,4 +1,5 @@
 /* eslint-disable no-useless-catch */
+import { Op } from 'sequelize';
 import database from '../database/models';
 
 const { Requests, AccommodationRequests } = database;
@@ -58,7 +59,7 @@ class RequestService {
   /**
    * Get requests by user
    * @param {string} request to be created
-   * @param {string} acc to array of accomodations
+   * @param {Array} acc to array of accomodations
    * @return {object} Oject of request if found
    */
   static async addRequest(request, acc) {
