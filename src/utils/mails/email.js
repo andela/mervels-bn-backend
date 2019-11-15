@@ -30,7 +30,7 @@ class Emails {
    * @returns {string} customized url
    */
   static emailUrl(data) {
-    return `http://${process.env.baseUrl}/api/v1/auth/${data.endpoint}/${data.userId}/${data.token}`;
+    return `${process.env.FRONTEND_URL}/${data.endpoint}/${data.userId}/${data.token}`;
   }
 
   /**

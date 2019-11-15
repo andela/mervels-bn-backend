@@ -34,7 +34,7 @@ class SessionManager {
         userRoles: data.userRoles
       },
       data.secret || process.env.TOKEN,
-      { expiresIn: '1hr' }
+      { expiresIn: '24hr' }
     );
     return token;
   }
@@ -46,10 +46,6 @@ class SessionManager {
    */
   static async createSession(data) {
     const result = await this.verifyToken(data.userEmail);
-
-    // if (result !== null) {
-    //   return result;
-    // }
     const token = this.generateToken(data);
 
     redisClient.set(data.userEmail, token);
@@ -80,6 +76,11 @@ class SessionManager {
     }
   }
 
+  /**
+   * destroys a jwt token.
+   * @param {object} user User details.
+   * @returns {string} token.
+   */
   static async destroyToken(user) {
     const result = await delAsync(user.userEmail);
     return result;
