@@ -12,7 +12,7 @@ class Notifcations {
    */
   async getNotifications(req, res, next) {
     try {
-      const data = await notificationService.getNotifications({ userId: req.user.id });
+      const data = await notificationService.getNotifications({ userId: req.user.id, read: false });
       return Response.customResponse(
         res,
         200,

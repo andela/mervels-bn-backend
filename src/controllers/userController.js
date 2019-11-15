@@ -263,6 +263,7 @@ class Users {
    */
   async resetPassword(req, res, next) {
     const { password, newPassword } = req.body;
+    console.log('Password ', password);
     const { userId, token } = req.params;
     const id = parseInt(userId, 10);
     try {
@@ -291,6 +292,7 @@ class Users {
         'Password has been sucessfully changed. Proceed to login'
       );
     } catch (error) {
+      console.log('Error ', error);
       return next(error);
     }
   }

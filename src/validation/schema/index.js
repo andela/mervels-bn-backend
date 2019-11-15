@@ -44,7 +44,7 @@ export default {
     .required()
     .min(1)
     .error(
-      () => 'Password should contain a minimum of 8 characters (upper and lowercase letters, numbers and at least one special character)'
+      () => 'Password  a minimum of 8 characters (upper and lowercase letters, numbers and at least one special character)'
     ),
   link: Joi.string()
     .required()

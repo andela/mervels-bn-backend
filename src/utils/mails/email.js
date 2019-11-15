@@ -30,7 +30,8 @@ class Emails {
    * @returns {string} customized url
    */
   static emailUrl(data) {
-    return `http://${process.env.baseUrl}/api/v1/auth/${data.endpoint}/${data.userId}/${data.token}`;
+    // return `http://${process.env.baseUrl}/api/v1/auth/${data.endpoint}/${data.userId}/${data.token}`;
+    return `${process.env.frontEndUrl}/${data.endpoint}/${data.userId}/${data.token}`;
   }
 
   /**
@@ -40,7 +41,8 @@ class Emails {
    */
   static unsubscribeUrl(data) {
     const token = generateToken(data);
-    return `https://${process.env.baseUrl}/api/v1/auth/unsubscribe/?token=${token}`;
+    // return `https://${process.env.baseUrl}/api/v1/auth/unsubscribe/?token=${token}`;
+    return `https://${process.env.frontEndUrl}/unsubscribe/?token=${token}`;
   }
 
   /**
