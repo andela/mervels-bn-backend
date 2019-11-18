@@ -148,7 +148,7 @@ class RequestService {
       );
       if ('accommodations' in data || 'to' in data) {
         await AccommodationRequests.destroy({
-          where: [{ requestId: 1 }]
+          where: [{ requestId: id }]
         });
         const accommodations = [];
         data.accommodations.map(async (elem) => {
@@ -174,6 +174,22 @@ class RequestService {
           ]
         });
       }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * deletes the Request by ID.
+   * @param {number} id The ID of the request.
+   * @returns {object} The  object.
+   */
+  static async deleteRequest(id) {
+    try {
+      const deleted = await Requests.destroy({
+        where: [{ id }]
+      });
+      return deleted;
     } catch (error) {
       throw error;
     }
