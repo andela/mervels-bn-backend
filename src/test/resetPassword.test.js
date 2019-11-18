@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import { before } from 'mocha';
@@ -39,6 +40,7 @@ const emptyPassword = {
 const existUser = { email: 'hanaurugai@gmail.com' };
 let resetUrl;
 let token;
+let userId;
 
 describe('Reset new Password', () => {
   before((done) => {
@@ -64,8 +66,11 @@ describe('Reset new Password', () => {
         }
 
         Url = res.body.data;
-        resetUrl = Url.slice(21);
-        token = Url.split('/')[-1];
+        const UrlArray = Url.split('/');
+        userId = UrlArray[UrlArray.length - 2];
+        token = UrlArray[UrlArray.length - 1];
+
+        resetUrl = `/api/v1/auth/resetPassword/${userId}/${token}`;
         done();
       });
   });

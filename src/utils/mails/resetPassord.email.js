@@ -17,7 +17,7 @@ class ResetPasswordEmail {
       <body style="margin: 0; padding: 0;">
         <table border="0" cellpadding="0" cellspacing="0" width="900px" style="padding: 0 40px 0 40px; background-color:#f1f2f3;">
           <tr><td align="center" style="background-color:#f9fcff; margin: 0 50px 0 50px;">
-                <a><img src="http://drive.google.com/uc?export=view&id=1Rraew69PkllzCnb5wIBJsw61xPk83sA-" alt="Bare Foot Nomad" 
+                <a><img src="http://drive.google.com/uc?export=view&id=1Rraew69PkllzCnb5wIBJsw61xPk83sA-" alt="Bare Foot Nomad"
                 width="120" height="100" style="display: block;></a></td></tr><tr>
            <td align="center" style="padding: 0 50px 0 50px;">
              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#ffffff; padding: 0 0 0 20px;">
@@ -30,7 +30,7 @@ class ResetPasswordEmail {
                   background-color:#55acee;border-radius:2px;color:white;height:32px; cursor: pointer; padding-top:5px"
                   href=${url}>Reset Password</a></td></tr><tr>
                 <td align="center" style="color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
-                  <p>this link will expire after 1 hour.</p>
+                  <p>this link will expire after 24 hours.</p>
                   <p>contact <a href=#>Support@barefoot</a> if you didnt intiate this request</p>
                   <p>Thank you for using Bare Foot Nomad</p></td></tr></table></td></tr><tr>
             <td align="center" style="padding: 30px 30px 30px 30px;">&reg; BARE FOOT NOMAD, 2019<br/></td></tr></table></body>`;
