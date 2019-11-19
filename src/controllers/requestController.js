@@ -178,11 +178,7 @@ class Requests {
           to: requester.userEmail,
           subject: 'Request approved'
         });
-        const msg = ApprovalEmail.rejectAcceptRequestTemplate(
-          'Your travel request has been approved. Have a good time',
-          requester,
-          unsubscribeUrl
-        );
+        const msg = ApprovalEmail.rejectAcceptRequestTemplate(reason, requester, unsubscribeUrl);
         await email.sendmail({ ...header, ...msg });
       }
       return Response.customResponse(res, 200, 'Request approved successfully', { requestId });
