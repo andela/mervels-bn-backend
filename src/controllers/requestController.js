@@ -197,6 +197,7 @@ class Requests {
     try {
       const formatedData = {
         ...req.body,
+        travelDate: req.body.travelDates,
         reason: req.body.reason.trim()
       };
       const { id } = req.params;
@@ -245,6 +246,23 @@ class Requests {
       const data = await requestService.findRequests(params);
       const message = 'Trip Statistics Succesfully retrieved';
       return Response.customResponse(res, 200, message, { total: data.length, trips: data });
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  /**
+   * @param {object} req request
+   * @param {object} res response
+   * @param {object} next response
+   * @return {function} requests
+   */
+  async deleteRequest(req, res, next) {
+    try {
+      const { id } = req.params;
+      const deleted = await requestService.deleteRequest(id);
+      if (!deleted) throw Error('Could not deleted the request');
+      return Response.customResponse(res, 200, 'The request has been deleted successfully');
     } catch (error) {
       return next(error);
     }

@@ -23,6 +23,7 @@ const updateComment = '/api/v1/requests/comments/1';
 const InvalidUpdateUrl = '/api/v1/requests/comments/a';
 const pendingApprovals = '/api/v1/requests/pending';
 const updateResquest = '/api/v1/requests/1';
+const deleteRequest = '/api/v1/requests/13';
 const markAllAsRead = '/api/v1/notifications/mark-as-read';
 
 const oneWay = {
@@ -836,28 +837,6 @@ describe('Accept request', () => {
         done();
       });
   });
-  it('with all valid properties', (done) => {
-    chai
-      .request(server)
-      .put(updateResquest)
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        from: 'Kigali, Rwanda',
-        to: [
-          {
-            travelDate: '2020-11-12',
-            location: 2,
-            accommodation: 'sheraton'
-          }
-        ],
-        reason: 'iam travelling cause the company allows us to, i mean the that'
-      })
-      .end((_err, res) => {
-        if (_err) done(_err);
-        expect(res.status).to.eq(200);
-        done();
-      });
-  });
   it('with all invalid location', (done) => {
     chai
       .request(server)
@@ -1015,6 +994,17 @@ describe('Accept request', () => {
       .end((_err, res) => {
         if (_err) done(_err);
         expect(res.status).to.eq(422);
+        done();
+      });
+  });
+  it('should delete the request', (done) => {
+    chai
+      .request(server)
+      .delete(deleteRequest)
+      .set('Authorization', `Bearer ${token}`)
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(200);
         done();
       });
   });

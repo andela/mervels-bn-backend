@@ -113,7 +113,11 @@ router
     tripValues.isValidAccomodation,
     tripValues.isValidDates,
     Requests.EditRequest
-  )
+  );
+
+router
+  .route('/:id')
+  .delete(verify, Access.isOwner, Requests.deleteRequest)
   .all(method);
 
 export default router;

@@ -118,7 +118,10 @@ export default class requestValidator {
       from: Schema.from,
       to: Schema.to,
       returnDate: Schema.minDate,
-      reason: Schema.stringLongOptional
+      reason: Schema.stringLongOptional,
+      passportName: Schema.passportName.required(),
+      passportNumber: Schema.passportNumber.required(),
+      gender: Schema.gender.required()
     });
     validator(schema, req.body, res, next);
   }
