@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import Response from '../utils/response';
 import CommentService from '../services/commentService';
+import UserService from '../services/userService';
 
 /** Class representing comments controller. */
 class CommentController {
@@ -15,9 +16,11 @@ class CommentController {
     try {
       const comment = req.body;
       comment.request = req.params.id;
+      const requester = await UserService.findUser({ id: req.user.id });
       comment.user = req.user.id;
       const addedComment = await CommentService.addComment(comment);
       delete addedComment.dataValues.deleted;
+      addedComment.user = { firstName: requester.firstName, lastName: requester.lastName };
       return Response.customResponse(res, 201, 'Comment added successfully', addedComment);
     } catch (error) {
       return next(error);
