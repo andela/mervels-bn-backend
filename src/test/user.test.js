@@ -464,7 +464,7 @@ describe('Test Access', () => {
         .set('Authorization', `Bearer ${superToken}`)
         .send({ userEmail: 'josephdoe@gmail.com', userRole: 'Requester' })
         .end((_err, res) => {
-          expect(res.status).to.eq(404);
+          expect(res.status).to.eq(200);
           done();
         });
     });

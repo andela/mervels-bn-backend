@@ -352,7 +352,7 @@ class Users {
           { userEmail: rawData.userEmail },
           { userRoles: rawData.userRole }
         );
-        return Response.notFoundError(res, message);
+        return Response.customResponse(res, 200, 'Role has been updated successfully');
       }
       message = 'The user already has the rights you are trying to assign';
       return Response.conflictError(res, message);
@@ -387,11 +387,15 @@ class Users {
       };
       const data = await userService.createUser(supplier);
       const header = Emails.header({ to: req.body.userEmail, subject: 'BareFoot Accomodations' });
-      const message = supplierEmail.supplierTemplate({
-        email: req.body.userEmail,
-        name: req.body.firstName,
-        password: userPassword
-      });
+      const loginLink = `${process.env.FRONTEND_URL}/login`;
+      const message = supplierEmail.supplierTemplate(
+        {
+          email: req.body.userEmail,
+          name: req.body.firstName,
+          password: userPassword
+        },
+        loginLink
+      );
       const result = await Emails.sendmail({ ...header, ...message });
       return Response.customResponse(res, 201, 'Account has been created successfully', data);
     } catch (error) {

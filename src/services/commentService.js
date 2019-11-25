@@ -53,8 +53,13 @@ class CommentService {
             deleted: false
           }
         ],
+        include: [
+          {
+            model: database.Users
+          }
+        ],
         order: [['createdAt', 'ASC']],
-        attributes: ['id', 'user', 'comment', 'createdAt', 'updatedAt']
+        attributes: ['id', 'comment', 'createdAt', 'updatedAt']
       });
     } catch (error) {
       throw error;
