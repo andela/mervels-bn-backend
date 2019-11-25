@@ -31,6 +31,7 @@ class SessionManager {
         lastName: data.lastName,
         accountVerified: data.accountVerified,
         emailAllowed: data.emailAllowed,
+        requestAutofill: data.requestAutofill,
         userRoles: data.userRoles
       },
       data.secret || process.env.TOKEN,

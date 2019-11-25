@@ -447,5 +447,28 @@ class Users {
       return next(error);
     }
   }
+
+  /**
+   * switchAutofill.
+   * @param {object} req  details.
+   * @param {object} res  details.
+   * @param {object} next nest task
+   * @returns {object}.
+   */
+  async switchAutofill(req, res, next) {
+    try {
+      const { id, requestAutofill } = req.user;
+      const data = await userService.updateUser({ id }, { requestAutofill: !requestAutofill });
+      return Response.customResponse(
+        res,
+        200,
+        'Your request autofill preference has been successfully updated',
+        { requestAutofill: data[1][0].requestAutofill }
+      );
+    } catch (error) {
+      return next(error);
+    }
+  }
 }
+
 export default new Users();

@@ -27,7 +27,7 @@ class UserProfileService {
   async getProfile(userId) {
     try {
       const profile = await Users.findOne({
-        attributes: ['firstName', 'lastName', 'userEmail', 'userRoles'],
+        attributes: ['firstName', 'lastName', 'userEmail', 'userRoles', 'requestAutofill'],
         where: { id: userId },
         include: [{ model: UserProfile, as: 'userProfile' }]
       });

@@ -26,6 +26,7 @@ const googleRedirect = '/api/v1/auth/google/redirect';
 const facebookRedirect = '/api/v1/auth/facebook/redirect';
 const signout = '/api/v1/auth/signout';
 const emailPreferences = '/api/v1/auth/email-preferences';
+const autofillPreference = '/api/v1/auth/autofill-preference';
 
 chai.use(chaiHttp);
 
@@ -650,6 +651,18 @@ describe('Email Preference', () => {
         if (_err) done(_err);
         expect(res.status).to.eq(200);
         expect(res.body.data.emailAllowed).to.eq(true);
+        done();
+      });
+  });
+  it('should update user autofill preference', (done) => {
+    chai
+      .request(server)
+      .patch(autofillPreference)
+      .set('Authorization', `Bearer ${token}`)
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(200);
+        expect(res.body.data.requestAutofill).to.eq(true);
         done();
       });
   });
