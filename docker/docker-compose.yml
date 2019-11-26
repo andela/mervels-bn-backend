@@ -1,0 +1,44 @@
+version: "3.7"
+services:
+  db:
+    image: "postgres:alpine"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - '5433:5432'
+    restart: always
+  redis:
+    image: redis
+
+  api:
+    environment:
+      DEV_DATABASE_URL: "postgres://postgres@db:5432/postgres"
+      DATABASE_URL: "postgres://postgres@db:5432/postgres"
+      REDIS_URL: "redis://redis:6379"
+      TOKEN: ${TOKEN}
+      API_KEY: ${API_KEY}
+      baseUrl: "localhost:3001"
+      PORT: 4000
+      FROM_EMAIL: ${FROM_EMAIL}
+      CLOUDINARY_NAME: ${CLOUDINARY_NAME}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      FB_CLIENT_ID: ${FB_CLIENT_ID}
+      FB_CLIENT_SECRET: ${FB_CLIENT_SECRET}
+      FRONTEND_URL: ${FRONTEND_URL}
+    build: ./mervels-bn-backend
+    depends_on:
+      - db
+      - redis
+    ports: 
+      [4000:4000]
+    restart: always
+
+  web:
+    build: ./mervels-bn-frontend
+    ports: 
+      [3000:3000]
+
+    
