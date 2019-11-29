@@ -107,6 +107,9 @@ describe('Travel Administrator', () => {
       .field('amenities', ['GYM', 'SPA'])
       .field('description', 'this is the best you can ever find in your lifetime trust me')
       .field('services', ['Breakfast', 'Free wifi'])
+      .attach('image', 'src/test/testData/marvel.png', 'marvel.png')
+      .field('lat', -1.9705786)
+      .field('lng', 30.10442880000005)
       .end((_err, res) => {
         accommodationId = res.body.data.id;
         expect(res.status).to.eq(201);
@@ -167,9 +170,14 @@ describe('Travel Administrator', () => {
       .request(server)
       .post('/api/v1/accommodations')
       .set('Authorization', `Bearer ${adminToken}`)
-      .attach('image', 'src/test/testData/marvel.png', 'marvel.png')
       .field('name', 'Muhabura')
       .field('locationId', 1)
+      .field('amenities', ['GYM', 'SPA'])
+      .field('description', 'this is the best you can ever find in your lifetime trust me')
+      .field('services', ['Breakfast', 'Free wifi'])
+      .attach('image', 'src/test/testData/marvel.png', 'marvel.png')
+      .field('lat', -1.9705786)
+      .field('lng', 30.10442880000005)
       .end((_err, res) => {
         expect(res.status).to.eq(409);
         expect(res.body.message).to.eq('this accommodation already exist in this location');
@@ -183,14 +191,23 @@ describe('Travel Administrator', () => {
       .post('/api/v1/accommodations/rooms')
       .set('Authorization', `Bearer ${adminToken}`)
       .send({
-        name: 'Ngorongoro',
-        type: 'flat',
         accommodationId,
-        price: 200
+        rooms: [
+          {
+            name: 'Ngorongoro',
+            type: 'flat',
+            price: 200
+          },
+          {
+            name: 'hagura',
+            type: '2 bedrooms',
+            price: 200
+          }
+        ]
       })
       .end((_err, res) => {
         expect(res.status).to.eq(201);
-        expect(res.body.message).to.eq('Room created successfully');
+        expect(res.body.message).to.eq('Rooms created successfully');
         done();
       });
   });
@@ -200,30 +217,17 @@ describe('Travel Administrator', () => {
       .post('/api/v1/accommodations/rooms')
       .set('Authorization', `Bearer ${adminToken}`)
       .send({
-        name: 'Ngorongoro',
-        type: 'flat',
         accommodationId,
-        price: 'were'
+        rooms: [
+          {
+            name: 'Ngorongoro',
+            type: 'flat',
+            price: 'hrere'
+          }
+        ]
       })
       .end((_err, res) => {
         expect(res.status).to.eq(422);
-        done();
-      });
-  });
-  it('should not create a room if the room alredy exist in that accommodation', (done) => {
-    chai
-      .request(server)
-      .post('/api/v1/accommodations/rooms')
-      .set('Authorization', `Bearer ${adminToken}`)
-      .send({
-        name: 'Ngorongoro',
-        type: 'flat',
-        accommodationId,
-        price: 200
-      })
-      .end((_err, res) => {
-        expect(res.status).to.eq(409);
-        expect(res.body.message).to.eq('this room already exist in this accommodation');
         done();
       });
   });
@@ -233,10 +237,19 @@ describe('Travel Administrator', () => {
       .post('/api/v1/accommodations/rooms')
       .set('Authorization', `Bearer ${requesterToken}`)
       .send({
-        name: 'Ngorongoro',
-        type: 'flat',
         accommodationId,
-        price: 200
+        rooms: [
+          {
+            name: 'Ngorongoro',
+            type: 'flat',
+            price: 200
+          },
+          {
+            name: 'hagura',
+            type: '2 bedrooms',
+            price: 200
+          }
+        ]
       })
       .end((_err, res) => {
         expect(res.status).to.eq(403);
@@ -249,7 +262,20 @@ describe('Travel Administrator', () => {
       .request(server)
       .post('/api/v1/accommodations/rooms')
       .set('Authorization', `Bearer ${adminToken}`)
-      .send({ name: 'Ngorongoro', type: 'flat' })
+      .send({
+        rooms: [
+          {
+            name: 'Ngorongoro',
+            type: 'flat',
+            price: 200
+          },
+          {
+            name: 'hagura',
+            type: '2 bedrooms',
+            price: 200
+          }
+        ]
+      })
       .end((_err, res) => {
         expect(res.status).to.eq(422);
         expect(res.body.error).to.eq('Validation Error');
@@ -261,7 +287,15 @@ describe('Travel Administrator', () => {
       .request(server)
       .post('/api/v1/accommodations/rooms')
       .set('Authorization', `Bearer ${adminToken}`)
-      .send({ type: 'flat', accommodationId: 1 })
+      .send({
+        accommodationId,
+        rooms: [
+          {
+            type: 'flat',
+            price: 200
+          }
+        ]
+      })
       .end((_err, res) => {
         expect(res.status).to.eq(422);
         expect(res.body.error).to.eq('Validation Error');
@@ -273,7 +307,15 @@ describe('Travel Administrator', () => {
       .request(server)
       .post('/api/v1/accommodations/rooms')
       .set('Authorization', `Bearer ${adminToken}`)
-      .send({ name: 'flat', accommodationId: 1 })
+      .send({
+        accommodationId,
+        rooms: [
+          {
+            name: 'Ngorongoro',
+            price: 200
+          }
+        ]
+      })
       .end((_err, res) => {
         expect(res.status).to.eq(422);
         expect(res.body.error).to.eq('Validation Error');
@@ -286,10 +328,14 @@ describe('Travel Administrator', () => {
       .post('/api/v1/accommodations/rooms')
       .set('Authorization', `Bearer ${adminToken}`)
       .send({
-        name: 'Ngorongoro',
-        type: 'flat',
-        accommodationId: 500,
-        price: 200
+        accommodationId: 100000,
+        rooms: [
+          {
+            name: 'Ngorongoro',
+            type: 'flat',
+            price: 200
+          }
+        ]
       })
       .end((_err, res) => {
         expect(res.status).to.eq(404);
@@ -330,10 +376,14 @@ describe('Travel Administrator', () => {
       .request(server)
       .post('/api/v1/accommodations')
       .set('Authorization', `Bearer ${adminToken}`)
-      .send({
-        name: 'Bujumbura',
-        locationId: 45635
-      })
+      .field('name', 'Muhabura')
+      .field('locationId', 80)
+      .field('amenities', ['GYM', 'SPA'])
+      .field('description', 'this is the best you can ever find in your lifetime trust me')
+      .field('services', ['Breakfast', 'Free wifi'])
+      .attach('image', 'src/test/testData/marvel.png', 'marvel.png')
+      .field('lat', -1.9705786)
+      .field('lng', 30.10442880000005)
       .end((_err, res) => {
         expect(res.status).to.eq(404);
         expect(res.body.message).to.eq('Location not found');
@@ -468,12 +518,14 @@ describe('Accommodation Supplier', () => {
       .request(server)
       .post('/api/v1/accommodations')
       .set('Authorization', `Bearer ${supplierToken}`)
-      .attach('image', 'src/test/testData/marvel.png', 'marvel.png')
       .field('name', 'PARTY')
       .field('locationId', 2)
       .field('amenities', ['GYM', 'SPA'])
       .field('description', 'this is the best you can ever find in your lifetime trust me')
       .field('services', ['Breakfast', 'Free wifi'])
+      .attach('image', 'src/test/testData/marvel.png', 'marvel.png')
+      .field('lat', -1.9705786)
+      .field('lng', 30.10442880000005)
       .end((_err, res) => {
         accommodationId = res.body.data.id;
         expect(res.status).to.eq(201);

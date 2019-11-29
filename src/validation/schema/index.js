@@ -17,6 +17,21 @@ const details = Joi.object().keys({
     .error(() => 'Enter id of destination')
 });
 
+const room = Joi.object().keys({
+  name: Joi.string()
+    .alphanum()
+    .min(3)
+    .max(30)
+    .required(),
+  type: Joi.string()
+    .min(3)
+    .max(30)
+    .required(),
+  price: Joi.number()
+    .min(1)
+    .required()
+});
+
 export default {
   email: Joi.string()
     .email()
@@ -93,6 +108,9 @@ export default {
     .error(() => 'Enter date of return in yyyy-mm-dd format greater than date of travel'),
   to: Joi.array()
     .items(details)
+    .error(() => 'Enter correct destination details'),
+  rooms: Joi.array()
+    .items(room)
     .error(() => 'Enter correct destination details'),
   from: Joi.string()
     .trim()

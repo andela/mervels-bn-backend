@@ -22,7 +22,7 @@ export default {
     },
     imageUrl: {
       allowNull: true,
-      type: Sequelize.STRING
+      type: Sequelize.ARRAY(Sequelize.STRING)
     },
     createdAt: {
       allowNull: false,
@@ -31,6 +31,14 @@ export default {
     updatedAt: {
       allowNull: false,
       type: Sequelize.DATE
+    },
+    owner: {
+      allowNull: false,
+      type: Sequelize.INTEGER
+    },
+    maplocations: {
+      allowNull: false,
+      type: Sequelize.JSONB
     }
   }),
   down: (queryInterface, Sequelize) => queryInterface.dropTable('Accommodations')

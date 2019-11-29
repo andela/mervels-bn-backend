@@ -1,3 +1,6 @@
+/* eslint-disable no-multi-assign */
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable eqeqeq */
 /* eslint-disable class-methods-use-this */
 import moment from 'moment';
@@ -7,8 +10,9 @@ import AccommodationService from '../services/accommodationService';
 import LikeService from '../services/likeService';
 import LocationService from '../services/locationService';
 import requestService from '../services/requestService';
-import uploader from '../utils/cloudinary';
+import { manyImages } from '../utils/cloudinary';
 import reviewController from './reviewController';
+import { turnArray } from '../utils/isArray';
 
 /** Class representing accommodation controller. */
 class AccommodationController {
@@ -20,25 +24,25 @@ class AccommodationController {
    * @returns {object} accommodation object
    */
   async createAccommodation(req, res, next) {
-    if (req.files) {
-      const { image } = req.files;
-      const cloudFile = await uploader(image.tempFilePath);
-      req.body.imageUrl = cloudFile.url;
-    }
     try {
-      // check if the location is available
       const location = await LocationService.getLocationById(req.body.locationId);
       if (!location) {
         return Response.notFoundError(res, 'Location not found');
       }
-      const { name, locationId } = req.body;
       const accommodationExist = await AccommodationService.getAccommodation({
-        name: name.toUpperCase(),
-        locationId
+        name: req.body.name.toUpperCase(),
+        locationId: req.body.locationId
       });
       if (accommodationExist) {
         return Response.conflictError(res, 'this accommodation already exist in this location');
       }
+      req.body.imageUrl = await manyImages(req.files);
+      req.body.maplocations = { lat: parseFloat(req.body.lat), lng: parseFloat(req.body.lng) };
+      delete req.body.lat;
+      delete req.body.lng;
+      req.body.amenities = turnArray(req.body.amenities);
+      req.body.services = turnArray(req.body.services);
+      req.body.owner = req.user.id;
       req.body.name = req.body.name.toUpperCase();
       const accommodation = await AccommodationService.createAccommodation(req.body);
       return Response.customResponse(res, 201, 'Accommodation created successfully', accommodation);
@@ -56,22 +60,19 @@ class AccommodationController {
    */
   async createRoom(req, res, next) {
     try {
-      const { accommodationId, name } = req.body;
+      const { accommodationId, rooms } = req.body;
       const exist = await AccommodationService.getAccommodation({
         id: accommodationId
       });
       if (!exist) {
         return Response.notFoundError(res, 'Accommodation not found');
       }
-      const roomExist = await AccommodationService.getRoom({
-        name,
-        accommodationId
+      const data = rooms.map((r) => {
+        r.accommodationId = accommodationId;
+        return r;
       });
-      if (roomExist) {
-        return Response.conflictError(res, 'this room already exist in this accommodation');
-      }
-      const room = await AccommodationService.createRoom(req.body);
-      return Response.customResponse(res, 201, 'Room created successfully', room);
+      const room = await AccommodationService.createRoom(data);
+      return Response.customResponse(res, 201, 'Rooms created successfully', room);
     } catch (error) {
       return next(error);
     }
