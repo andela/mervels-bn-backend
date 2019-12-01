@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable class-methods-use-this */
+import dotenv from 'dotenv';
 import Emitter from '../utils/eventEmitters/emitter';
 import userService from '../services/userService';
 import UserProfileService from '../services/userProfileService';
@@ -11,6 +12,8 @@ import supplierEmail from '../utils/mails/supplier.email';
 import ResetPasswordEmail from '../utils/mails/resetPassord.email';
 import VerifyEmail from '../utils/mails/verify.email';
 import verify from '../middlewares/auth';
+
+dotenv.config();
 /** Class representing a password util. */
 class Users {
   /**
@@ -48,7 +51,8 @@ class Users {
       delete data.accountVerified;
       delete data.createdAt;
       delete data.updatedAt;
-      const link = `${process.env.FRONTEND_VERIFY_URL}/verify/?token=${token}`;
+      const { FRONTEND_URL } = process.env;
+      const link = `${FRONTEND_URL}/verify/?token=${token}`;
       let verification;
       try {
         const header = Emails.header({
@@ -123,7 +127,7 @@ class Users {
     }
 
     const token = await SessionManager.generateToken(user);
-    const link = `${process.env.FRONTEND_VERIFY_URL}/verify/?token=${token}`;
+    const link = `${process.env.FRONTEND_URL}/verify/?token=${token}`;
     try {
       const header = Emails.header({
         to: userEmail,

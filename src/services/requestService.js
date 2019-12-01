@@ -2,7 +2,7 @@
 import { Op } from 'sequelize';
 import database from '../database/models';
 
-const { Requests, AccommodationRequests } = database;
+const { Requests, AccommodationRequests, Rooms } = database;
 /** Class representing a Request services. */
 class RequestService {
   /**
@@ -190,6 +190,34 @@ class RequestService {
         where: [{ id }]
       });
       return deleted;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * deletes the Request by ID.
+   * @param {number} id room id
+   * @param {string} status The ID of the room.
+   * @returns {object} The  object.
+   */
+  static async markRoomAsBooked(id, status) {
+    try {
+      return Rooms.update({ status }, { where: { id } });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * deletes the Request by ID.
+   * @param {number} id The ID of the room.
+   * @param {string} booked is the status
+   * @returns {object} The  object.
+   */
+  static async markRequestAsBooked(id, booked) {
+    try {
+      return Requests.update({ booked }, { where: { id } });
     } catch (error) {
       throw error;
     }

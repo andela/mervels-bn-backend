@@ -8,6 +8,7 @@ import searchRouter from './search';
 import notificationRouter from './notifications';
 import chatRouter from './chat';
 import bookingRouter from './booking';
+import roomsRouter from './rooms';
 
 const router = express.Router();
 router.use('/auth', usersRouter);
@@ -22,6 +23,7 @@ router.use('/search', searchRouter);
 router.use('/notifications', notificationRouter);
 router.use('/booking', bookingRouter);
 router.use('/locations', locationRouter);
+router.use('/rooms', roomsRouter);
 
 router.use((err, req, res, next) => {
   if (err.name === 'JsonWebTokenError') {
