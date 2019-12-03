@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import Response from '../utils/response';
 import ChatService from '../services/chatService';
+import Emitter from '../utils/eventEmitters/emitter';
 
 /** Class representing comments controller. */
 class ChatController {
@@ -19,6 +20,7 @@ class ChatController {
         message: req.body.message
       };
       const newMessage = await ChatService.saveMessage(data);
+      await Emitter.emit('new chat', newMessage.dataValues);
       return Response.customResponse(res, 201, 'message added successfully', newMessage);
     } catch (error) {
       return next(error);
