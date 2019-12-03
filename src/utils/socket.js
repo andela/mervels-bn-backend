@@ -1,11 +1,14 @@
+// import emitter from './eventEmitters/emitter';
+
 const io = require('socket.io')();
 
 const users = {};
 const socketFunction = {};
+let newClient = null;
 socketFunction.socketStartUp = (server) => {
   io.attach(server);
-  io.on('connection', (client) => {
-    console.log('socket connected', client.id);
+  io.on('connection', async (client) => {
+    newClient = client;
     const isOnline = () => {
       io.emit('online-users', Object.values(users));
     };
@@ -13,13 +16,10 @@ socketFunction.socketStartUp = (server) => {
       users[client.id] = name;
       isOnline();
     });
-    client.on('send-message', (data) => {
-      client.broadcast.emit('chat-message', `${data.userName}: ${data.message}`);
-    });
     client.on('disconnect', () => {
       delete users[client.id];
       isOnline();
     });
   });
 };
-export default { socketFunction, io };
+export default { socketFunction, io, newClient };

@@ -139,6 +139,13 @@ class Notifications {
       this.notify(notification, id, 'request edited', request.id);
     });
   }
+
+  /**
+   *@returns {object} chat
+   */
+  async newMessage() {
+    await emitter.on('chat created', async (chat) => chat);
+  }
 }
 
 export default new Notifications();

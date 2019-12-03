@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable class-methods-use-this */
+import Emitter from '../utils/eventEmitters/emitter';
 import userService from '../services/userService';
 import UserProfileService from '../services/userProfileService';
 import Password from '../utils/generatePassword';
@@ -102,6 +103,7 @@ class Users {
       message: 'Successfully logged in',
       data: token
     };
+    await Emitter.emit('new user', data);
     const responseBuffer = Buffer.from(JSON.stringify(apiResponse));
     return res.redirect(`${FRONTEND_URL}/login?code=${responseBuffer.toString('base64')}`);
   }
@@ -204,6 +206,7 @@ class Users {
         res.cookie('gender', profileData.gender);
       }
 
+      await Emitter.emit('new-user', user);
       return Response.customResponse(res, 200, 'User signed In successfully', user.userToken);
     } catch (error) {
       return next(error);
