@@ -89,7 +89,7 @@ class Users {
         lastName
       });
     }
-    const token = await SessionManager.generateToken({
+    const token = await SessionManager.createSession({
       id: data.id,
       email: data.userEmail,
       firstName: data.firstName,

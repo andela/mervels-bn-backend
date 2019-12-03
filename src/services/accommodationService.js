@@ -110,7 +110,17 @@ class AccommodationService {
             model: database.Like
           },
           {
-            model: database.Feedbacks
+            model: database.Feedbacks,
+            include: [
+              {
+                model: database.Users,
+                include: [
+                  {
+                    model: database.ProfilePictures
+                  }
+                ]
+              }
+            ]
           },
           {
             model: database.Requests,

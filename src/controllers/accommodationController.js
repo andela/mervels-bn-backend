@@ -114,6 +114,7 @@ class AccommodationController {
       });
       if (!exist) return Response.notFoundError(res, 'Accommodation not found');
       exist.dataValues.likes = exist.Likes.length;
+      exist.dataValues.liked = exist.Likes.map(({ user }) => user).includes(req.user.id);
       delete exist.dataValues.Likes;
 
       exist.dataValues.Ratings = reviewController.getAccommodationRating(exist, req.user.id);
