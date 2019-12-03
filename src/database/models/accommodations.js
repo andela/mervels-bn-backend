@@ -19,7 +19,7 @@ const accommodations = (sequelize, DataTypes) => {
       },
       imageUrl: {
         allowNull: true,
-        type: DataTypes.STRING
+        type: DataTypes.ARRAY(DataTypes.STRING)
       },
       amenities: {
         allowNull: true,
@@ -28,11 +28,19 @@ const accommodations = (sequelize, DataTypes) => {
       locationId: { type: DataTypes.INTEGER, allowNull: false },
       description: {
         allowNull: true,
-        type: DataTypes.STRING
+        type: DataTypes.TEXT
       },
       services: {
         allowNull: true,
         type: DataTypes.ARRAY(DataTypes.STRING)
+      },
+      owner: {
+        allowNull: false,
+        type: DataTypes.INTEGER
+      },
+      maplocations: {
+        allowNull: false,
+        type: DataTypes.JSONB
       }
     },
     {}

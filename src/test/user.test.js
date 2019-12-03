@@ -666,6 +666,17 @@ describe('Email Preference', () => {
         done();
       });
   });
+  it('should return user details', (done) => {
+    chai
+      .request(server)
+      .get('/api/v1/auth/check-user')
+      .set('Authorization', `Bearer ${token}`)
+      .end((_err, res) => {
+        if (_err) done(_err);
+        expect(res.status).to.eq(200);
+        done();
+      });
+  });
 });
 
 describe('Users Logout', () => {

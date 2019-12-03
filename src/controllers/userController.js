@@ -476,6 +476,21 @@ class Users {
       return next(error);
     }
   }
+
+  /**
+   * switchAutofill.
+   * @param {object} req  details.
+   * @param {object} res  details.
+   * @param {object} next nest task
+   * @returns {object}.
+   */
+  async checkToken(req, res, next) {
+    try {
+      return Response.customResponse(res, 200, 'current user', req.user);
+    } catch (error) {
+      return next(error);
+    }
+  }
 }
 
 export default new Users();

@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-await-in-loop */
 import dotenv from 'dotenv';
 import { v2 as cloudinary } from 'cloudinary';
 
@@ -9,9 +11,18 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-const upload = async (file) => {
+export const upload = async (file) => {
   const image = await cloudinary.uploader.upload(file, (result) => result);
   return image;
 };
 
-export default upload;
+export const manyImages = async (files) => {
+  const urls = [];
+  let { image } = files;
+  image = Array.isArray(image) ? image : [image];
+  for (const img of image) {
+    const cloudFile = await upload(img.tempFilePath);
+    urls.push(cloudFile.url);
+  }
+  return urls;
+};

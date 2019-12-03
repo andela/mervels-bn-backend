@@ -34,6 +34,11 @@ router
   .post(verify, Users.logout)
   .all(method);
 
+router
+  .route('/check-user')
+  .get(verify, Users.checkToken)
+  .all(method);
+
 router.get(
   '/google',
   passport.authenticate('google', {

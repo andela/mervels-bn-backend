@@ -1,45 +1,55 @@
 import chai from 'chai';
 import io from 'socket.io-client';
-import SocketTester from 'socket-tester';
-import chaiHttp from 'chai-http';
 
-chai.use(chaiHttp);
+const { expect } = chai;
 
-const socketUrl = 'http://localhost:3000';
+describe('Suite of unit tests', () => {
+  let socket;
 
-const options = {
-  transports: ['websocket'],
-  'force new connection': true
-};
-const socketTester = new SocketTester(io, socketUrl, options);
-
-describe('Sockets', () => {
-  it('should check if a function is called with a given value', (done) => {
-    const client1 = {
-      on: {
-        'online-users': socketTester.shouldBeCalledWith(['room'])
-      },
-      emit: {
-        'new-user': 'room'
-      }
-    };
-    socketTester.run([client1], done);
+  beforeEach((done) => {
+    // Setup
+    socket = io.connect('http://localhost:4000', {
+      'reconnection delay': 0,
+      'reopen delay': 0,
+      'force new connection': true
+    });
+    socket.on('connect', () => {
+      done();
+    });
+    socket.on('disconnect', () => {});
   });
-  it('should check if message is sent', (done) => {
-    const client1 = {
-      on: {
-        'chat-message': socketTester.shouldBeCalledWith('Davis: hi')
-      }
-    };
-    const client2 = {
-      emit: {
-        'send-message': {
-          userName: 'Davis',
-          message: 'hi'
-        }
-      }
-    };
 
-    socketTester.run([client1, client2], done);
+  afterEach((done) => {
+    // Cleanup
+    if (socket.connected) {
+      socket.disconnect();
+    }
+    done();
+  });
+
+  describe('First (hopefully useful) test', () => {
+    it('test new user', (done) => {
+      socket.emit('new-user', 'davis kabiswa');
+      socket.on('online-users', (user) => {
+        // Check that the message matches
+        expect(user).to.equal(['davis kabiswa']);
+        done();
+      });
+      done();
+    });
+
+    it('test sending data', (done) => {
+      const data = {
+        userName: 'davis',
+        message: 'Hi'
+      };
+      socket.emit('send-message', data);
+      socket.on('chat-message', (message) => {
+        // Check that the message matches
+        expect(message).to.equal('davis: Hi');
+        done();
+      });
+      done();
+    });
   });
 });

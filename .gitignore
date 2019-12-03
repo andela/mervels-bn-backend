@@ -102,4 +102,11 @@ pgdata
 rddata
 
 .vscode 
+
+# Docker
+docker/mervels-bn-backend
+docker/mervels-bn-frontend
+docker/pgdata
+docker/.env
+
 # End of https://www.gitignore.io/api/node

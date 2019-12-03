@@ -98,7 +98,7 @@ class ValidBooking {
       roomObject.push(room);
     }
     for (let num = 0; num < roomObject.length; num += 1) {
-      if (roomObject[num].accommodationId !== req.body.accommodations[num]) {
+      if (!req.body.accommodations.includes(roomObject[num].accommodationId)) {
         return Response.notFoundError(res, `"${roomObject[num].id}" is not in the accomodation`);
       }
     }
