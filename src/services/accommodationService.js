@@ -26,7 +26,7 @@ class AccommodationService {
    */
   static async createRoom(room) {
     try {
-      return await Rooms.create(room);
+      return await Rooms.bulkCreate(room, { returning: true });
     } catch (error) {
       throw error;
     }
@@ -40,17 +40,35 @@ class AccommodationService {
     try {
       return await Accommodations.findAll({
         subQuery: false,
-        group: ['Accommodations.id'],
+        group: ['Accommodations.id', 'Location.id'],
         attributes: [
           'id',
           'name',
           'status',
           'imageUrl',
+          'owner',
           'locationId',
+          'description',
+          'maplocations',
           [sequelize.fn('count', sequelize.col('Likes.accommodation')), 'likes'],
-          [sequelize.fn('count', sequelize.col('Rooms.accommodationId')), 'rooms']
+          [sequelize.fn('count', sequelize.col('Rooms.accommodationId')), 'rooms'],
+          [
+            sequelize.fn(
+              'concat',
+              sequelize.col('Location.city'),
+              ' ',
+              sequelize.col('Location.country')
+            ),
+            'location'
+          ]
         ],
         include: [
+          {
+            model: database.Locations,
+            as: 'Location',
+            attributes: [],
+            duplicating: false
+          },
           {
             model: database.Rooms,
             as: 'Rooms',
@@ -84,6 +102,9 @@ class AccommodationService {
           {
             model: database.Rooms,
             as: 'Rooms'
+          },
+          {
+            model: database.Locations
           },
           {
             model: database.Like

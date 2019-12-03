@@ -23,7 +23,9 @@ export default class accommodationValidator {
       services: Schema.listArray,
       amenities: Schema.listArray,
       description: Schema.stringLongOptional,
-      image: Schema.stringOptional
+      image: Schema.listArray,
+      lat: Joi.number().required(),
+      lng: Joi.number().required()
     });
     validator(schema, req.body, res, next);
   }
@@ -36,10 +38,8 @@ export default class accommodationValidator {
    */
   static async validateCreateRoom(req, res, next) {
     const schema = Joi.object().keys({
-      name: Schema.name,
-      type: Schema.name,
-      accommodationId: Schema.id,
-      price: Schema.number
+      rooms: Schema.rooms,
+      accommodationId: Schema.id
     });
     validator(schema, req.body, res, next);
   }

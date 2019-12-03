@@ -12,7 +12,7 @@ export default {
       'Accommodations',
       'description',
       {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       { transaction: t }
     ),
