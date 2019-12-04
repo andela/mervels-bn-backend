@@ -84,6 +84,9 @@ export default (sequelize, DataTypes) => {
     Users.hasMany(models.Feedbacks, {
       foreignKey: 'user'
     });
+    Users.hasOne(models.ProfilePictures, {
+      foreignKey: 'user'
+    });
     Users.hasMany(models.Notifications, {
       foreignKey: 'userId',
       onDelete: 'CASCADE',
