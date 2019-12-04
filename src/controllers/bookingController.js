@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable eqeqeq */
 /* eslint-disable class-methods-use-this */
 
@@ -25,6 +26,18 @@ class RoomBooking {
           checkOut: req.body.checkOut[count]
         });
       }
+
+      // set the rooms to unAvailable
+      // eslint-disable-next-line array-callback-return
+      // Promise.all(
+      //   books.map((book) => {
+      //     requestService.markRoomAsBooked(book.roomId, 'Unavailable');
+      //   })
+      // );
+
+      requestService.markRequestAsBooked(req.params.id, true);
+      // set the request to booked
+
       const data = await Bookings.createBooking(books);
       return Response.customResponse(res, 200, 'you have booked succesfully', data);
     } catch (error) {
@@ -47,8 +60,9 @@ class RoomBooking {
         return Response.notFoundError(res, 'Request does not exist');
       }
       if (request.user !== req.user.id) {
-        return Response.authorizationError(res, 'You dont own this request');
+        return Response.authorizationError(res, "You don't own this request");
       }
+      requestService.updateRequest({ booked: false }, reqId);
       await Bookings.cancelBooking({ requestId: reqId });
       return Response.customResponse(res, 200, 'Booking cancelled succesfully');
     } catch (error) {
