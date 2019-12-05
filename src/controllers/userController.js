@@ -96,7 +96,7 @@ class Users {
     }
     const token = await SessionManager.createSession({
       id: data.id,
-      email: data.userEmail,
+      userEmail: data.userEmail,
       firstName: data.firstName,
       lastName: data.lastName,
       userRoles: data.userRoles,
