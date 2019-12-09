@@ -40,7 +40,7 @@ class AccommodationService {
     try {
       return await Accommodations.findAll({
         subQuery: false,
-        group: ['Accommodations.id', 'Location.id', 'Ratings.id'],
+        group: ['Accommodations.id', 'Likes.id', 'Location.id', 'Ratings.id'],
         attributes: [
           'id',
           'name',
@@ -50,7 +50,6 @@ class AccommodationService {
           'locationId',
           'description',
           'maplocations',
-          [sequelize.fn('count', sequelize.col('Likes.accommodation')), 'likes'],
           [sequelize.fn('count', sequelize.col('Rooms.accommodationId')), 'rooms'],
           [sequelize.fn('AVG', sequelize.col('Ratings.rating')), 'averageRating'],
           [
@@ -79,8 +78,7 @@ class AccommodationService {
           {
             model: database.Like,
             as: 'Likes',
-            attributes: [],
-            duplicating: false
+            attributes: ['id']
           },
           {
             model: database.Ratings,
