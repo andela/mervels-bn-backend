@@ -26,6 +26,36 @@ export default {
         accommodationId: 2,
         createdAt: new Date(),
         updatedAt: new Date()
+      },
+      {
+        requestId: 5,
+        accommodationId: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        requestId: 5,
+        accommodationId: 3,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        requestId: 6,
+        accommodationId: 2,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        requestId: 6,
+        accommodationId: 3,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        requestId: 7,
+        accommodationId: 3,
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ],
     {}

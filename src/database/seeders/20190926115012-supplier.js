@@ -7,7 +7,7 @@ export default {
         firstName: 'marvel',
         lastName: 'devs',
         userEmail: 'davis.kabiswa@andela.com',
-        userPassword: '$2b$10$rKNl5fvRE/xGFgBBGxWhD.wc.j.Ht8o/cjKvwrI1ME8phkRXUg1YC',
+        userPassword: '$2b$10$oUCucQnBRaYYcZS5kMy7o.ydnOHHA6k/w7sQ9r9L1STDnos6Fw1c2',
         userRoles: 'Accommodation Supplier',
         accountVerified: true,
         createdAt: new Date(),

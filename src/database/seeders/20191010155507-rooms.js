@@ -38,6 +38,78 @@ export default {
         price: 200,
         createdAt: new Date(),
         updatedAt: new Date()
+      },
+      {
+        name: 'ASERTE',
+        type: '2bedroom',
+        status: 'Available',
+        accommodationId: 3,
+        price: 200,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'RWEN',
+        type: '2bedroom',
+        status: 'Available',
+        accommodationId: 1,
+        price: 200,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'CRURG',
+        type: '2bedroom',
+        status: 'Available',
+        accommodationId: 1,
+        price: 200,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'BRET',
+        type: '2bedroom',
+        status: 'Available',
+        accommodationId: 1,
+        price: 200,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'AKAD',
+        type: '2bedroom',
+        status: 'Available',
+        accommodationId: 2,
+        price: 200,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'REDID',
+        type: '2bedroom',
+        status: 'Available',
+        accommodationId: 2,
+        price: 200,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'CROTY',
+        type: '2bedroom',
+        status: 'Available',
+        accommodationId: 2,
+        price: 200,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'SPATN',
+        type: '2bedroom',
+        status: 'Available',
+        accommodationId: 2,
+        price: 200,
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ],
     {}
