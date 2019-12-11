@@ -441,7 +441,7 @@ describe('Travel Administrator', () => {
       .set('Authorization', `Bearer ${requesterToken}`)
       .end((_err, res) => {
         expect(res.status).to.eq(200);
-        expect(res.body.data.likes).to.eq(1);
+        expect(res.body.data.likes).to.eq(2);
         done();
       });
   });
@@ -452,7 +452,7 @@ describe('Travel Administrator', () => {
       .set('Authorization', `Bearer ${requesterToken}`)
       .end((_err, res) => {
         expect(res.status).to.eq(200);
-        expect(res.body.data.likes).to.eq(0);
+        expect(res.body.data.likes).to.eq(1);
         done();
       });
   });
@@ -506,7 +506,7 @@ describe('Accommodation Supplier', () => {
       .post('/api/v1/auth/signin')
       .send({
         userEmail: 'davis.kabiswa@andela.com',
-        userPassword: '792dmgT2W8_0'
+        userPassword: 'Root1123#'
       })
       .end((err, res) => {
         supplierToken = res.body.data;
