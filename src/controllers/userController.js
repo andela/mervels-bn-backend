@@ -62,7 +62,9 @@ class Users {
         const msg = VerifyEmail.verificationLinkTemplate(link, data.dataValues);
         const result = await Emails.sendmail({ ...header, ...msg });
         verification = 'Verification link sent';
+        console.log('>>> link sent', result);
       } catch (error) {
+        console.log('error, email not sent>>>>>', error);
         verification = 'Verification link not sent';
       }
       return Response.customResponse(res, 201, 'Account has been created successfully', {
