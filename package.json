@@ -38,7 +38,7 @@
     "@sendgrid/mail": "^6.4.0",
     "@sentry/node": "^5.7.1",
     "babel-watch": "^7.0.0",
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^5.0.0",
     "body-parser": "^1.18.3",
     "cloudinary": "^1.15.0",
     "cookie-parser": "^1.4.4",
